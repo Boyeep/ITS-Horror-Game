@@ -1,0 +1,17 @@
+{
+  "original_synthesized_audio": true,
+  "characters": [
+    {
+      "speaker": "nara",
+      "text": "Peta suaranya sudah jadi. Tinggal cocokkan hasilnya dengan buku log di perpustakaan.",
+      "start": 0.0,
+      "seconds": 3.021
+    },
+    {
+      "speaker": "arga",
+      "text": "Kita selesaikan malam ini. Besok jam delapan dosen sudah menunggu.",
+      "start": 3.021,
+      "seconds": 2.547
+    }
+  ]
+}

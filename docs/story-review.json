@@ -1,0 +1,13 @@
+{
+  "frames": 180,
+  "uncapped_fps": 112.5,
+  "three_ai": 3,
+  "campus_units": [
+    3520,
+    4720
+  ],
+  "exploration_seconds": 48.0,
+  "chase_loop_seconds": 4.800000190734863,
+  "stinger_seconds": 1.1499773263931274,
+  "alternate_music_seconds": 269.2682800292969
+}

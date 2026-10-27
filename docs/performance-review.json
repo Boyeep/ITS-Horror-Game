@@ -1,0 +1,50 @@
+[
+  {
+    "version": "0.1",
+    "mode": "escape",
+    "pixels": [
+      1280,
+      800
+    ],
+    "frames": 180,
+    "uncapped_fps": 113.6,
+    "ai": 3,
+    "driver": "SDL dummy"
+  },
+  {
+    "version": "0.1",
+    "mode": "escape",
+    "pixels": [
+      1920,
+      1200
+    ],
+    "frames": 180,
+    "uncapped_fps": 75.9,
+    "ai": 3,
+    "driver": "SDL dummy"
+  },
+  {
+    "version": "0.1",
+    "mode": "ground",
+    "pixels": [
+      1280,
+      800
+    ],
+    "frames": 180,
+    "uncapped_fps": 96.9,
+    "ai": 0,
+    "driver": "SDL dummy"
+  },
+  {
+    "version": "0.1",
+    "mode": "ground",
+    "pixels": [
+      1920,
+      1200
+    ],
+    "frames": 180,
+    "uncapped_fps": 71.4,
+    "ai": 0,
+    "driver": "SDL dummy"
+  }
+]

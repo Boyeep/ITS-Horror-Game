@@ -1,0 +1,22 @@
+[
+  {
+    "bank": "door_open",
+    "seconds": 0.0
+  },
+  {
+    "bank": "door_close",
+    "seconds": 1.528
+  },
+  {
+    "bank": "step_concrete",
+    "seconds": 2.812
+  },
+  {
+    "bank": "step_wood",
+    "seconds": 4.613
+  },
+  {
+    "bank": "step_grass",
+    "seconds": 7.115
+  }
+]

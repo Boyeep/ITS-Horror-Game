@@ -1,0 +1,123 @@
+{
+  "files": [
+    {
+      "file": "exploration.ogg",
+      "author": "isaiah658",
+      "page": "https://opengameart.org/content/unsolved-investigation",
+      "license": "CC0-1.0",
+      "sha256": "2877e423ff90cb99b3082840e66cf79d69a809708466c6f27c750c0e1ce2a912"
+    },
+    {
+      "file": "chase.wav",
+      "author": "NBJDLukasAbsolute",
+      "page": "https://opengameart.org/content/chase-diamond-dust",
+      "license": "CC0-1.0",
+      "sha256": "77f36df5842eb3490759b74958afd49fa0c43a9ce0411e5cabfe89002d139838"
+    },
+    {
+      "file": "stinger.wav",
+      "author": "NBJDLukasAbsolute",
+      "page": "https://opengameart.org/content/chase-diamond-dust",
+      "license": "CC0-1.0",
+      "sha256": "703c7c7a26eb9cbca4e40d9bc81df7eb2c488eac5d0d80a956431dc6ddd80162"
+    },
+    {
+      "file": "monster_guard.ogg",
+      "author": "StarNinjas",
+      "page": "https://opengameart.org/content/16-monster-growls",
+      "license": "CC0-1.0",
+      "sha256": "f8e3afb6eb7c7abe3c27a022dfd842bdda784ba179501092c605d1aab8fea3df"
+    },
+    {
+      "file": "monster_listener.ogg",
+      "author": "StarNinjas",
+      "page": "https://opengameart.org/content/16-monster-growls",
+      "license": "CC0-1.0",
+      "sha256": "25124d2c6b83c64c33de017bb2c26b486e4cecbb8fe7a49d460c429cc156a467"
+    },
+    {
+      "file": "monster_ambusher.ogg",
+      "author": "StarNinjas",
+      "page": "https://opengameart.org/content/16-monster-growls",
+      "license": "CC0-1.0",
+      "sha256": "f729a838ee2ed4bb02feb1a5d15c0104a91d2ca745a36ca96ace1d136111fc1a"
+    },
+    {
+      "file": "monster_guard_2.ogg",
+      "author": "StarNinjas",
+      "page": "https://opengameart.org/content/16-monster-growls",
+      "license": "CC0-1.0",
+      "sha256": "359540221dad0ceed939a3416c3f525329fb7a5bbb28369a421108b3bc842310"
+    },
+    {
+      "file": "monster_guard_3.ogg",
+      "author": "StarNinjas",
+      "page": "https://opengameart.org/content/16-monster-growls",
+      "license": "CC0-1.0",
+      "sha256": "04c40c3ef82bbe59b165cd593bbe5777756085c29bedc633e865d601569241be"
+    },
+    {
+      "file": "monster_guard_4.ogg",
+      "author": "StarNinjas",
+      "page": "https://opengameart.org/content/16-monster-growls",
+      "license": "CC0-1.0",
+      "sha256": "c6039463fc74c7fe5a95050c5a6d64ff9c7c049e670067f4173001e9fd6a61aa"
+    },
+    {
+      "file": "monster_listener_2.ogg",
+      "author": "StarNinjas",
+      "page": "https://opengameart.org/content/16-monster-growls",
+      "license": "CC0-1.0",
+      "sha256": "3e8924adc48ba8c32cc56ffa774ee8ef0b6197ac96af30a777503897752add7c"
+    },
+    {
+      "file": "monster_listener_3.ogg",
+      "author": "StarNinjas",
+      "page": "https://opengameart.org/content/16-monster-growls",
+      "license": "CC0-1.0",
+      "sha256": "c1d9e628264ac5d3c70e9d80941be152676d997eae7cb0a8184bbd896759ef5f"
+    },
+    {
+      "file": "monster_listener_4.ogg",
+      "author": "StarNinjas",
+      "page": "https://opengameart.org/content/16-monster-growls",
+      "license": "CC0-1.0",
+      "sha256": "b4758a0e9aff2776aff04651014d26b8293846e0b0c59590b77d1b07b851eac9"
+    },
+    {
+      "file": "monster_ambusher_2.ogg",
+      "author": "StarNinjas",
+      "page": "https://opengameart.org/content/16-monster-growls",
+      "license": "CC0-1.0",
+      "sha256": "08a7990d67d7607fe46d9b0171a0d209ee328ac4a29a5d7fc16985cecf18d106"
+    },
+    {
+      "file": "monster_ambusher_3.ogg",
+      "author": "StarNinjas",
+      "page": "https://opengameart.org/content/16-monster-growls",
+      "license": "CC0-1.0",
+      "sha256": "77164b18afdbfc67d6b927bf49e51b42edab638711c39f2636eb805aff506930"
+    },
+    {
+      "file": "monster_ambusher_4.ogg",
+      "author": "StarNinjas",
+      "page": "https://opengameart.org/content/16-monster-growls",
+      "license": "CC0-1.0",
+      "sha256": "54e6edeb5f803699ae8baf44aa3c6f540dad2b84a7dd3f986375c97363abe60f"
+    },
+    {
+      "file": "crickets.mp3",
+      "author": "Wolfgang_ / Ted Kerr",
+      "page": "https://opengameart.org/content/crickets-ambient-noise-loopable",
+      "license": "CC0-1.0",
+      "sha256": "5b5bd1f744087888c5623543c3ff80be9c2ce106093993e7c8a8492b0280b2c0"
+    },
+    {
+      "file": "nightshift.mp3",
+      "author": "iamoneabe",
+      "page": "https://opengameart.org/content/night-shift",
+      "license": "CC0-1.0",
+      "sha256": "74d5627300fdfeb9f52478833e6323e9d8312d69c02f15aed54ce595fdcaa2be"
+    }
+  ]
+}

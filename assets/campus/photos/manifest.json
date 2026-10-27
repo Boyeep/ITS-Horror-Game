@@ -1,0 +1,20 @@
+[
+  {
+    "name": "rektorat",
+    "url": "https://www.its.ac.id/ukp/wp-content/uploads/sites/167/2024/08/Kolam-Rektorat.jpg",
+    "bytes": 264845,
+    "sha256": "530daf078257645578eb269b097a1c391a61bc2d132de95476536b1335c486c1"
+  },
+  {
+    "name": "tower2",
+    "url": "https://www.its.ac.id/news/wp-content/uploads/sites/2/2023/08/DJI_0954-scaled.jpg",
+    "bytes": 538359,
+    "sha256": "b33d912ba20cdb40163e492710147d3a13130d025401c0ac851d7b04c01761f2"
+  },
+  {
+    "name": "informatika",
+    "url": "https://www.its.ac.id/informatika/wp-content/uploads/sites/44/2018/03/IFl-1.jpg",
+    "bytes": 139506,
+    "sha256": "2600264102a35961a1f5636816485ce3872523eb6f87ddc48ba21246e25bdb1e"
+  }
+]

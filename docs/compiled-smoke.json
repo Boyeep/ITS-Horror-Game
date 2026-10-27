@@ -1,0 +1,112 @@
+[
+  {
+    "mode": "floor",
+    "exit_code": 0,
+    "screenshot": true,
+    "external_working_directory": true,
+    "pixels": [
+      1920,
+      1200
+    ],
+    "native_dpi": true,
+    "level": "5:2",
+    "health": 37,
+    "save_version": 7,
+    "backpack": true,
+    "deployed_alarm": true,
+    "achievement_retained": true
+  },
+  {
+    "mode": "story",
+    "exit_code": 0,
+    "screenshot": true,
+    "external_working_directory": true,
+    "pixels": [
+      1280,
+      800
+    ],
+    "achievement_retained": true
+  },
+  {
+    "mode": "escape",
+    "exit_code": 0,
+    "screenshot": true,
+    "external_working_directory": true,
+    "pixels": [
+      1280,
+      800
+    ],
+    "achievement_retained": true
+  },
+  {
+    "mode": "paper",
+    "exit_code": 0,
+    "screenshot": true,
+    "external_working_directory": true,
+    "pixels": [
+      1280,
+      800
+    ],
+    "achievement_retained": true
+  },
+  {
+    "mode": "portrait",
+    "exit_code": 0,
+    "screenshot": true,
+    "external_working_directory": true,
+    "pixels": [
+      1280,
+      800
+    ],
+    "speech_typing_saved": true,
+    "achievement_retained": true
+  },
+  {
+    "mode": "informatika",
+    "exit_code": 0,
+    "screenshot": true,
+    "external_working_directory": true,
+    "pixels": [
+      1280,
+      800
+    ],
+    "informatika_floor3": true,
+    "achievement_retained": true
+  },
+  {
+    "mode": "intro",
+    "exit_code": 0,
+    "screenshot": true,
+    "external_working_directory": true,
+    "pixels": [
+      1280,
+      800
+    ],
+    "cutscene_resume": true,
+    "achievement_retained": true
+  },
+  {
+    "mode": "ground",
+    "exit_code": 0,
+    "screenshot": true,
+    "external_working_directory": true,
+    "pixels": [
+      1920,
+      1200
+    ],
+    "new_ground_playable": true,
+    "achievement_retained": true
+  },
+  {
+    "mode": "phone",
+    "exit_code": 0,
+    "screenshot": true,
+    "external_working_directory": true,
+    "pixels": [
+      1280,
+      800
+    ],
+    "phone_scene_resume": true,
+    "achievement_retained": true
+  }
+]

@@ -1,0 +1,131 @@
+{
+  "creator": "Kenney",
+  "license": "CC0-1.0",
+  "files": [
+    {
+      "file": "footstep_concrete_000.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "d7267e183067757c92c169de2a379abea592cfca6b39bb2e8feea15221ad79fe"
+    },
+    {
+      "file": "footstep_concrete_001.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "507a75eb19b897087855a3be3cf11a12d7fa37d143ad535eeebe0b8031c7325d"
+    },
+    {
+      "file": "footstep_concrete_002.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "b21fa546d74941196b25da8a20b7010abd8c05c4fcf93545d1f344e66a664e13"
+    },
+    {
+      "file": "footstep_concrete_003.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "8b513c2f0316324060b9174b8f28df6c2147418c506e6a53b77f18e149a5547b"
+    },
+    {
+      "file": "footstep_concrete_004.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "24dd8db2413e5b81ad181e1205c12a1c7801da5f85715d471b92a4b2f632e45e"
+    },
+    {
+      "file": "footstep_wood_000.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "5f1c252942a220d658121bd9417448cd19649ded9fff2ff15f6e50899373ce8e"
+    },
+    {
+      "file": "footstep_wood_001.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "e4f68e1c9fd55b4dc8ca89ed2bbab6f200171bc54bdc18aa96b80d8e7336f462"
+    },
+    {
+      "file": "footstep_wood_002.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "9ff095b05cee5eec40b081defe3f0eef7232bb16d4865ce03b9f6dbab875cfdd"
+    },
+    {
+      "file": "footstep_wood_003.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "2a68a083daa9eda08fed0ea5da5280dfbe0de226196c576be02f95259dd139d9"
+    },
+    {
+      "file": "footstep_wood_004.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "b33e0854e2b3f6b6492e25c25ef8f90447a332f7c6bb25dd02edced9581d3441"
+    },
+    {
+      "file": "footstep_grass_000.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "9d49497777405d78d7cf7f2888e28277f3a23192300cfd1d79d54876b20f479f"
+    },
+    {
+      "file": "footstep_grass_001.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "fb28781bd22b2eefdc14077f1adf5c94d7fe9c3a130194633b55f3e0d39d9f04"
+    },
+    {
+      "file": "footstep_grass_002.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "73a520139f5be716a403bfe9c80e0e94d1e61d8e9de04a354b336392164b53dc"
+    },
+    {
+      "file": "footstep_grass_003.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "0546e1d8ab2def714425701a18bd34c5ee2794b12e858e5b595aabcf38a34137"
+    },
+    {
+      "file": "footstep_grass_004.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "086fd4ab3546a507ea5f5c759a9a10e535c95ade13705c238bc0eeffd7d4e8ba"
+    },
+    {
+      "file": "impactGlass_medium_000.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "9252d50bfb85edb17d6073c4a7806e10cdb9de56d3dbfc93a4b9727146d2df6d"
+    },
+    {
+      "file": "impactGlass_light_000.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "d750cf88097d0c3e69920e6e14496e1444e1a9da01aa4cca8f5ec8cb44c57b4f"
+    },
+    {
+      "file": "impactPunch_medium_000.ogg",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "sha256": "486988aa2d6440ffc4c62a0e8ccf3c23673ba84424bd4723378d451b7255eb5c"
+    },
+    {
+      "file": "doorOpen_1.ogg",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "sha256": "4ab93bab96522d8eb109ff96dc57cb6765deb02448fe14c10472084be5bb2a0b"
+    },
+    {
+      "file": "doorOpen_2.ogg",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "sha256": "68962fb0458c9bac59dec3adefa9849703c7c89d34712de03dd0075d095e79e9"
+    },
+    {
+      "file": "doorClose_1.ogg",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "sha256": "834d29c60a8a8bfb50b158cdb6b7dfa8f02812a408a1ee9703d038dfab0b1aeb"
+    },
+    {
+      "file": "doorClose_2.ogg",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "sha256": "4aa4fe79836c53cd6d0cb0b22ddc33b9901429463ae1bb75131f072683f63f21"
+    },
+    {
+      "file": "cloth1.ogg",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "sha256": "ddb93a3671233f95da0e0b10367f082f7eb42fa6caaddcf776410aa8833c747d"
+    },
+    {
+      "file": "cloth3.ogg",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "sha256": "a48632d17a4f1416541d261a32a31612e01267144c407fa3ecab3ff410f0085b"
+    },
+    {
+      "file": "metalClick.ogg",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "sha256": "9851a69d0c613e13bceef08060ecc4148f098ef487927cbebe270d642398a3b3"
+    }
+  ]
+}

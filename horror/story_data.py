@@ -1,0 +1,56 @@
+"""Campaign acts, objectives, evidence and interaction definitions."""
+
+ACTS=("I · Pesan yang tertinggal","II · Kampus yang mengingat","III · Jalan pulang")
+CHAPTERS=[
+    ("Pesan terakhir","Periksa ponsel di meja Nara.",[11]),
+    ("Buku yang tertinggal","Cari catatan di perpustakaan, lantai 2.",[22]),
+    ("Loker 04","Buka loker di rektorat.",[15]),
+    ("Arus yang putus","Cari sekring di Teknik Kimia dan Teknik Elektro.",[23,28]),
+    ("Air, mesin, data","Pulihkan jalur sesuai diagram.",[7,21,2]),
+    ("Suara dari taman","Periksa pemancar di Taman Alumni.",[20]),
+    ("Gerbang yang menolak","Periksa buku jaga di gerbang utama.",[6]),
+    ("Nama dalam foto","Cari kamar Nara di asrama.",[24]),
+    ("SIMPUL","Buka terminal server Informatika, lantai 2.",[11]),
+    ("Rekaman 1998","Cari mikrofilm perpustakaan, lantai 3.",[22]),
+    ("Urutan yang hilang","Cocokkan tiga arsip di katalog lantai 2.",[22]),
+    ("Kunci servis","Periksa kotak properti di Graha ITS.",[0]),
+    ("Distribusi","Atur panel servis Robotika, lantai 2.",[5]),
+    ("Frekuensi Nara","Setel penerima Robotika, lantai 3.",[5]),
+    ("Di atas kampus","Periksa antena di atap Robotika.",[5]),
+    ("Orang yang asli","Temui Nara di SCC / kantin.",[19]),
+    ("Insiden yang dihapus","Baca laporan rektorat, lantai 2.",[15]),
+    ("Pentanahan","Sambungkan pembumian di halaman Manarul Ilmi.",[13]),
+    ("Daya cadangan","Atur katup generator Teknik Mesin, lantai 2.",[21]),
+    ("Putuskan umpan balik","Isolasi pemancar Robotika, lantai 3.",[5]),
+    ("Jangan jawab","Matikan pemancar atap. Tahan E pada konsol.",[5]),
+    ("Kunci jalan pulang","Ambil kunci gerbang dari ruang servis Robotika, lantai 2.",[5]),
+    ("Satu jalan pulang","Nyalakan panel utama rektorat.",[15]),
+    ("Dua orang pulang","Jemput Nara di SCC / kantin.",[19]),
+    ("Gerbang barat","Bawa Nara ke gerbang utama.",[6]),
+]
+NOTES={
+    "pesan":("Pesan Nara","23.47. 'Arga, aku masih di perpustakaan. Catatanku di arsip lantai 2. Kalau lampu mati, jangan lewat bundaran.' Pesan itu masuk ke ponsel Nara sendiri."),
+    "rak":("Catatan perpustakaan","Sketsa loker rektorat, empat roda angka. 'Urutan rak yang kita lewati: 2 - 4 - 1 - 3.' Di pinggir halaman, Nara menggambar sosok dengan pita merah di lehernya: Juru Malam."),
+    "jalur":("Diagram distribusi","Kartu akses membuka kotak sekring Teknik Kimia dan Elektro. Pulihkan AIR di Teknik Lingkungan, MESIN di Teknik Mesin, lalu DATA di Sistem Informasi. Sesudahnya periksa pemancar Taman Alumni."),
+    "rekaman":("Log pemancar","Semua pesan terkirim pukul 23.47 dari jaringan SIMPUL. Gerbang tidak merespons. Suara Nara menyuruhmu memeriksa buku jaga, tetapi ia mengucapkan namamu dengan jeda yang salah."),
+    "jaga":("Buku jaga","23.18 — Nara menitipkan kartu asrama sebelum menuju perpustakaan. 23.47 — GERBANG GAGAL. Catatan petugas: 'Satu kunci mekanis disimpan di ruang servis pemancar. Jangan buka jalur utama selama jaringan masih mengulang.'"),
+    "foto":("Foto di asrama","Foto Nara dan Arga di depan lab. Jas biru Arga, tas kuning yang dijahit ulang; jepit putih Nara. Cap proyek: 17/08/1998. Di baliknya: 'Kalau aku terdengar seperti rekaman, tanyakan warna tasmu. Sandi server: tahun pada cap proyek, bukan ulang tahunku.'"),
+    "server":("SIMPUL / catatan server","SIMPUL menyimpan pola suara kampus, lalu memutarnya kembali ketika mendeteksi orang tertinggal. Uji pertama: 1998. Arsip kertas belum dihapus, tersimpan di mikrofilm perpustakaan lantai 3. Frekuensi perawatan: 107,8 MHz."),
+    "film":("Mikrofilm 1998","Tiga bundel harus dibaca dalam urutan kejadian: CATATAN 04, REKAMAN 17, EVAKUASI 09. Lemari katalog berada satu lantai di bawah. Daftar barang yang dievakuasi menyebut kotak properti Graha ITS."),
+    "katalog":("Daftar evakuasi","Kunci servis dipindahkan ke Graha. Panel pemancar: UTARA hidup, TENGAH padam, SELATAN hidup. Pintu atap tidak dikunci. Petugas terakhir menulis: 'Ia tidak berdiri di bawah lampu. Ia menunggu di bayangannya.'"),
+    "antena":("Sumber suara","Antena memancarkan suara dari dalam kampus kembali ke penerimanya. Pada 23.47, sebuah loop tertutup terbentuk. Memutus daya begitu saja akan mengunci gerbang. Nara menjawab di frekuensi perawatan: 'Tasku bukan kuning. Itu tasmu, Arga. Aku di SCC.'"),
+    "nara":("Nara yang asli","Nara mengenali jahitan di tasmu dan luka kecil di telapak tanganmu. Ia menunggu di kantin bersama petugas yang terluka. Untuk mematikan SIMPUL: pentanahan, generator cadangan, isolasi pemancar, lalu konsol atap. Cari laporan insiden di rektorat."),
+    "insiden":("Prosedur pemutusan","Urutan aman: halaman Manarul Ilmi → generator Teknik Mesin lantai 2 → isolasi Robotika lantai 3 → atap. Katup generator: A, C, B. Isolasi: UTARA padam, TENGAH hidup, SELATAN padam. Kunci gerbang ada di lemari servis lantai 2."),
+    "sunyi":("Setelah pemancar mati","Tidak ada lagi pesan baru. Di konsol tersimpan satu berkas suara yang belum sempat diputar: dua orang yang sedang membuka gerbang. Nama berkasnya adalah tanggal besok."),
+}
+# stage: (object key, campus landmark, upper-floor index, room index, prompt)
+QUESTS={
+    0:("phone",11,0,0,"Ponsel"),1:("note",22,1,0,"Catatan"),2:("locker",15,0,0,"Loker"),
+    5:("radio",20,0,0,"Pemancar"),6:("log",6,0,0,"Buku jaga"),7:("photo",24,0,0,"Foto"),
+    8:("server",11,1,0,"Terminal server"),9:("film",22,2,3,"Mikrofilm"),
+    11:("key",0,0,0,"Kotak properti"),12:("circuit",5,1,0,"Panel distribusi"),
+    13:("frequency",5,2,2,"Penerima"),14:("antenna",5,3,1,"Antena"),15:("nara",19,0,0,"Nara"),
+    16:("incident",15,1,1,"Laporan insiden"),17:("earth",13,0,0,"Pembumian"),
+    19:("isolation",5,2,2,"Panel isolasi"),20:("shutdown",5,3,1,"Konsol pemancar"),
+    21:("gate_key",5,1,3,"Kunci gerbang"),23:("nara",19,0,0,"Nara"),
+}

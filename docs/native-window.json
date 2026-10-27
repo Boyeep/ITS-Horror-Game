@@ -1,0 +1,31 @@
+{
+  "display": [
+    1920,
+    1200
+  ],
+  "canvas": [
+    1920,
+    1200
+  ],
+  "world_view": [
+    640.0,
+    400.0
+  ],
+  "fullscreen": true,
+  "audio": true,
+  "mixer": [
+    44100,
+    -16,
+    2
+  ],
+  "mode": "story",
+  "music": [
+    48.0,
+    4.800000190734863
+  ],
+  "intro_handoff": true,
+  "frames": 450,
+  "intro_from_second": 43.5,
+  "voice_nara": 14,
+  "voice_arga": 7
+}

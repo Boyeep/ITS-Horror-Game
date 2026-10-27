@@ -1,0 +1,272 @@
+[
+  {
+    "seed": 0,
+    "difficulty": "easy",
+    "status": "won",
+    "seconds": 59.7,
+    "fuses": 2,
+    "reason": "",
+    "steps": 1990
+  },
+  {
+    "seed": 1,
+    "difficulty": "easy",
+    "status": "won",
+    "seconds": 60.36,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2012
+  },
+  {
+    "seed": 2,
+    "difficulty": "easy",
+    "status": "won",
+    "seconds": 64.26,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2142
+  },
+  {
+    "seed": 3,
+    "difficulty": "easy",
+    "status": "won",
+    "seconds": 61.23,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2041
+  },
+  {
+    "seed": 4,
+    "difficulty": "easy",
+    "status": "won",
+    "seconds": 83.88,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2796
+  },
+  {
+    "seed": 5,
+    "difficulty": "easy",
+    "status": "won",
+    "seconds": 59.85,
+    "fuses": 2,
+    "reason": "",
+    "steps": 1995
+  },
+  {
+    "seed": 6,
+    "difficulty": "easy",
+    "status": "won",
+    "seconds": 63.63,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2121
+  },
+  {
+    "seed": 7,
+    "difficulty": "easy",
+    "status": "won",
+    "seconds": 63.3,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2110
+  },
+  {
+    "seed": 8,
+    "difficulty": "easy",
+    "status": "won",
+    "seconds": 63.66,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2122
+  },
+  {
+    "seed": 9,
+    "difficulty": "easy",
+    "status": "won",
+    "seconds": 57.99,
+    "fuses": 2,
+    "reason": "",
+    "steps": 1933
+  },
+  {
+    "seed": 0,
+    "difficulty": "normal",
+    "status": "won",
+    "seconds": 58.68,
+    "fuses": 2,
+    "reason": "",
+    "steps": 1956
+  },
+  {
+    "seed": 1,
+    "difficulty": "normal",
+    "status": "won",
+    "seconds": 58.95,
+    "fuses": 2,
+    "reason": "",
+    "steps": 1965
+  },
+  {
+    "seed": 2,
+    "difficulty": "normal",
+    "status": "won",
+    "seconds": 63.42,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2114
+  },
+  {
+    "seed": 3,
+    "difficulty": "normal",
+    "status": "won",
+    "seconds": 56.73,
+    "fuses": 2,
+    "reason": "",
+    "steps": 1891
+  },
+  {
+    "seed": 4,
+    "difficulty": "normal",
+    "status": "won",
+    "seconds": 82.08,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2736
+  },
+  {
+    "seed": 5,
+    "difficulty": "normal",
+    "status": "lost",
+    "seconds": 36.42,
+    "fuses": 2,
+    "reason": "Penjaga",
+    "steps": 1214
+  },
+  {
+    "seed": 6,
+    "difficulty": "normal",
+    "status": "won",
+    "seconds": 63.6,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2120
+  },
+  {
+    "seed": 7,
+    "difficulty": "normal",
+    "status": "won",
+    "seconds": 60.15,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2005
+  },
+  {
+    "seed": 8,
+    "difficulty": "normal",
+    "status": "lost",
+    "seconds": 64.5,
+    "fuses": 2,
+    "reason": "Penjaga",
+    "steps": 2150
+  },
+  {
+    "seed": 9,
+    "difficulty": "normal",
+    "status": "won",
+    "seconds": 61.59,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2053
+  },
+  {
+    "seed": 0,
+    "difficulty": "hard",
+    "status": "won",
+    "seconds": 62.52,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2084
+  },
+  {
+    "seed": 1,
+    "difficulty": "hard",
+    "status": "lost",
+    "seconds": 27.42,
+    "fuses": 1,
+    "reason": "Penjaga",
+    "steps": 914
+  },
+  {
+    "seed": 2,
+    "difficulty": "hard",
+    "status": "won",
+    "seconds": 62.22,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2074
+  },
+  {
+    "seed": 3,
+    "difficulty": "hard",
+    "status": "lost",
+    "seconds": 36.06,
+    "fuses": 1,
+    "reason": "Penjaga",
+    "steps": 1202
+  },
+  {
+    "seed": 4,
+    "difficulty": "hard",
+    "status": "lost",
+    "seconds": 78.18,
+    "fuses": 2,
+    "reason": "Penjaga",
+    "steps": 2606
+  },
+  {
+    "seed": 5,
+    "difficulty": "hard",
+    "status": "lost",
+    "seconds": 22.56,
+    "fuses": 1,
+    "reason": "Penyergap",
+    "steps": 752
+  },
+  {
+    "seed": 6,
+    "difficulty": "hard",
+    "status": "won",
+    "seconds": 59.46,
+    "fuses": 2,
+    "reason": "",
+    "steps": 1982
+  },
+  {
+    "seed": 7,
+    "difficulty": "hard",
+    "status": "won",
+    "seconds": 60.72,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2024
+  },
+  {
+    "seed": 8,
+    "difficulty": "hard",
+    "status": "won",
+    "seconds": 69.54,
+    "fuses": 2,
+    "reason": "",
+    "steps": 2318
+  },
+  {
+    "seed": 9,
+    "difficulty": "hard",
+    "status": "lost",
+    "seconds": 41.31,
+    "fuses": 2,
+    "reason": "Penjaga",
+    "steps": 1377
+  }
+]

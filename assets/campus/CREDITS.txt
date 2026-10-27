@@ -1,0 +1,4 @@
+Campus menu uses the original ITS photographs under photos/.
+Source URLs, hashes and adaptation details: photos/manifest.json and docs/ITS_REFERENCES.md.
+Legacy code-rendered facade PNGs were removed for release 0.1.
+ITS media are not part of the Kenney CC0 license.

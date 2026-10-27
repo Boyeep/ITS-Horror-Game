@@ -1,0 +1,17 @@
+exploration.ogg - isaiah658 - CC0-1.0 - https://opengameart.org/content/unsolved-investigation
+chase.wav - NBJDLukasAbsolute - CC0-1.0 - https://opengameart.org/content/chase-diamond-dust
+stinger.wav - NBJDLukasAbsolute - CC0-1.0 - https://opengameart.org/content/chase-diamond-dust
+monster_guard.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
+monster_listener.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
+monster_ambusher.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
+monster_guard_2.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
+monster_guard_3.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
+monster_guard_4.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
+monster_listener_2.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
+monster_listener_3.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
+monster_listener_4.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
+monster_ambusher_2.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
+monster_ambusher_3.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
+monster_ambusher_4.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
+crickets.mp3 - Wolfgang_ / Ted Kerr - CC0-1.0 - https://opengameart.org/content/crickets-ambient-noise-loopable
+nightshift.mp3 - iamoneabe - CC0-1.0 - https://opengameart.org/content/night-shift
