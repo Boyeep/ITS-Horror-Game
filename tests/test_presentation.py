@@ -100,7 +100,7 @@ class PresentationTests(unittest.TestCase):
             rect=(50,200,385 if key=="foto" else 471,390)
             bottom=reader.fitted(a.screen,DOCUMENT_TEXT[key],rect,21,"georgia")
             self.assertLessEqual(bottom,rect[1]+rect[3])
-        self.assertIn("2 — 4 — 1 — 3",DOCUMENT_TEXT["rak"])
+        self.assertIn("2, 4, 1, 3",DOCUMENT_TEXT["rak"])
         self.assertIn("A, C, B",DOCUMENT_TEXT["insiden"])
 
 

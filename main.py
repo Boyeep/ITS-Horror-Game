@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Setelah Jam Malam — ITS Horror Game")
+    parser = argparse.ArgumentParser(description="Setelah Jam Malam | ITS Horror Game")
     parser.add_argument("--seed", type=int, help="Start a repeatable map immediately")
     parser.add_argument("--story", action="store_true", help="Start the story campaign")
     parser.add_argument("--load-slot", choices=("auto","1","2","3"), help="Load a story save slot")

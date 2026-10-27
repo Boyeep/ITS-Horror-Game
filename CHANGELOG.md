@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1 — 28 Oktober 2026
+## 0.1 (28 Oktober 2026)
 
 Rilis awal pengembangan. Nomor patch yang pernah muncul selama pengembangan merupakan penanda internal; kondisi permainan saat ini ditetapkan sebagai versi 0.1.
 

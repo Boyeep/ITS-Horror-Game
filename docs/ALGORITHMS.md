@@ -35,13 +35,13 @@ HUD memisahkan tujuan akhir dari tindakan berikutnya. `guidance.py` mencari lang
 
 ## Persistensi
 
-Save schema 7 menyimpan progres, kondisi pemain, level, pintu, item, puzzle, monster, pendamping dan presentasi aktif. Write atomik serta backup menjaga save terakhir yang valid. Restore menerima schema 1–7 dan memigrasikan interior Informatika lama. Versi produk 0.1 terpisah dari schema tersebut.
+Save schema 7 menyimpan progres, kondisi pemain, level, pintu, item, puzzle, monster, pendamping dan presentasi aktif. Write atomik serta backup menjaga save terakhir yang valid. Restore menerima schema versi 1 sampai 7 dan memigrasikan interior Informatika lama. Versi produk 0.1 terpisah dari schema tersebut.
 
 ## Bacaan konsep
 
 - [Poole & Mackworth, local search dan Simulated Annealing](https://artint.info/3e/html/ArtInt3e.Ch4.S6.html)
 - [Shaker, Togelius & Nelson, Procedural Content Generation in Games](https://www.pcgbook.com/)
 - [Red Blob Games, A*](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
-- [Michael Booth, The AI Systems of Left 4 Dead](https://cdn.fastly.steamstatic.com/apps/valve/2009/ai_systems_of_l4d_mike_booth.pdf) — acuan variasi intensitas; game ini belum memiliki director adaptif global.
+- [Michael Booth, The AI Systems of Left 4 Dead](https://cdn.fastly.steamstatic.com/apps/valve/2009/ai_systems_of_l4d_mike_booth.pdf) menjadi acuan variasi intensitas. Game ini belum memiliki director adaptif global.
 
 Implementasi berada di `horror/world.py`, `simulation.py`, `guidance.py`, dan modul rendering. [Arsitektur](ARCHITECTURE.md) · [verifikasi](QA.md).

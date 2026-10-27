@@ -6,10 +6,10 @@ Layout, susunan furnitur, detail kampus, HUD, pencahayaan dan sebagian ambience/
 
 Runtime dan build menggunakan:
 
-- **Python 3.12.10** — https://www.python.org/ — license disertakan dalam folder `licenses` pada paket portable.
-- **pygame-ce 2.5.8** — https://github.com/pygame-community/pygame-ce — teks LGPL yang disertakan oleh distribusi pygame-ce disalin ke folder `licenses`.
-- **SDL dan library audio/gambar terkait** yang dikemas oleh distribusi pygame-ce — informasi komponen tersedia di repositori pygame-ce.
-- **PyInstaller 6.22.3** untuk membuat executable — https://pyinstaller.org/.
+- **Python 3.12.10** (https://www.python.org/). Lisensi disertakan dalam folder `licenses` pada paket portable.
+- **pygame-ce 2.5.8** (https://github.com/pygame-community/pygame-ce). Teks LGPL yang disertakan oleh distribusi pygame-ce disalin ke folder `licenses`.
+- **SDL dan library audio/gambar terkait** dikemas oleh distribusi pygame-ce. Informasi komponen tersedia di repositori pygame-ce.
+- **PyInstaller 6.22.3** digunakan untuk membuat executable (https://pyinstaller.org/).
 
 Font antarmuka menggunakan font yang tersedia di sistem Windows; file font Windows tidak disalin ke paket game. pygame menyediakan fallback jika font pilihan tidak tersedia.
 
@@ -38,8 +38,8 @@ Cerita Nara dan puzzle dibuat untuk proyek ini. Inspirasi Ao Oni terbatas pada r
 
 ## Musik alternatif dan ambience
 
-- **Night Shift**, iamoneabe, CC0: https://opengameart.org/content/night-shift — berkas `nightshift_0.mp3`, musik alternatif 269,27 detik; gain/crossfade saat runtime.
-- **Crickets Ambient Noise — loopable**, Wolfgang_ / Ted Kerr, CC0: https://opengameart.org/content/crickets-ambient-noise-loopable — `crickets_1.mp3`, ambience luar ruang dengan gain transisi.
+- **Night Shift**, iamoneabe, CC0 (https://opengameart.org/content/night-shift). Berkas `nightshift_0.mp3` menyediakan musik alternatif 269,27 detik dengan gain/crossfade saat runtime.
+- **Crickets Ambient Noise (loopable)**, Wolfgang_ / Ted Kerr, CC0 (https://opengameart.org/content/crickets-ambient-noise-loopable). Berkas `crickets_1.mp3` menyediakan ambience luar ruang dengan gain transisi.
 - Sembilan klip tambahan dari **16 Monster Growls** yang sama (StarNinjas, CC0). Total empat rekaman per jenis makhluk, tanpa pengulangan langsung. Nomor sumber: Penjaga 1/2/3/4, Pendengar 5/6/7/8, Penyergap 10/11/12/14.
 
 Semua tambahan dicatat bersama SHA-256 di `assets/story_audio/manifest.json`; kredit dibundel dalam `licenses/Story-audio-CC0.txt`. Bank aspal dan metal merupakan adaptasi kecil pitch dari langkah beton Kenney, bukan rekaman lokasi kampus. Hum mekanis disintesis. Karakter, siluet bayangan, prop motor/tangga/pemancar, dan tile rumput/aspal/trotoar dibuat dari kode. Floorplan, jumlah lantai yang bisa dimainkan, serta menara servis adalah rancangan fiksi untuk permainan.

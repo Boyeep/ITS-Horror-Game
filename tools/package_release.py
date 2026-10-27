@@ -35,7 +35,7 @@ def main():
     shutil.copyfile(ROOT / "CHANGELOG.md", dist / "CHANGELOG.md")
     readme = dist / "BACA_DULU.txt"
     guide = (ROOT / "docs/PLAYER_GUIDE.md").read_text(encoding="utf-8")
-    readme.write_text(f"SETELAH JAM MALAM — Versi {VERSION} / Windows x64\n\n" + guide, encoding="utf-8")
+    readme.write_text(f"SETELAH JAM MALAM | Versi {VERSION} / Windows x64\n\n" + guide, encoding="utf-8")
     archive = dist / "SetelahJamMalam-Windows-x64.zip"
     files = [exe, readme, dist / "THIRD_PARTY_NOTICES.md", dist / "CHANGELOG.md",
              docs / "ITS_REFERENCES.md", docs / "PLAYER_GUIDE.md",

@@ -1,10 +1,10 @@
-# Acuan ITS — rilis 0.1
+# Acuan ITS untuk rilis 0.1
 
 Menu menggunakan tiga foto gedung asli dengan skala proporsional, palet horor, kontur, pencahayaan dan kabut saat runtime. Foto sumber tetap utuh. Menu memakai palet malam; exterior pembuka memakai senja. Gambar berganti setiap sembilan detik dan memenuhi viewport dengan crop proporsional tanpa meregangkan bangunan.
 
 | Media | Publikasi resmi | Berkas yang dibundel |
 | --- | --- | --- |
-| Rektorat dan kolam depan | [UKP ITS — Tentang](https://www.its.ac.id/ukp/tentang/) | [Kolam-Rektorat.jpg](https://www.its.ac.id/ukp/wp-content/uploads/sites/167/2024/08/Kolam-Rektorat.jpg) → `assets/campus/photos/rektorat.jpg` |
+| Rektorat dan kolam depan | [Tentang UKP ITS](https://www.its.ac.id/ukp/tentang/) | [Kolam-Rektorat.jpg](https://www.its.ac.id/ukp/wp-content/uploads/sites/167/2024/08/Kolam-Rektorat.jpg) → `assets/campus/photos/rektorat.jpg` |
 | Tower 2 | [Berita peresmian Tower 2 ITS](https://www.its.ac.id/news/its-resmikan-tower-2-guna-menunjang-kebutuhan-akademik/) | [DJI_0954-scaled.jpg](https://www.its.ac.id/news/wp-content/uploads/sites/2/2023/08/DJI_0954-scaled.jpg) → `assets/campus/photos/tower2.jpg` |
 | Informatika saat senja, sesuai foto referensi pengguna | [Departemen Teknik Informatika ITS](https://www.its.ac.id/informatika/) | [IFl-1.jpg](https://www.its.ac.id/informatika/wp-content/uploads/sites/44/2018/03/IFl-1.jpg) → `assets/campus/photos/informatika.jpg` |
 | Lambang ITS berwarna | [Panduan Identitas Visual ITS](https://www.its.ac.id/tentang/panduan-identitas-visual/) → folder Lambang | [LAMBANG ITS.png](https://drive.google.com/file/d/1HNRAJR0T24f42mlCu0iTwwlJIz0YzgXz/view) → `assets/branding/its-crest.png` |
@@ -20,4 +20,4 @@ Lantai dasar kini level tersendiri **64×48 tile / 2560×1920 unit**. Lab proyek
 
 Lantai 2 dan 3 masing-masing **38×44 tile**. Lantai 3 mengikuti topologi/lab pada denah UTBK. **Ruangan dasar dan lantai 2 diadaptasi untuk cerita**, karena denah lengkap kedua lantai itu tidak tersedia dalam folder acuan. Jumlah tile, fungsi ruang proyek, furnitur dan detail akses bukan ukuran bangunan hasil pengukuran atau replika 1:1. [Fasilitas Informatika ITS](https://www.its.ac.id/informatika/fasilitas/) menjadi acuan fungsi umum ruang.
 
-Peta kampus yang lebih luas tetap memakai posisi relatif dari referensi sebelumnya. Tower 2 pada home screen berbeda dari menara pemancar fiktif dalam cerita. Save versi 1–6 tetap dimuat: progres dan barang dijaga; posisi pada interior dasar lama dipindah ke area baru. Prolog lama yang masih aktif dimulai kembali dengan naskah baru; prolog yang sudah selesai tidak diputar ulang.
+Peta kampus yang lebih luas tetap memakai posisi relatif dari referensi sebelumnya. Tower 2 pada home screen berbeda dari menara pemancar fiktif dalam cerita. Save versi 1 sampai 6 tetap dimuat: progres dan barang dijaga; posisi pada interior dasar lama dipindah ke area baru. Prolog lama yang masih aktif dimulai kembali dengan naskah baru; prolog yang sudah selesai tidak diputar ulang.

@@ -18,7 +18,7 @@ Kapasitas total 12 ruang. Bekal awal berisi perban, minuman, lampu kimia dan bot
 
 Supply di dunia ditentukan seed dan ditaruh pada tile yang terjangkau, bukan pada daun pintu. Ada 13 supply tambahan di kampus/Escape dan tiga pada setiap lantai atas, di luar botol/P3K lama. Item bisa diletakkan lalu diambil kembali. Tas penuh atau tumpukan maksimal tidak menghilangkan item. Barang yang berasal dari tas tidak dihitung sebagai temuan baru untuk achievement.
 
-Barang penting—kartu, kunci, ponsel, foto dan sekring—ditampilkan di pouch terpisah, tidak mengambil ruang, dan tidak bisa dibuang. Flag listrik seperti Jalur bumi/Daya cadangan tetap berada dalam progres cerita, bukan diperlakukan sebagai barang fisik tas.
+Barang penting seperti kartu, kunci, ponsel, foto dan sekring ditampilkan di pouch terpisah, tidak mengambil ruang, dan tidak bisa dibuang. Flag listrik seperti Jalur bumi/Daya cadangan tetap berada dalam progres cerita, bukan diperlakukan sebagai barang fisik tas.
 
 Ikon menggunakan gambar prosedural beresolusi tinggi dengan tepian diperhalus, palet material dan bentuk yang sama di UI/dunia. [Item art](screenshots/item-art.png), [backpack](screenshots/backpack.png), [pouch](screenshots/backpack-keys.png), [alat di dunia](screenshots/field-supplies.png).
 

@@ -1,4 +1,4 @@
-# Setelah Jam Malam — 0.1
+# Setelah Jam Malam v0.1
 
 Game horor top-down 2D berlatar interpretasi fiksi kampus ITS. Arga menerima pesan dari ponsel Nara yang tertinggal. Jelajahi kampus, baca bukti, selesaikan puzzle, dan cari jalan pulang bersama Nara.
 
@@ -25,7 +25,7 @@ Mulai dari **Easy**. Buka **Cara main** untuk petunjuk lengkap.
 | E | Interaksi, pintu, tangga; tahan pada panel tertentu |
 | F / Q / M | Senter / lempar botol / peta |
 | B atau Tab / J | Tas / catatan cerita |
-| 1–4 | P3K, minuman energi, alarm, lampu kimia |
+| 1, 2, 3, 4 | P3K, minuman energi, alarm, lampu kimia |
 | E / Enter / Space saat dialog | Tampilkan sisa teks, lalu lanjut |
 | F5 / F9 | Simpan / muat cerita |
 | Esc / F11 | Jeda / ganti layar penuh |
@@ -52,7 +52,7 @@ Untuk pengembangan dan build:
 .\Build.bat
 ```
 
-`horror/version.py` menjadi sumber nomor rilis **0.1**, termasuk metadata Windows **0.1.0.0**. Format save tetap **7**, dengan pembaca save 1–7. Data pengguna berada di `%APPDATA%/ITS-Horror-Game/`; perapian source/build tidak menghapus progres.
+`horror/version.py` menjadi sumber nomor rilis **0.1**, termasuk metadata Windows **0.1.0.0**. Format save tetap **7**, dengan pembaca save versi 1 sampai 7. Data pengguna berada di `%APPDATA%/ITS-Horror-Game/`; perapian source/build tidak menghapus progres.
 
 ## Dokumentasi
 

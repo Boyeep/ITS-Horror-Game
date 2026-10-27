@@ -18,7 +18,7 @@ E pada flight tangga memindahkan lantai; state tiap level dipertahankan. Perpind
 
 ## Save dan kompatibilitas
 
-Autosave terpisah dari tiga slot manual. Save schema **7** memuat HP/stamina, posisi/floor, barang, pintu, puzzle, dialog, timer cutscene, pendamping, monster serta state setiap layer. `dialogue_time` opsional mempertahankan progres huruf. Schema **1–7** tetap diterima; posisi interior dasar lama dimigrasikan dan prolog lama yang belum selesai dapat dimulai kembali dengan timeline baru. Prolog yang selesai tidak diulang.
+Autosave terpisah dari tiga slot manual. Save schema **7** memuat HP/stamina, posisi/floor, barang, pintu, puzzle, dialog, timer cutscene, pendamping, monster serta state setiap layer. `dialogue_time` opsional mempertahankan progres huruf. Schema versi **1 sampai 7** tetap diterima; posisi interior dasar lama dimigrasikan dan prolog lama yang belum selesai dapat dimulai kembali dengan timeline baru. Prolog yang selesai tidak diulang.
 
 Data ditulis atomik ke `%APPDATA%/ITS-Horror-Game/saves/`; `.bak` menyimpan salinan valid sebelumnya. Import `story.json` lama tidak menghapus aslinya. Muat menjaga kondisi save; retry setelah kalah memulihkan HP/stamina dan memberi jeda aman. Profil pencapaian terpisah dari slot perjalanan. Versi produk 0.1 tidak mengganti nomor schema.
 
