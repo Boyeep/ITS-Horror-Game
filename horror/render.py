@@ -5,7 +5,7 @@ from collections import OrderedDict
 
 import pygame
 
-from .config import (AMBER, HEIGHT, MUTED, PAPER, TEAL, TILE, WIDTH,
+from .config import (AMBER, HEIGHT, MUTED, PAPER, RED, TEAL, TILE, WIDTH,
                      VIEW_WIDTH, VIEW_HEIGHT, VERSION)
 from .rendering.world import WorldRenderer
 from .rendering.overlays import OverlayRenderer
@@ -20,6 +20,7 @@ class Renderer(WorldRenderer, OverlayRenderer):
 
     def __init__(self):
         self.ui_target=None;self.ui_layers=set();self.ui_scale=(1.,1.);self.draw=ScaledDraw(self)
+        self.wave_shift=0.
         self.fonts = {}
         self.world = None
         self.world_cache=OrderedDict()
@@ -340,7 +341,7 @@ class Renderer(WorldRenderer, OverlayRenderer):
         self.lightmap.fill((base, base + 1, base), special_flags=pygame.BLEND_RGB_ADD)
         screen.blit(self.lightmap, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
 
-    def draw_session(self, screen, session, settings, debug=False, map_open=False, fps=60,cinematic=False):
+    def draw_session(self, screen, session, settings, debug=False, map_open=False, fps=60, cinematic=False, wave_slide=0.):
         key=(type(session.layout).__name__,session.layout.seed)
         if self.seed is None or self.current_world_key!=key or self.world is None:
             if key in self.world_cache:
@@ -428,10 +429,19 @@ class Renderer(WorldRenderer, OverlayRenderer):
                 p = self.world_to_screen(noise.pos)
                 self.draw.circle(screen, (112, 173, 160), p, int(18 + noise.age * 40), 1)
         for monster in session.monsters:
-            if debug or session.player_can_see(monster):
+            if session.player_can_see(monster):
                 self.draw_monster(screen, monster, session.elapsed)
         self.draw_player(screen, session)
         self.lighting(screen, session, settings["brightness"])
+        if debug or wave_slide > .001:
+            for monster in session.monsters:
+                if not session.player_can_see(monster):
+                    self.draw_monster(screen, monster, session.elapsed)
+                if wave_slide > .001 and not debug:
+                    pts = [self.world_to_screen(monster.pos)] + [self.world_to_screen(session.layout.center(c)) for c in monster.path]
+                    if len(pts) > 1:
+                        self.draw.lines(screen, RED, False, pts, 1)
+                    self.draw.circle(screen, RED, self.world_to_screen(monster.pos), 14, 1)
         if debug:
             self.draw_debug(screen, session, fps)
         pygame.transform.scale(screen,ui_screen.get_size(),ui_screen)
@@ -463,6 +473,10 @@ class Renderer(WorldRenderer, OverlayRenderer):
         if session.hit_flash > 0 or session.health <= 30:
             strength = min(1., session.hit_flash / .4) if session.hit_flash > 0 else .25
             self.draw.rect(screen, (int(180 * strength), 39, 34), (3, 3, self.width - 6, HEIGHT - 6), 8)
+        if wave_slide > .001 and not map_open:
+            self.draw_wave_map(screen, session, settings, fps, wave_slide)
+        else:
+            self.wave_shift = 0.
         self.hud(screen, session)
         if map_open:
             self.draw_map(screen, session)

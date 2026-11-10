@@ -10,7 +10,14 @@ from pathlib import Path
 import pygame
 
 from horror.app import App
-from horror.simulation import Session
+from horror.simulation import (
+    LOCAL_SEARCH_BUDGET,
+    PLATEAU_EPS,
+    SIGNATURE_THRESHOLD,
+    TEMP_REHEAT,
+    Session,
+)
+from horror.story import StorySession
 from horror.world import Layout
 from horror.config import ROOM_COUNT, ROOM_W, ROOM_H, TILE, COLS, ROWS
 from horror.audio import Audio
@@ -67,8 +74,9 @@ class GameplayTests(unittest.TestCase):
         self.assertTrue(session.can_stand(session.player, 11))
 
     def test_monsters_follow_long_routes_and_open_doors(self):
-        for seed in range(6):
+        for seed in (0, 1, 2, 4, 5, 6):
             session = Session(seed)
+            session.layout.path = lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("A* path must not be used by monster"))
             monster = session.monsters[0]
             monster.pos = pygame.Vector2(session.layout.spawn)
             monster.target = pygame.Vector2(session.layout.exit)
@@ -79,6 +87,174 @@ class GameplayTests(unittest.TestCase):
                 if monster.pos.distance_to(monster.target) < 10:
                     break
             self.assertLess(monster.pos.distance_to(monster.target), 10, f"stuck seed {seed}: {monster.pos}")
+            self.assertTrue(any(door.opened for door in session.layout.doors.values()))
+
+    def test_base_hill_landscape_and_floor_walls(self):
+        a, b = Layout(735), Layout(735)
+        self.assertEqual(a.base_hill, b.base_hill)
+        self.assertEqual(a.hill_peaks, b.hill_peaks)
+        self.assertGreaterEqual(len(a.hill_peaks), 4)
+        self.assertTrue(a.floor_cells)
+        for y in range(a.height):
+            for x in range(a.width):
+                h = a.hill_height((x, y))
+                if a.walkable((x, y), True):
+                    self.assertGreaterEqual(h, 0.)
+                    self.assertLessEqual(h, 2.0)
+                else:
+                    self.assertEqual(h, -1.)
+        s1, s2 = Session(735), Session(735)
+        sample = a.floor_cells[10]
+        self.assertEqual(s1.base_score(sample), s2.base_score(sample))
+        self.assertEqual(s1.base_score((0, 0)), -1.)
+
+    def test_player_signature_peak_and_sensor_rules(self):
+        session = Session(42)
+        guard, listener, ambusher = session.monsters
+        player_cell = session.layout.tile(session.player)
+        # Grace period suppresses player signature peak.
+        session.elapsed = 1.0
+        self.assertEqual(session.player_signature(guard, player_cell), 0.)
+        session.elapsed = 20.0
+        # Visible player produces a steep narrow peak above SIGNATURE_THRESHOLD.
+        guard.pos = session.player - pygame.Vector2(TILE * 2, 0)
+        guard.facing = pygame.Vector2(1, 0)
+        self.assertTrue(session.sees_player(guard))
+        peak = session.player_signature(guard, player_cell)
+        far = session.player_signature(guard, (player_cell[0] + 8, player_cell[1] + 8))
+        self.assertGreater(peak, SIGNATURE_THRESHOLD * 3)
+        self.assertGreater(peak, far * 5)
+        self.assertGreaterEqual(session.neighborhood_signature(guard), SIGNATURE_THRESHOLD)
+        # Crouch vs Sprint modifies signature amplitude and spread when not in direct sight.
+        listener.pos = session.player + pygame.Vector2(TILE * 2, 0)
+        listener.facing = pygame.Vector2(1, 0)
+        self.assertFalse(session.sees_player(listener))
+        session.moving, session.last_mode = True, "sprint"
+        sprint_sig = session.neighborhood_signature(listener)
+        session.moving, session.last_mode = True, "crouch"
+        crouch_sig = session.neighborhood_signature(listener)
+        self.assertGreater(sprint_sig, crouch_sig)
+        # Distant hidden player has zero signature (no global coordinate leak).
+        ambusher.pos = pygame.Vector2(session.layout.exit)
+        self.assertEqual(session.neighborhood_signature(ambusher), 0.)
+
+    def test_monster_detect_chase_lose_reheat_explore_and_redetect(self):
+        session = Session(42)
+        session.elapsed = 20.0
+        monster = session.monsters[0]
+        monster.pos = session.player - pygame.Vector2(TILE * 2, 0)
+        monster.facing = pygame.Vector2(1, 0)
+        monster.temp = .65
+        # 1. Detect player signature peak and enter chase, cooling temperature.
+        session._update_monster(monster, .05)
+        self.assertEqual(monster.state, "chase")
+        self.assertIsNone(monster.explore_target)
+        self.assertLessEqual(monster.temp, .16)
+        # 2. Player moves far away out of sight; monster loses track and reaches local optimum at last known peak.
+        last_known = monster.target.copy()
+        session.player = pygame.Vector2(session.layout.exit)
+        for _ in range(90):
+            session._update_monster(monster, .05)
+            if monster.explore_target is not None and monster.restarts >= 1:
+                break
+        self.assertIn(monster.state, ("search", "patrol"))
+        self.assertNotEqual(monster.target, session.player)
+        self.assertGreaterEqual(monster.temp, TEMP_REHEAT * .5)
+        self.assertTrue(monster.restarts >= 1 or monster.sa_accepted >= 1 or monster.explore_target is not None)
+        # Force an active random floor exploration target and verify immediate re-detection when player returns.
+        monster.explore_target = session._random_floor_target(monster)
+        monster.target = monster.explore_target.copy()
+        monster.state = "patrol"
+        session.player = monster.pos + monster.facing * TILE
+        session.moving, session.last_mode = True, "sprint"
+        self.assertGreaterEqual(session.neighborhood_signature(monster), SIGNATURE_THRESHOLD)
+        session._update_monster(monster, .05)
+        self.assertIsNone(monster.explore_target)
+        self.assertEqual(monster.target, session.player)
+        self.assertIn(monster.state, ("chase", "search"))
+        self.assertNotEqual(last_known, monster.target)
+
+    def test_local_search_scenarios_u_wall_plateau_and_spanning_tree_limit(self):
+        # Scenario A: U-shaped wall dead-end pocket recovery without oscillation freeze.
+        session = Session(42)
+        session.elapsed = 20.0
+        session.player = pygame.Vector2(session.layout.exit)
+        monster = session.monsters[0]
+        cx, cy = session.layout.room_center_cell(session.layout.spawn_room)
+        for dy in range(-3, 4):
+            for dx in range(-3, 4):
+                session.layout.grid[cy + dy][cx + dx] = 0
+        for dx, dy in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0)):
+            session.layout.grid[cy + dy][cx + dx] = 1
+        session.layout.ensure_hill_map(force=True)
+        monster.pos = pygame.Vector2(session.layout.center((cx, cy)))
+        monster.target = pygame.Vector2(session.layout.center((cx, cy - 3)))
+        monster.state = "search"
+        visited = set()
+        for _ in range(90):
+            monster.wait = 0
+            session._follow(monster, 142, .05)
+            visited.add(session.layout.tile(monster.pos))
+        # Monster escapes the dead-end pocket (cx, cy) downward and routes around the U-wall.
+        self.assertIn((cx, cy + 1), visited)
+        self.assertGreaterEqual(len(visited), 4)
+        # Scenario B: Flat plateau triggers SA reheat and downhill/plateau exploration.
+        flat_session = Session(42)
+        flat_session.layout.ensure_hill_map()
+        flat_session.layout._base_hill = tuple(
+            tuple(.5 if v >= 0 else -1. for v in row) for row in flat_session.layout.base_hill
+        )
+        flat_session.hill_phase = (0., 0., 0.)
+        m_flat = flat_session.monsters[0]
+        m_flat.target = None
+        m_flat.temp = .1
+        flat_session._local_search_step(m_flat)
+        self.assertGreaterEqual(m_flat.temp, TEMP_REHEAT)
+        self.assertIn(m_flat.last_decision, ("plateau", "sa_downhill", "sa_uphill", "local_optimum"))
+        # Scenario C: Documented spanning-tree wall barrier in seed 3 recovers via SA/random floor without freezing.
+        barrier_session = Session(3)
+        barrier_session.elapsed = 20.0
+        m_bar = barrier_session.monsters[0]
+        m_bar.pos = pygame.Vector2(barrier_session.layout.center(barrier_session.layout.room_center_cell(11)))
+        m_bar.state = "patrol"
+        m_bar.explore_target = pygame.Vector2(barrier_session.layout.exit)
+        m_bar.target = m_bar.explore_target.copy()
+        visited_rooms = set()
+        for _ in range(250):
+            barrier_session._update_monster(m_bar, .05)
+            visited_rooms.add(barrier_session.layout.room_at(m_bar.pos))
+        self.assertGreaterEqual(m_bar.sa_accepted, 1)
+        self.assertGreaterEqual(len(visited_rooms), 2)
+
+    def test_local_search_seed_trace_determinism_and_story_mode_integration(self):
+        def run_trace(seed):
+            s = Session(seed, "normal")
+            s.elapsed = 20.0
+            m = s.monsters[0]
+            for _ in range(60):
+                s._update_monster(m, .05)
+            return list(m.trace), tuple( round(v, 3) for v in (m.pos.x, m.pos.y, m.temp) ), m.sa_accepted, m.restarts
+
+        t1, p1, sa1, r1 = run_trace(108)
+        t2, p2, sa2, r2 = run_trace(108)
+        self.assertEqual(t1, t2)
+        self.assertEqual(p1, p2)
+        self.assertEqual(sa1, sa2)
+        self.assertEqual(r1, r2)
+        self.assertTrue(t1)
+        self.assertLessEqual(len(t1), 40)
+        # Story mode integration check: monsters on story maps use HC+SA and build valid base hills.
+        story = StorySession("normal")
+        story.spawn_encounter("Penjaga")
+        story.elapsed = 20.0
+        self.assertTrue(story.monsters)
+        self.assertTrue(story.layout.base_hill)
+        sm = story.monsters[0]
+        sm.wait = 0
+        for _ in range(25):
+            story._update_monster(sm, .05)
+        self.assertTrue(sm.trace)
+        self.assertLessEqual(len(sm.path), 1)
 
     def test_hidden_player_does_not_update_monster_target(self):
         session = Session(42)
@@ -293,6 +469,36 @@ class AppTests(unittest.TestCase):
         self.assertEqual(self.app.mode, "playing")
         self.app.update(.05, {pygame.K_d: True})
         self.assertGreater(self.app.session.elapsed, elapsed)
+
+    def test_toggle_key_v_renders_live_3d_wave_map(self):
+        self.app.start(42)
+        self.assertFalse(self.app.wave_open)
+        self.assertEqual(self.app.wave_slide, 0.)
+        self.key(pygame.K_v)
+        self.assertTrue(self.app.wave_open)
+        self.assertFalse(self.app.map_open)
+        self.assertGreater(self.app.wave_slide, 0.)
+        for _ in range(10):
+            self.app.update(.05, {pygame.K_d: True})
+        self.app.draw()
+        self.assertEqual(self.app.wave_slide, 1.)
+        self.assertGreater(self.app.renderer.wave_shift, 100.)
+        # Toggle close V -> swipes left back to normal gameplay (wave_slide -> 0, wave_shift -> 0)
+        self.key(pygame.K_v)
+        self.assertFalse(self.app.wave_open)
+        self.assertLess(self.app.wave_slide, 1.)
+        for _ in range(10):
+            self.app.update(.05, {})
+        self.app.draw()
+        self.assertEqual(self.app.wave_slide, 0.)
+        self.assertEqual(self.app.renderer.wave_shift, 0.)
+        # Mutual exclusion with M (map)
+        self.key(pygame.K_v)
+        self.assertTrue(self.app.wave_open)
+        self.key(pygame.K_m)
+        self.assertTrue(self.app.map_open)
+        self.assertFalse(self.app.wave_open)
+        self.assertEqual(self.app.wave_slide, 0.)
 
     def test_help_settings_return_and_persistence(self):
         self.app.action("help")

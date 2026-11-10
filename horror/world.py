@@ -299,6 +299,7 @@ class Layout:
         return errors
 
     def path(self, start, goal):
+        # A* is reserved for HUD waypoint guidance, Nara companion, and test bots; monsters use local search.
         if not self.walkable(goal, True):
             return []
         queue = [(0, start)]
@@ -318,6 +319,64 @@ class Layout:
                     h = abs(nxt[0] - goal[0]) + abs(nxt[1] - goal[1])
                     heapq.heappush(queue, (cost + h, nxt))
         return []
+
+    def ensure_hill_map(self, force=False):
+        if hasattr(self, "_base_hill") and not force:
+            return
+        rng = random.Random(self.seed ^ 0x5A17)
+        floors = tuple((x, y) for y in range(self.height) for x in range(self.width) if self.walkable((x, y), True))
+        self._floor_cells = floors
+        w, h = max(1, self.width), max(1, self.height)
+        sigma = max(4.5, min(w, h) * .18)
+        two_sigma_sq = 2. * sigma * sigma
+        quadrants = ((.24 * w, .24 * h, .85), (.76 * w, .26 * h, .90),
+                     (.26 * w, .74 * h, .82), (.74 * w, .72 * h, .88))
+        peaks = []
+        for qx, qy, amp in quadrants:
+            tx = qx + rng.uniform(-.08 * w, .08 * w)
+            ty = qy + rng.uniform(-.08 * h, .08 * h)
+            px, py = min(floors, key=lambda c: (c[0] - tx) ** 2 + (c[1] - ty) ** 2) if floors else (qx, qy)
+            peaks.append((float(px), float(py), round(amp + rng.uniform(-.03, .03), 4), round(sigma, 4)))
+        self._hill_peaks = tuple(peaks)
+        p1, p2, p3 = rng.uniform(0, math.tau), rng.uniform(0, math.tau), rng.uniform(0, math.tau)
+        door_set = set(self.doors)
+        grid_hill = [[-1. for _ in range(self.width)] for _ in range(self.height)]
+        for x, y in floors:
+            h_peaks = sum(amp * math.exp(-((x - px) ** 2 + (y - py) ** 2) / two_sigma_sq) for px, py, amp, _ in peaks)
+            ripples = .08 * math.sin(.38 * x + p1) * math.cos(.38 * y + p2) + .04 * math.sin(.22 * (x + y) + p3)
+            clear = 0
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                for k in range(1, 5):
+                    if self.walkable((x + dx * k, y + dy * k), True):
+                        clear += 1
+                    else:
+                        break
+            door_align = any((x == dx and abs(y - dy) <= 5) or (y == dy and abs(x - dx) <= 6) for dx, dy in door_set)
+            contour = .018 * clear + (.24 if door_align else 0.) + (.16 if (x, y) in door_set else 0.)
+            grid_hill[y][x] = round(.18 + h_peaks + ripples + contour + .008 * rng.random(), 5)
+        self._base_hill = grid_hill
+
+    @property
+    def base_hill(self):
+        self.ensure_hill_map()
+        return self._base_hill
+
+    @property
+    def floor_cells(self):
+        self.ensure_hill_map()
+        return self._floor_cells
+
+    @property
+    def hill_peaks(self):
+        self.ensure_hill_map()
+        return self._hill_peaks
+
+    def hill_height(self, cell):
+        x, y = cell
+        if not (0 <= x < self.width and 0 <= y < self.height) or not self.walkable(cell, True):
+            return -1.
+        self.ensure_hill_map()
+        return self._base_hill[y][x]
 
     def line_clear(self, a, b):
         distance = math.dist(a, b)

@@ -5,9 +5,30 @@ from dataclasses import dataclass, field
 
 from pygame import Vector2
 
-from .config import DIFFICULTIES, TILE, ROOM_COUNT
+from .config import DIFFICULTIES, TILE, ROOM_COUNT, ROOM_W, ROOM_H
 from .world import Layout
 from .inventory import Backpack, ITEMS, Loot, PlacedItem, seed_supplies, new_stats
+
+# Local search (Hill Climbing + Simulated Annealing) parameters and explicit sensor profiles.
+SIGNATURE_THRESHOLD = .42
+PLAYER_PEAK_AMP = 1.85
+PLAYER_PEAK_SIGMA = 3.6
+TEMP_INIT = .35
+TEMP_MIN = .08
+TEMP_MAX = 1.0
+TEMP_REHEAT = .82
+COOLING_RATE = .88
+REHEAT_RATE = 1.65
+PLATEAU_EPS = .012
+STALL_LIMIT = 4
+LOCAL_SEARCH_BUDGET = 8
+TRACE_LIMIT = 40
+
+SENSOR_PROFILES = {
+    "Penjaga": {"sight_lit": 330., "sight_dark": 235., "hearing": .85, "amp": 1.85, "sigma": 3.6},
+    "Pendengar": {"sight_lit": 43., "sight_dark": 43., "hearing": 1.8, "amp": 2.05, "sigma": 4.2},
+    "Penyergap": {"sight_lit": 330., "sight_dark": 235., "hearing": .85, "amp": 1.92, "sigma": 3.8},
+}
 
 
 @dataclass
@@ -29,6 +50,17 @@ class Monster:
     goal_cell: tuple | None = None
     path_revision: int = -1
     vocal_timer: float = 8
+    temp: float = TEMP_INIT
+    stall_steps: int = 0
+    sa_accepted: int = 0
+    restarts: int = 0
+    last_score: float = 0.
+    last_decision: str = "init"
+    explore_target: Vector2 | None = None
+    visited_cells: list = field(default_factory=list)
+    visit_heat: dict = field(default_factory=dict)
+    zone_heat: dict = field(default_factory=dict)
+    trace: list = field(default_factory=list)
 
 
 @dataclass
@@ -91,6 +123,8 @@ class Session:
         self.chase_active = False
         self.encounter_count = 0
         self.visible_monsters = set()
+        phase_rng = random.Random(seed ^ 0x711C)
+        self.hill_phase = (phase_rng.uniform(0, math.tau), phase_rng.uniform(0, math.tau), phase_rng.uniform(.025, .055))
 
     def player_can_see(self, monster):
         delta = monster.pos - self.player
@@ -249,6 +283,10 @@ class Session:
             monster.memory = self.difficulty.search_time
             monster.repath = 0
             monster.sound_cause = label
+            monster.explore_target = None
+            monster.visit_heat.clear()
+            monster.zone_heat.clear()
+            monster.path = []
 
     def can_stand(self, position, radius):
         # Circle versus tile AABB, including doors; allows natural wall sliding.
@@ -365,7 +403,8 @@ class Session:
 
     def sees_player(self, monster):
         distance = monster.pos.distance_to(self.player)
-        limit = 43 if monster.kind == "Pendengar" else (330 if self.flashlight else 235)
+        profile = SENSOR_PROFILES[monster.kind]
+        limit = profile["sight_lit" if self.flashlight else "sight_dark"]
         if self.last_mode == "crouch":
             limit *= .82
         if distance > limit or not self.layout.line_clear(monster.pos, self.player):
@@ -375,20 +414,212 @@ class Session:
         direction = (self.player - monster.pos).normalize()
         return direction.dot(monster.facing) > .32
 
+    def base_score(self, cell):
+        h = self.layout.hill_height(cell)
+        if h < 0:
+            return -1.
+        p1, p2, amp = self.hill_phase
+        x, y = cell
+        return h + amp * math.sin(.31 * x + p1) * math.cos(.31 * y + p2)
+
+    def player_signature(self, monster, cell):
+        if self.elapsed < self.difficulty.grace or self.status != "playing" or not self.layout.walkable(cell, True):
+            return 0.
+        profile = SENSOR_PROFILES[monster.kind]
+        amp, sigma = profile["amp"], profile["sigma"]
+        if self.last_mode == "sprint" and self.moving:
+            amp *= 1.25
+            sigma *= 1.32
+        elif self.last_mode == "crouch":
+            amp *= .62
+            sigma *= .58
+        elif not self.moving:
+            amp *= .75
+            sigma *= .72
+        if self.effects["quiet"] > 0:
+            amp *= .72
+            sigma *= .75
+        if monster.kind == "Pendengar" and (not self.moving or self.last_mode == "crouch"):
+            amp *= .62
+            sigma *= .65
+        elif monster.kind != "Pendengar" and self.flashlight:
+            amp *= 1.06
+            sigma *= 1.05
+        visible = self.sees_player(monster)
+        dist_m = monster.pos.distance_to(self.player) / TILE
+        if visible:
+            amp = max(amp, PLAYER_PEAK_AMP * 1.25)
+            sigma = max(sigma, dist_m * .68)
+        else:
+            if dist_m > sigma * 1.85:
+                return 0.
+            if not self.layout.line_clear(monster.pos, self.player):
+                if dist_m > sigma * 1.05 or not self.moving or self.last_mode == "crouch":
+                    return 0.
+                amp *= .48
+        px, py = self.player.x / TILE - .5, self.player.y / TILE - .5
+        d_sq = (cell[0] - px) ** 2 + (cell[1] - py) ** 2
+        return amp * math.exp(-d_sq / (2. * sigma * sigma))
+
+    def neighborhood_signature(self, monster):
+        cur = self.layout.tile(monster.pos)
+        cells = (cur, *self.layout.neighbors(cur, True))
+        return max((self.player_signature(monster, c) for c in cells), default=0.)
+
+    def score_cell(self, monster, cell, cur=None):
+        if not self.layout.walkable(cell, True):
+            return -math.inf
+        cur = cur or self.layout.tile(monster.pos)
+        x, y = cell
+        cx, cy = cur
+        dx, dy = x - cx, y - cy
+        score = self.base_score(cell)
+        sig = self.player_signature(monster, cell)
+        score += sig
+        if monster.target is not None:
+            tx, ty = monster.target.x / TILE - .5, monster.target.y / TILE - .5
+            d = math.hypot(x - tx, y - ty)
+            slope_w = .16 if monster.explore_target is not None else .22
+            score += 1.25 * math.exp(-(d * d) / (2. * 3.2 * 3.2)) - slope_w * d
+        if cell in self.layout.doors and not self.layout.doors[cell].opened:
+            score -= .05
+        heat = monster.visit_heat.get(cell, 0.)
+        z_pen = .95 * monster.zone_heat.get(((x + dx) // ROOM_W, (y + dy) // ROOM_H), 0) if cell in self.layout.doors else 0.
+        backtrack = .45 if len(monster.visited_cells) >= 2 and cell == monster.visited_cells[-2] else 0.
+        recent = .16 * sum(1 for c in monster.visited_cells[-6:] if c == cell)
+        heat_scale = .32 if sig >= SIGNATURE_THRESHOLD else 1.
+        score -= heat_scale * (.28 * heat + z_pen + backtrack + recent)
+        if (dx or dy) and monster.facing.length_squared() > 0:
+            score += .004 * Vector2(dx, dy).normalize().dot(monster.facing)
+        return score
+
+    def _deposit_footprint(self, monster, cell):
+        cx, cy = cell
+        if len(monster.visit_heat) > 180:
+            for k in list(monster.visit_heat):
+                monster.visit_heat[k] *= .88
+                if monster.visit_heat[k] < .05:
+                    del monster.visit_heat[k]
+        for dy in range(-2, 3):
+            for dx in range(-2, 3):
+                nc = (cx + dx, cy + dy)
+                if self.layout.walkable(nc, True):
+                    factor = .20 if nc in self.layout.doors else 1.
+                    monster.visit_heat[nc] = monster.visit_heat.get(nc, 0.) + factor * math.exp(-(dx * dx + dy * dy) / 3.)
+        if cell in self.layout.doors and monster.visited_cells:
+            px, py = monster.visited_cells[-1]
+            ahead = (cx + (cx - px), cy + (cy - py))
+            zone = (ahead[0] // ROOM_W, ahead[1] // ROOM_H)
+            monster.zone_heat[zone] = monster.zone_heat.get(zone, 0) + 1
+        monster.visited_cells.append(cell)
+        if len(monster.visited_cells) > 32:
+            monster.visited_cells.pop(0)
+
+    def _random_floor_target(self, monster):
+        floors = self.layout.floor_cells
+        if not floors:
+            return monster.pos.copy()
+        cur = self.layout.tile(monster.pos)
+        best_cell = cur
+        best_val = -math.inf
+        for _ in range(LOCAL_SEARCH_BUDGET):
+            cand = self.rng.choice(floors)
+            dist = math.hypot(cand[0] - cur[0], cand[1] - cur[1])
+            val = self.base_score(cand) + (.35 if 5 <= dist <= 28 else -.25 if dist < 3 else 0.) - .3 * monster.visit_heat.get(cand, 0.)
+            if val > best_val:
+                best_val, best_cell = val, cand
+        return Vector2(self.layout.center(best_cell))
+
+    def _local_search_step(self, monster):
+        cur = self.layout.tile(monster.pos)
+        neighbors = list(self.layout.neighbors(cur, True))[:LOCAL_SEARCH_BUDGET]
+        if not neighbors:
+            return None
+        cur_score = self.score_cell(monster, cur, cur)
+        scored = [(self.score_cell(monster, n, cur), n) for n in neighbors]
+        scored.sort(key=lambda item: item[0], reverse=True)
+        best_score, best_cell = scored[0]
+        delta_best = best_score - cur_score
+        prev_cell = monster.visited_cells[-2] if len(monster.visited_cells) >= 2 else None
+        is_oscillating = (best_cell == prev_cell or best_cell in monster.visited_cells[-6:]) and len(neighbors) > 1
+        is_local_optimum = delta_best < -PLATEAU_EPS
+        is_plateau = abs(delta_best) <= PLATEAU_EPS
+        climbing_player = self.player_signature(monster, best_cell) >= SIGNATURE_THRESHOLD
+        if (is_local_optimum or is_plateau or is_oscillating) and not climbing_player:
+            monster.stall_steps += 1
+            monster.temp = min(TEMP_MAX, max(monster.temp * REHEAT_RATE, TEMP_REHEAT))
+            reason = "local_optimum" if is_local_optimum else "plateau" if is_plateau else "oscillation"
+        else:
+            monster.stall_steps = max(0, monster.stall_steps - 1)
+            monster.temp = max(TEMP_MIN, monster.temp * COOLING_RATE)
+            reason = "hill_climb"
+        if monster.stall_steps >= STALL_LIMIT and not climbing_player:
+            monster.restarts += 1
+            monster.stall_steps = 0
+            monster.temp = TEMP_MAX
+            if monster.explore_target is not None or monster.target is None or (
+                    monster.state in ("patrol", "search") and monster.pos.distance_to(monster.target) < 110):
+                monster.explore_target = self._random_floor_target(monster)
+                monster.target = monster.explore_target.copy()
+                monster.visit_heat.clear()
+                cur_score = self.score_cell(monster, cur, cur)
+                scored = [(self.score_cell(monster, n, cur), n) for n in neighbors]
+                scored.sort(key=lambda item: item[0], reverse=True)
+                best_score, best_cell = scored[0]
+                delta_best = best_score - cur_score
+            reason = "restart_random_floor"
+        if reason == "hill_climb" and (delta_best > PLATEAU_EPS or climbing_player):
+            chosen_score, chosen_cell = best_score, best_cell
+        else:
+            pool = [item for item in scored if item[1] != prev_cell] or scored
+            cand_score, cand_cell = self.rng.choice(pool)
+            delta = cand_score - cur_score
+            accept_prob = 1. if delta >= 0 else math.exp(max(-20., delta / max(TEMP_MIN, monster.temp)))
+            if self.rng.random() < accept_prob:
+                chosen_score, chosen_cell = cand_score, cand_cell
+                if delta < 0:
+                    monster.sa_accepted += 1
+                    if reason != "restart_random_floor":
+                        reason = "sa_downhill"
+                elif reason != "restart_random_floor":
+                    reason = "sa_uphill"
+            else:
+                chosen_score, chosen_cell = pool[0]
+                if chosen_score < cur_score:
+                    monster.sa_accepted += 1
+                    if reason != "restart_random_floor":
+                        reason = "sa_downhill"
+        monster.last_score = round(chosen_score, 4)
+        monster.last_decision = reason
+        monster.goal_cell = chosen_cell
+        monster.path = [chosen_cell]
+        monster.path_revision = self.layout.revision
+        monster.trace.append({"from": cur, "to": chosen_cell, "score": monster.last_score,
+                              "delta": round(chosen_score - cur_score, 4), "temp": round(monster.temp, 3),
+                              "decision": reason, "state": monster.state})
+        if len(monster.trace) > TRACE_LIMIT:
+            monster.trace.pop(0)
+        return chosen_cell
+
     def _follow(self, monster, speed, dt):
-        if monster.target is None:
+        if monster.target is None and monster.state == "patrol" and monster.explore_target is None:
+            return
+        cur = self.layout.tile(monster.pos)
+        if not monster.visited_cells or monster.visited_cells[-1] != cur:
+            self._deposit_footprint(monster, cur)
+        if (monster.target is not None and cur == self.layout.tile(monster.target)
+                and self.layout.line_clear(monster.pos, monster.target)):
+            delta = monster.target - monster.pos
+            if delta.length() > 3:
+                monster.facing = delta.normalize()
+                self.move(monster.pos, monster.facing * min(delta.length(), speed * dt), 12)
+            monster.path = []
             return
         monster.repath -= dt
-        goal = self.layout.tile(monster.target)
-        if monster.repath <= 0 and (goal != monster.goal_cell or monster.path_revision != self.layout.revision or not monster.path):
-            monster.path = self.layout.path(self.layout.tile(monster.pos), goal)
-            monster.goal_cell, monster.path_revision = goal, self.layout.revision
-            monster.repath = .3 + self.rng.random() * .1
-        if not monster.path:
-            delta = monster.target - monster.pos
-            if delta.length() > 3 and self.layout.line_clear(monster.pos, monster.target):
-                self.move(monster.pos, delta.normalize() * min(delta.length(), speed * dt), 12)
-            return
+        if not monster.path or not self.layout.walkable(monster.path[0], True):
+            if self._local_search_step(monster) is None:
+                return
+            monster.repath = .28 + self.rng.random() * .08
         cell = monster.path[0]
         door = self.layout.doors.get(cell)
         if door and not door.opened and monster.pos.distance_to(self.layout.center(cell)) < 62:
@@ -400,9 +631,29 @@ class Session:
         delta = destination - monster.pos
         if delta.length() <= 4:
             monster.path.pop(0)
-            return
+            if self._local_search_step(monster) is None:
+                return
+            monster.repath = .28 + self.rng.random() * .08
+            cell = monster.path[0]
+            door = self.layout.doors.get(cell)
+            if door and not door.opened and monster.pos.distance_to(self.layout.center(cell)) < 62:
+                self.layout.toggle_door(cell)
+                monster.wait = .65
+                self.sound("door_open", self.layout.center(cell), .65)
+                return
+            destination = Vector2(self.layout.center(cell))
+            delta = destination - monster.pos
+            if delta.length() <= 1:
+                return
         monster.facing = delta.normalize()
+        before = monster.pos.copy()
         self.move(monster.pos, monster.facing * min(delta.length(), speed * dt), 12)
+        if monster.pos.distance_to(before) < .15 and delta.length() > 6:
+            center_delta = Vector2(self.layout.center(cur)) - monster.pos
+            if center_delta.length() > 1:
+                self.move(monster.pos, center_delta.normalize() * min(center_delta.length(), speed * dt), 12)
+            monster.path = []
+            monster.repath = 0
 
     def _update_monster(self, monster, dt):
         monster.cooldown = max(0, monster.cooldown - dt)
@@ -440,32 +691,55 @@ class Session:
             monster.state = "chase"
             monster.memory = self.difficulty.search_time
             monster.target = self.player.copy()
+            monster.explore_target = None
+            monster.temp = max(TEMP_MIN, min(monster.temp, .14))
             if monster.kind == "Penyergap" and monster.cooldown <= 0 and monster.pos.distance_to(self.player) < 270:
                 monster.state, monster.timer = "windup", 1.0
                 delta = self.player - monster.pos
                 monster.dash = delta.normalize() if delta.length_squared() else monster.facing.copy()
                 monster.facing = monster.dash.copy()
-        elif monster.state == "chase":
-            monster.state = "search"
+        else:
+            if monster.state == "chase":
+                monster.state = "search"
+            lured = (monster.state == "investigate" and monster.sound_cause in ("botol pecah", "alarm saku")
+                     and monster.memory > self.difficulty.search_time - 2.5)
+            if not lured and self.neighborhood_signature(monster) >= SIGNATURE_THRESHOLD:
+                monster.explore_target = None
+                monster.target = self.player.copy()
+                monster.temp = max(TEMP_MIN, min(monster.temp, .16))
+                if monster.state == "patrol":
+                    monster.state = "search"
+                monster.memory = max(monster.memory, min(self.difficulty.search_time, 3.5))
         if monster.memory <= 0 and monster.state in ("search", "investigate"):
             monster.state, monster.target, monster.path = "patrol", None, []
+            monster.explore_target = None
             monster.sound_cause = ""
         if monster.state == "patrol":
             if monster.target is None or monster.pos.distance_to(monster.target) < 22:
                 if monster.target is not None:
                     monster.wait = self.rng.uniform(1.3, 3.8)
-                room = self.rng.randrange(ROOM_COUNT)
-                monster.target = Vector2(self.layout.center(self.layout.room_center_cell(room)))
+                cur = self.layout.tile(monster.pos)
+                nbs = list(self.layout.neighbors(cur, True))
+                cur_b = self.base_score(cur)
+                best_nb = max(nbs, key=lambda n: self.base_score(n) - .2 * monster.visit_heat.get(n, 0.), default=None)
+                if best_nb is not None and self.base_score(best_nb) > cur_b + PLATEAU_EPS:
+                    monster.explore_target = None
+                    monster.target = Vector2(self.layout.center(best_nb))
+                else:
+                    monster.temp = max(monster.temp, TEMP_REHEAT)
+                    monster.explore_target = self._random_floor_target(monster)
+                    monster.target = monster.explore_target.copy()
                 monster.repath = 0
         elif monster.target is not None and monster.pos.distance_to(monster.target) < 18:
             if monster.state == "investigate":
                 monster.state = "search"
             if monster.state == "search":
-                # Search around evidence, without querying the hidden player's position.
-                candidates = list(self.layout.neighbors(self.layout.tile(monster.pos), True))
-                if candidates:
-                    monster.target = Vector2(self.layout.center(self.rng.choice(candidates)))
-                    monster.repath = 0
+                # Local optimum at vanished peak -> reheat SA and pick a random floor exploration target.
+                monster.temp = max(monster.temp, TEMP_REHEAT)
+                monster.restarts += 1
+                monster.explore_target = self._random_floor_target(monster)
+                monster.target = monster.explore_target.copy()
+                monster.repath = 0
         if monster.wait > 0:
             return
         speeds = {"Penjaga": 142, "Pendengar": 122, "Penyergap": 118}

@@ -72,7 +72,8 @@ class App(MenuViews, StoryViews, InventoryViews):
         self.buttons = []
         self.focus, self.seed_focused, self.seed_text = 0, False, ""
         self.running = True
-        self.debug, self.map_open = False, False
+        self.debug, self.map_open, self.wave_open = False, False, False
+        self.wave_slide = 0.
         self.time = 0.
         self.mouse = pygame.Vector2(-100, -100)
         self.mouse_active = False
@@ -145,7 +146,7 @@ class App(MenuViews, StoryViews, InventoryViews):
             for monster in self.session.monsters:monster.wait=max(2.2,monster.wait)
         self.renderer.seed=None
         self.renderer.update_camera(self.session,snap=True)
-        self.debug=self.map_open=False
+        self.debug=self.map_open=self.wave_open=False;self.wave_slide=0.
         self.set_mode("playing")
         self.save_story()
 
@@ -186,7 +187,8 @@ class App(MenuViews, StoryViews, InventoryViews):
         self.renderer.seed = None
         self.renderer.camera.update(0, 0)
         self.renderer.update_camera(self.session, snap=True)
-        self.debug, self.map_open = False, False
+        self.debug, self.map_open, self.wave_open = False, False, False
+        self.wave_slide = 0.
         self.set_mode("playing")
         self.save_settings()
 
@@ -343,12 +345,23 @@ class App(MenuViews, StoryViews, InventoryViews):
                     elif event.key == pygame.K_e:
                         self.session.interact()
                     elif event.key == pygame.K_q:
-                        aim = self.renderer.screen_to_world(self.mouse) if self.mouse_active else self.session.player + self.session.facing * 280
+                        mouse_aim = self.mouse - (getattr(self.renderer, "wave_shift", 0.), 0)
+                        aim = self.renderer.screen_to_world(mouse_aim) if self.mouse_active else self.session.player + self.session.facing * 280
                         self.session.throw(aim)
                     elif event.key == pygame.K_f:
                         self.session.flashlight = not self.session.flashlight
                     elif event.key == pygame.K_m:
                         self.map_open = not self.map_open
+                        if self.map_open:
+                            self.wave_open = False
+                            self.wave_slide = 0.
+                    elif event.key == pygame.K_v:
+                        self.wave_open = not self.wave_open
+                        if self.wave_open:
+                            self.map_open = False
+                            self.wave_slide = max(self.wave_slide, .08)
+                        else:
+                            self.wave_slide = min(self.wave_slide, .92)
                     elif event.key == pygame.K_F3:
                         self.debug = not self.debug
                     elif event.key in (pygame.K_b,pygame.K_TAB):self.action("backpack")
@@ -397,6 +410,11 @@ class App(MenuViews, StoryViews, InventoryViews):
         if self.mode != "playing":
             return
         self.sync_scene()
+        target_slide = 1. if self.wave_open else 0.
+        if self.wave_slide < target_slide:
+            self.wave_slide = min(target_slide, self.wave_slide + dt * 5.2)
+        elif self.wave_slide > target_slide:
+            self.wave_slide = max(target_slide, self.wave_slide - dt * 5.2)
         keys = keys if keys is not None else pygame.key.get_pressed()
         def pressed(key):
             return bool(keys[key]) if not isinstance(keys, dict) else bool(keys.get(key, False))
@@ -404,7 +422,8 @@ class App(MenuViews, StoryViews, InventoryViews):
                     int(pressed(pygame.K_s) or pressed(pygame.K_DOWN)) - int(pressed(pygame.K_w) or pressed(pygame.K_UP)))
         direction = pygame.Vector2(movement)
         keyboard_facing = direction.normalize() if direction.length_squared() else self.session.facing
-        aim = self.renderer.screen_to_world(self.mouse) if self.mouse_active else self.session.player + keyboard_facing * 200
+        mouse_aim = self.mouse - (getattr(self.renderer, "wave_shift", 0.), 0)
+        aim = self.renderer.screen_to_world(mouse_aim) if self.mouse_active else self.session.player + keyboard_facing * 200
         self.session.update(dt, movement, pressed(pygame.K_LSHIFT) or pressed(pygame.K_RSHIFT),
                             pressed(pygame.K_LCTRL) or pressed(pygame.K_RCTRL), pressed(pygame.K_e), aim)
         self.sync_scene()
@@ -524,7 +543,8 @@ class App(MenuViews, StoryViews, InventoryViews):
         elif self.mode == "playing":
             if getattr(self.session,"cutscene",None):
                 CinematicRenderer(self.renderer).draw(self.screen,self.session,self.settings)
-            else:self.renderer.draw_session(self.screen, self.session, self.settings, self.debug, self.map_open, self.fps)
+            else:
+                self.renderer.draw_session(self.screen, self.session, self.settings, self.debug, self.map_open, self.fps, wave_slide=self.wave_slide)
             if getattr(self.session,"modal",False) and not getattr(self.session,"cutscene",None):self.draw_story_modal()
             elif self.mouse_active and not getattr(self.session,"cutscene",None):
                 x, y = self.mouse
