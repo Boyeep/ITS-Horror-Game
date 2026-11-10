@@ -10,7 +10,7 @@ Game horor top-down 2D berlatar interpretasi fiksi kampus ITS. Arga menerima pes
 
 - **Cerita:** tiga bab, 25 tahap, lima cutscene, kampus terbuka serta interior bertingkat. Tiga slot manual dan autosave menyimpan perjalanan.
 - **Escape:** 30 area dengan seed acak dan optimasi Simulated Annealing. Temukan dua sekring, aktifkan panel, lalu lewati pintu keluar.
-- Tiga monster dengan sensor berbeda, noise berdasarkan tindakan/material, HP, stamina, senter, tujuh perlengkapan, tas 12 ruang, dan 15 pencapaian lokal.
+- Tiga monster dengan sensor berbeda dan navigasi Hill Climbing + Simulated Annealing, noise berdasarkan tindakan/material, HP, stamina, senter, tujuh perlengkapan, tas 12 ruang, dan 15 pencapaian lokal.
 - Kamera mengikuti pemain; tujuan serta interaksi kontekstual ditampilkan pada layar. Dialog Arga/Nara memakai potret, teks bertahap, dan nada orisinal.
 
 Mulai dari **Easy**. Buka **Cara main** untuk petunjuk lengkap.
@@ -24,6 +24,7 @@ Mulai dari **Easy**. Buka **Cara main** untuk petunjuk lengkap.
 | Shift / Ctrl | Lari / berjalan pelan |
 | E | Interaksi, pintu, tangga; tahan pada panel tertentu |
 | F / Q / M | Senter / lempar botol / peta |
+| V | Tampilan split-screen 3D Wave Map |
 | B atau Tab / J | Tas / catatan cerita |
 | 1, 2, 3, 4 | P3K, minuman energi, alarm, lampu kimia |
 | E / Enter / Space saat dialog | Tampilkan sisa teks, lalu lanjut |

@@ -12,7 +12,7 @@ Membangun horor top-down dengan eksplorasi, puzzle dan pengejaran yang bisa dipa
 
 ## Ancaman dan pilihan pemain
 
-Penjaga memakai pandangan dan patroli, Pendengar mengandalkan suara, Penyergap melakukan wind-up/dash dengan arah terkunci. Ketiganya menggunakan bukti sensor dan jalur yang valid. Berlari, pintu, kaca, botol dan alarm menimbulkan noise. Difficulty mengubah sensitivitas serta ancaman, termasuk pendengaran yang lebih kuat pada Hard.
+Penjaga memakai pandangan dan patroli, Pendengar mengandalkan suara, Penyergap melakukan wind-up/dash dengan arah terkunci. Ketiganya menggunakan bukti sensor dan navigasi lokal Hill Climbing + Simulated Annealing di atas grid lantai valid. Berlari, pintu, kaca, botol dan alarm menimbulkan noise. Difficulty mengubah sensitivitas serta ancaman, termasuk pendengaran yang lebih kuat pada Hard.
 
 HP, jeda kebal setelah serangan, stamina, perlengkapan dan tempat berlindung memberi kesempatan pulih. Senter membantu melihat sekaligus memengaruhi visibilitas. Supply terbatas dan tas 12 ruang membuat pemilihan bekal berarti; barang penting tidak bisa terbuang.
 
