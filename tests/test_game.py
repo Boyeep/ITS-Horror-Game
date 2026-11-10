@@ -111,6 +111,116 @@ class GameplayTests(unittest.TestCase):
         session.interact()
         self.assertTrue(session.layout.doors[cell].opened)
 
+    def test_open_door_offcenter_and_corner_turn_passage_both_directions(self):
+        from horror.story import StorySession
+        for seed in (1, 7, 19, 42, 73):
+            session = Session(seed)
+            session.monsters = []
+            h_cell = next(c for c, d in session.layout.doors.items() if not d.passage and not d.vertical)
+            v_cell = next(c for c, d in session.layout.doors.items() if not d.passage and d.vertical)
+            for cell in (h_cell, v_cell):
+                door = session.layout.doors[cell]
+                door.opened = True
+                door.swing = 1.
+                center = pygame.Vector2(session.layout.center(cell))
+                for side in (-1, 1):
+                    for offset in (-17, 0, 17, 22):
+                        if door.vertical:
+                            session.player = center + pygame.Vector2(side * 42, offset)
+                            move_dir = (-side, 0)
+                        else:
+                            session.player = center + pygame.Vector2(offset, side * 42)
+                            move_dir = (0, -side)
+                        self.assertTrue(session.can_stand(session.player, 11))
+                        for _ in range(24):
+                            session.update(.03, move_dir, sprint=True)
+                        passed = (session.player.x - center.x) * (-side) > 18 if door.vertical else (session.player.y - center.y) * (-side) > 18
+                        self.assertTrue(passed, f"seed {seed} cell {cell} side {side} offset {offset} pos {session.player}")
+        story = StorySession()
+        story.finish_cutscene()
+        story.monsters = []
+        for level_key, door_cells in (("11:0", ((17, 35), (48, 24))), ("11:1", ((5, 18), (32, 18), (19, 38))), ("22:1", ((8, 11), (15, 6)))):
+            story.switch_level(level_key, story.get_layout(level_key).spawn)
+            story.transition = 0
+            for cell in door_cells:
+                door = story.layout.doors[cell]
+                door.opened = True
+                door.swing = 1.
+                center = pygame.Vector2(story.layout.center(cell))
+                for side in (-1, 1):
+                    if door.vertical:
+                        story.player = center + pygame.Vector2(side * 38, 16)
+                        move_dir = (-side, 0)
+                    else:
+                        story.player = center + pygame.Vector2(16, side * 38)
+                        move_dir = (0, -side)
+                    for _ in range(22):
+                        story.update(.03, move_dir, sprint=True)
+                    passed = (story.player.x - center.x) * (-side) > 15 if door.vertical else (story.player.y - center.y) * (-side) > 15
+                    self.assertTrue(passed, f"story {level_key} door {cell} side {side}")
+
+    def test_door_prompt_e_range_and_diagonal_two_sided_interaction(self):
+        from horror.story import StorySession
+        session = Session(42)
+        session.monsters = []
+        h_cell = next(c for c, d in session.layout.doors.items() if not d.passage and not d.vertical)
+        v_cell = next(c for c, d in session.layout.doors.items() if not d.passage and d.vertical)
+        for cell in (h_cell, v_cell):
+            door = session.layout.doors[cell]
+            center = pygame.Vector2(session.layout.center(cell))
+            for side in (-1, 1):
+                # Diagonal approach along wall and extended range up to ~82px
+                for lat, norm in ((0, 80), (-42, 24), (42, 24)):
+                    session.player = center + (pygame.Vector2(side * norm, lat) if door.vertical else pygame.Vector2(lat, side * norm))
+                    inter = session.interaction()
+                    self.assertIsNotNone(inter, f"missing prompt cell {cell} side {side} lat {lat} norm {norm}")
+                    self.assertEqual(inter[0], "door")
+                    self.assertEqual(inter[1], cell)
+            # Threshold close assist at 22px from door center (previously blocked under 34px)
+            door.opened = True
+            session.interact_cooldown = 0
+            session.player = center + (pygame.Vector2(22, 0) if door.vertical else pygame.Vector2(0, 22))
+            session.interact()
+            self.assertFalse(door.opened)
+            self.assertTrue(session.can_stand(session.player, 11))
+        story = StorySession()
+        story.finish_cutscene()
+        # Diagonal approach to building exit on 11:0 and building entrance on campus
+        exit_pt = pygame.Vector2(story.layout.exit_points["south"])
+        story.player = exit_pt + pygame.Vector2(38, -22)
+        inter = story.interaction()
+        self.assertIsNotNone(inter)
+        self.assertEqual(inter[0], "building_exit")
+        story.switch_level("campus", story.campus.spawn)
+        ent_pt = pygame.Vector2(story.campus.center(story.campus.informatika_entrances[1]))
+        story.player = ent_pt + pygame.Vector2(42, 26)
+        inter = story.interaction()
+        self.assertIsNotNone(inter)
+        self.assertEqual(inter[0], "building_enter")
+
+    def test_closed_door_blocks_completely_without_wall_gaps(self):
+        session = Session(42)
+        session.monsters = []
+        for cell, door in session.layout.doors.items():
+            if door.passage:
+                continue
+            door.opened = False
+            door.swing = 0.
+            center = pygame.Vector2(session.layout.center(cell))
+            for offset in range(-36, 37, 4):
+                if door.vertical:
+                    session.player = center + pygame.Vector2(-34, offset)
+                    if not session.can_stand(session.player, 11):
+                        continue
+                    session.move(session.player, pygame.Vector2(80, 0), 11)
+                    self.assertLessEqual(session.player.x, center.x - 30.9, f"leaked vertical door {cell} offset {offset}")
+                else:
+                    session.player = center + pygame.Vector2(offset, -34)
+                    if not session.can_stand(session.player, 11):
+                        continue
+                    session.move(session.player, pygame.Vector2(0, 80), 11)
+                    self.assertLessEqual(session.player.y, center.y - 30.9, f"leaked horizontal door {cell} offset {offset}")
+
     def test_attack_telegraphs_and_does_not_dash_through_wall(self):
         session = Session(42)
         session.elapsed = 20

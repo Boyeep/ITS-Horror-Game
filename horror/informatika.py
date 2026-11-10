@@ -65,7 +65,7 @@ def upper(layout,floor):
         labels=(("SERVER / LAB MALAM",(2,15)),("LAB RISET",(33,15)),("RUANG BACA",(17,39)),("WORKSHOP",(33,26)),("RUANG DISKUSI",(2,26)))
     layout.labels=[(name,layout.center(cell)) for name,cell in labels]
     layout.labels.append(("COURTYARD",layout.center((16,21))))
-    for x in (2,33):
+    for x in (2,34):
         for y in (15,21,27,32):
             if y not in (18,29):layout.add_furniture("computer",x,y,2,1)
     for x in (16,21):layout.add_furniture("computer" if floor==2 else "shelf",x,41,2,1)
