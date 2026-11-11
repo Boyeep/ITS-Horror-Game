@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 
 from pygame import Vector2
 
-from .config import DIFFICULTIES, TILE, ROOM_COUNT
+from .config import DIFFICULTIES, TILE, ROOM_COUNT, PLAYER_RADIUS, MONSTER_RADIUS, DOOR_INTERACT_RANGE
 from .world import Layout
 from .inventory import Backpack, ITEMS, Loot, PlacedItem, seed_supplies, new_stats
 
@@ -256,30 +256,61 @@ class Session:
             for x in range(int((position.x - radius) // TILE), int((position.x + radius) // TILE) + 1):
                 if self.layout.walkable((x, y)):
                     continue
-                nearest_x = max(x * TILE, min(position.x, (x + 1) * TILE))
-                nearest_y = max(y * TILE, min(position.y, (y + 1) * TILE))
-                if (position.x - nearest_x) ** 2 + (position.y - nearest_y) ** 2 < radius * radius:
+                if self.layout.circle_hits_cell(position, radius, (x, y)):
                     return False
         return True
 
     def move(self, position, delta, radius):
         # Substeps prevent sprint/dash tunnelling even at a slower frame rate.
-        steps = max(1, math.ceil(delta.length() / 7))
+        step_len = delta.length()
+        steps = max(1, math.ceil(step_len / 7))
+        step_mag = step_len / steps if step_len > 0 else 0.
         for _ in range(steps):
             dx = Vector2(delta.x / steps, 0)
             dy = Vector2(0, delta.y / steps)
-            if self.can_stand(position + dx, radius):
+            moved_x = False
+            if dx.x and self.can_stand(position + dx, radius):
                 position += dx
-            if self.can_stand(position + dy, radius):
+                moved_x = True
+            moved_y = False
+            if dy.y and self.can_stand(position + dy, radius):
                 position += dy
+                moved_y = True
+            if dx.x and not moved_x:
+                if moved_y:
+                    extra_y = Vector2(0, math.copysign(max(0., step_mag - abs(dy.y)), dy.y))
+                    if extra_y.y and self.can_stand(position + extra_y, radius) and self.can_stand(position + extra_y + dx * 2., radius):
+                        position += extra_y
+                elif abs(dy.y) < abs(dx.x) * .35:
+                    slide = abs(dx.x) * .85
+                    for sign in (-1, 1):
+                        nudge = Vector2(dx.x * .6, sign * slide)
+                        if self.can_stand(position + nudge, radius) and self.can_stand(position + dx * 2.2 + Vector2(0, sign * slide * 2.2), radius):
+                            position += nudge
+                            break
+            if dy.y and not moved_y:
+                if moved_x:
+                    extra_x = Vector2(math.copysign(max(0., step_mag - abs(dx.x)), dx.x), 0)
+                    if extra_x.x and self.can_stand(position + extra_x, radius) and self.can_stand(position + extra_x + dy * 2., radius):
+                        position += extra_x
+                elif abs(dx.x) < abs(dy.y) * .35:
+                    slide = abs(dy.y) * .85
+                    for sign in (-1, 1):
+                        nudge = Vector2(sign * slide, dy.y * .6)
+                        if self.can_stand(position + nudge, radius) and self.can_stand(position + dy * 2.2 + Vector2(sign * slide * 2.2, 0), radius):
+                            position += nudge
+                            break
 
     def interaction(self):
         choices=[]
         def candidate(action,target,label,pos,limit,door=False):
             distance=self.player.distance_to(pos)
             if distance>=limit:return
+            if door:
+                if self.layout.can_interact_door(self.player,target,limit):
+                    choices.append((distance,len(choices),action,target,label))
+                return
             endpoint=Vector2(pos)
-            if door and distance>0:endpoint=self.player+(endpoint-self.player)*max(0,(distance-22)/distance)
             if self.layout.line_clear(self.player,endpoint):choices.append((distance,len(choices),action,target,label))
         for i, pos in enumerate(self.fuses):
             candidate("fuse",i,"E  Ambil sekring",pos,65)
@@ -296,7 +327,7 @@ class Session:
         if not getattr(self.layout,"interior",False) and self.player.distance_to(self.layout.exit) < 78:
             candidate("exit",None,"E  Keluar" if self.exit_ready else "Gerbang · Daya mati",self.layout.exit,78)
         for cell,door in self.layout.doors.items():
-            if not door.passage:candidate("door",cell,"E  Tutup pintu" if door.opened else "E  Buka pintu",self.layout.center(cell),76,True)
+            if not door.passage:candidate("door",cell,"E  Tutup pintu" if door.opened else "E  Buka pintu",self.layout.center(cell),DOOR_INTERACT_RANGE,True)
         if not choices:return None
         _,_,action,target,label=min(choices)
         return action,target,label
@@ -324,10 +355,26 @@ class Session:
         elif action == "door":
             door = self.layout.doors[target]
             center = Vector2(self.layout.center(target))
-            occupants = [self.player] + [m.pos for m in self.monsters]
-            if door.opened and any(abs(p.x - center.x) < TILE / 2 + 14 and abs(p.y - center.y) < TILE / 2 + 14 for p in occupants):
-                self.notify("Pintu terhalang", 1.5)
-                return
+            if door.opened:
+                if any(self.layout.circle_hits_cell(m.pos, MONSTER_RADIUS, target) for m in self.monsters):
+                    self.notify("Pintu terhalang", 1.5)
+                    return
+                if self.layout.circle_hits_cell(self.player, PLAYER_RADIUS, target):
+                    offset = (self.player.x - center.x) if door.vertical else (self.player.y - center.y)
+                    if abs(offset) < 15:
+                        self.notify("Pintu terhalang", 1.5)
+                        return
+                    side = 1 if offset >= 0 else -1
+                    clear_dist = TILE / 2 + PLAYER_RADIUS + .5
+                    nudged = Vector2(center.x + side * clear_dist, self.player.y) if door.vertical else Vector2(self.player.x, center.y + side * clear_dist)
+                    self.layout.toggle_door(target)
+                    if self.can_stand(nudged, PLAYER_RADIUS):
+                        self.player.update(nudged)
+                        self.emit_noise(center, 4, "pintu", "door_close")
+                        return
+                    self.layout.toggle_door(target)
+                    self.notify("Pintu terhalang", 1.5)
+                    return
             self.layout.toggle_door(target)
             self.emit_noise(center, 4, "pintu", "door_open" if door.opened else "door_close")
         elif action == "medkit":
@@ -389,20 +436,21 @@ class Session:
             if delta.length() > 3 and self.layout.line_clear(monster.pos, monster.target):
                 self.move(monster.pos, delta.normalize() * min(delta.length(), speed * dt), 12)
             return
+        for idx, d_cell in enumerate(monster.path[:2]):
+            door = self.layout.doors.get(d_cell)
+            if door and not door.opened and monster.pos.distance_to(self.layout.center(d_cell)) < (62 if idx == 0 else 50):
+                self.layout.toggle_door(d_cell)
+                monster.wait = .65
+                self.sound("door_open", self.layout.center(d_cell), .65)
+                return
         cell = monster.path[0]
-        door = self.layout.doors.get(cell)
-        if door and not door.opened and monster.pos.distance_to(self.layout.center(cell)) < 62:
-            self.layout.toggle_door(cell)
-            monster.wait = .65
-            self.sound("door_open", self.layout.center(cell), .65)
-            return
         destination = Vector2(self.layout.center(cell))
         delta = destination - monster.pos
         if delta.length() <= 4:
             monster.path.pop(0)
             return
         monster.facing = delta.normalize()
-        self.move(monster.pos, monster.facing * min(delta.length(), speed * dt), 12)
+        self.move(monster.pos, monster.facing * min(delta.length(), speed * dt), MONSTER_RADIUS)
 
     def _update_monster(self, monster, dt):
         monster.cooldown = max(0, monster.cooldown - dt)
