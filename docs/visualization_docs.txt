@@ -1,0 +1,157 @@
+> Below is prompt used to create visualization.py
+> Ghost Movement and Detection using Hill Climb & Simulated Annealing
+
+## Ide dan prompt nya:
+
+make manim explanation of Hill Climb (Local Search) algorithm used for ghost to detect player presence and ghost movement.
+less text, more visual. sections:  
+
+0. usual credit scene
+
+1. Hill map generation
+3d graphing with ambiguous peak, almost every area is smooth so the ghost does Simulated Annealing and search for peak indefinitely.
+[30 seconds, interactive]
+
+2. Add "player" entity, this player entity should represent a very small but tall peak, so when ghost is near the player, the ghost start traversing that peak and eventually meets the player itself (center of peak). this peak is moving along as a player so theres chance the ghost can meet and lost this peak.
+[next 30 seconds, interactive]
+
+3. Grid simulation of this algorithm in real game, both player and ghost moving, player moves to find escape, while the ghost runs the local search algorithm, the map is grid with walls and exit at boundary. after 10s creation and visualization of Grid map, player, and ghost. show briefly the 3d graph hill of the grid map, where the wall are very low and valid paths/floor has better height, this 3d graph hill creation is once static when the map created and abit random height on the valid paths everytime game initialization/play. then after showing briefly the graph, fade it a bit and simulate the player and ghost. get the correct config so ghost is near escape spawning, and player going to it but has few walls for mechanic. the ghost start seeking the player and eventually lost player presence (farther and found ambiguous higher y level hill) and the player able to escape.
+
+my usual manim code:
+```py
+%%manim -qh -v WARNING KuadratGrafik
+
+class KuadratGrafik(Scene):
+    def construct(self):
+        axes = Axes(
+            x_range=[-4, 7, 1],
+            y_range=[-5, 30, 5],
+            x_length=8,
+            y_length=6,
+            axis_config={"color": BLUE, "include_numbers": True},
+            tips=False,
+        )
+        axes_labels = axes.get_axis_labels(x_label="x", y_label="y")
+
+        def func(x):
+            return -2*x**2 + 6*x + 20
+
+        graph_plot = axes.plot(func, color=GREEN, x_range=[-2.5, 5.5])
+
+        root1_point = axes.c2p(-2, 0)
+        root2_point = axes.c2p(5, 0)
+        dot_root1 = Dot(point=root1_point, color=YELLOW, radius=0.1)
+        dot_root2 = Dot(point=root2_point, color=YELLOW, radius=0.1)
+
+        yplb = MathTex(r"y_p = \frac{49}{2}", font_size=36, color=WHITE)
+        yplb.next_to(graph_plot, UP, buff=0.2)
+        graph_group = VGroup(axes, axes_labels, graph_plot, yplb, dot_root1, dot_root2)
+        graph_group.scale(0.75).shift(LEFT*3.2)
+
+        q = Tex(r"""Sebuah grafik fungsi kuadrat berikut memiliki \\
+        persamaan dalam bentuk $ax^2+bx+c$""").scale(.85).shift(UP*2.25+RIGHT*1.85)
+        q2 = Tex(r"""Tentukan nilai $2a-b+c$""").set_style(YELLOW).scale(.9).next_to(q, DOWN, buff=.4)
+        hl = MarkupText("""Cara <b>Tercepat</b> Menentukan Fungsi Kuadrat""").scale(.8)
+        punch = MarkupText("jarang diajarin di <b><span fgcolor='#EE4B2B'>bimbel</span></b>").scale(.7).next_to(hl,DOWN,buff=.43)
+        self.play(Write(hl), Write(Text("@strxlette.dev", fill_opacity=0.35, font_size=30).to_corner(DL)),run_time=1.55)
+        self.wait(.3)
+        self.play(Write(punch),run_time=1.4)
+        self.wait(1.7)
+        self.play(FadeOut(punch), ReplacementTransform(hl,axes), run_time=1.8)
+        self.play(Write(graph_plot), Write(yplb), Write(axes_labels))
+        self.wait(1)
+        self.play(Write(q))
+        self.wait(1.5)
+        self.play(Write(q2),run_time=.9)
+        self.wait(1.8)
+        self.play(q.animate.shift(UP), q2.animate.shift(UP),run_time=.8)
+        self.wait(1)
+
+        hint = Tex(r"Gunakan bentuk umum $y = x^2 -(\alpha+\beta)x + \alpha\beta$").scale(.8).next_to(q2, DOWN, buff=.8).shift(RIGHT*.7)
+        hint2 = Tex(r"Dapat diketahui akar-akar ", r"$\alpha = -2, \beta = 5$").scale(.75).next_to(hint, DOWN)
+        hint2[1].set_color(YELLOW)
+
+        self.play(Write(hint), run_time=1.1)
+        self.play(Write(SurroundingRectangle(hint)))
+        self.wait(.85)
+
+        self.play(Write(dot_root1), Write(dot_root2), run_time=.6)
+        self.wait(.4)
+        self.play(Write(hint2), run_time=1)
+        self.play(Indicate(dot_root1),Indicate(dot_root2))
+        self.wait(1)
+
+        eq = Tex(r"$y = x^2 -(-2 + 5)x + (-2)(5)$").scale(.9).next_to(hint2, DOWN).shift(RIGHT)
+        self.play(Write(eq), run_time=1.4)
+        self.wait(.7)
+        eq2 = Tex(r"$y = x^2 - 3x - 10$").scale(.9).move_to(eq)
+        self.play(TransformMatchingShapes(eq, eq2))
+        self.wait(.4)
+        self.play(FadeOut(hint2), eq2.animate.next_to(hint, DOWN))
+
+        hint3 = Tex(r"Samakan titik puncak $y$ dengan grafik").scale(.65).next_to(eq2, DOWN)
+        self.play(Write(hint3))
+
+        eq2_1 = Tex(r"$y_{p1} = \frac{D}{-4a}$").scale(.9).next_to(hint3, DOWN)
+        eq2_2 = Tex(r"$y_{p1} = \frac{b^2-4ac}{-4a}$").scale(.9).move_to(eq2_1)
+        eq2_3 = Tex(r"$y_{p1} = \frac{3^2-4(1)(-10)}{-4(1)}$").scale(.9).move_to(eq2_1)
+        eq2_4 = Tex(r"$y_{p1} = \frac{9+40}{-4}$").scale(.9).move_to(eq2_1)
+        eq2_5 = Tex(r"$y_{p1} = -\frac{49}{4}$").scale(.9).move_to(eq2_1)
+        self.play(Write(eq2_1), run_time=1.2)
+        self.wait(.4)
+        self.play(TransformMatchingShapes(eq2_1, eq2_2), run_time=1.1)
+        self.wait(.35)
+        self.play(TransformMatchingShapes(eq2_2, eq2_3), run_time=1.1)
+        self.wait(.3)
+        self.play(TransformMatchingShapes(eq2_3, eq2_4), run_time=1)
+        self.wait(.3)
+        self.play(TransformMatchingShapes(eq2_4, eq2_5), run_time=.9)
+        self.wait(.6)
+
+        hint3 = Tex(r"""Terlihat bahwa titik puncak tersebut \\
+        berbeda dengan grafik""").scale(.65).next_to(eq2_5, DOWN).shift(RIGHT*.4)
+        hint4 = Tex(r"""Tidak masalah, dapat kita kalikan dengan rasio perbandingan""").set_color(YELLOW).scale(.55).next_to(hint3, DOWN)
+        self.play(Write(hint3), run_time=1.4)
+        self.wait(.7)
+        self.play(Indicate(eq2_5))
+        self.play(Indicate(yplb))
+        self.wait(1)
+        self.play(Write(hint4), run_time=1.2)
+        self.wait(1.5)
+        self.play(FadeOut(hint3),FadeOut(hint4))
+
+        eq3 = Tex(r"$y = (x^2 - 3x - 10)(\frac{y_p}{y_{p1}})$").scale(.9).next_to(eq2_5, DOWN)
+        eq4 = Tex(r"$y = (x^2 - 3x - 10)(\frac{\frac{49}{2}}{-\frac{49}{4}})$").scale(.9).move_to(eq3)
+        eq5 = Tex(r"$y = (x^2 - 3x - 10)(-2)$").scale(.9).move_to(eq3)
+        eq6 = Tex(r"$y = -2x^2 + 6x + 20$").scale(.9).move_to(eq3)
+        self.play(Write(eq3), run_time=1.2)
+        self.wait(.4)
+        self.play(TransformMatchingShapes(eq3, eq4), run_time=1.1)
+        self.wait(.35)
+        self.play(TransformMatchingShapes(eq4, eq5), run_time=1.1)
+        self.wait(.35)
+        self.play(TransformMatchingShapes(eq5, eq6), run_time=1.1)
+
+        ans1 = Tex(r"$= 2a - b + c$").scale(1.1).move_to(q2)
+        ans2 = Tex(r"$= 2(-2) - (6) + (20)$").scale(1.1)
+        ans3 = Tex(r"$\therefore 10$").scale(1.1).move_to(ans1)
+        self.play(ans1.animate.next_to(eq6, DOWN, buff=.51), run_time=1.2)
+        ans2 = ans2.move_to(ans1)
+        ans3 = ans3.move_to(ans1)
+        self.wait(.4)
+        self.play(TransformMatchingShapes(ans1, ans2), run_time=1.1)
+        self.wait(.35)
+        self.play(TransformMatchingShapes(ans2, ans3), run_time=1.1)
+        self.play(Write(SurroundingRectangle(ans3)))
+
+        self.wait(2)
+```
+
+follow my style code, timing abit relaxed (not too quick) but explains the algorithm clearly. use 3d and 2d respectively to give better visualization.   
+<br/>
+
+(follow up)  
+To fix ghost stuck local maximum:  
+begini, ide ku agar ghost tidak terjebak di local optimum dan game jadi terlalu mudah:
+1. smoothkan lagi wave 3d nya
+2. ketika terdeteksi local maximum, maka get random position di valid grid floor, lalu ghost menuju kesana, selama menuju kesana tetap scanning jika ada signature peak tertinggi dari entitas player (ini threshold hardcoded) dan jika ketemu itu maka stop menuju ke random posisi yg tadi dan start hill climb lagi

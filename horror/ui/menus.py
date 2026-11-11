@@ -45,7 +45,7 @@ class MenuViews:
         r, s = self.renderer, self.screen
         r.text(s, "Story: ikuti tujuan dan penanda emas. Escape: 2 sekring / panel / gerbang.", (left + 40, 225), 18, PAPER)
         controls = [("WASD", "Gerak"), ("Shift / Ctrl", "Lari / pelan"), ("E / tahan E", "Interaksi / panel"),
-                    ("Mouse / Q", "Arah / lempar botol"), ("F / M", "Senter / denah"), ("Esc / F11", "Jeda / layar penuh")]
+                    ("Mouse / Q", "Arah / lempar botol"), ("F / M / V", "Senter / denah / 3D"), ("Esc / F11", "Jeda / layar penuh")]
         column = (width - 80) / 3
         for i, (key, label) in enumerate(controls):
             x, y = left + 40 + i % 3 * column, 288 + i // 3 * 72

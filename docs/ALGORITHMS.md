@@ -19,13 +19,53 @@ Jarak adalah edge antararea. Neighbor mengubah satu variabel atau edge tambahan.
 
 Biaya ini parameter desain, bukan pengukuran langsung keseruan. Story memakai map tetap; Simulated Annealing tidak mengacak progres cerita.
 
-## Jalur, noise dan persepsi
+## Pengejaran dan eksplorasi monster (Hill Climbing + Simulated Annealing)
 
-A* memakai grid empat arah dan heuristic Manhattan. Lantai berbiaya 1; pintu tertutup berbiaya 2 dan dapat dibuka monster. Collision lingkaran terhadap AABB dengan substep memakai geometri acuan tunggal `Layout.obstacle_rect` (`circle_hits_cell`): ketika pintu/akses gedung terbuka (`is_open_portal`), sisi kusen dinding pengapit direces sebesar `DOOR_JAMB_RECESS = 9` unit (memperlebar bukaan fisik dari `40` menjadi `58` unit selaras kusen visual `architecture.py`, sehingga jalur pusat pemain `r = 11` meningkat dari `18` menjadi `36` unit dan monster `r = 12` dari `16` menjadi `34` unit) disertai corner-slide mulus saat berbelok; sedangkan pintu tertutup mempertahankan AABB `40×40` penuh tanpa celah. Jangkauan prompt interaksi `E` pada pintu dan akses gedung (`DOOR_INTERACT_RANGE = 86`) dievaluasi dua arah melalui `Layout.can_interact_door` terhadap muka ambang (`±0.55 TILE`) dan sel pendekatan di sisi pemain agar tidak terhalang sudut kusen saat didekati miring. BFS memvalidasi keterjangkauan sasaran dan exit. Validator tidak memodelkan puzzle cerita; progresi diuji oleh campaign driver terpisah.
+Pergerakan seluruh monster (`Penjaga`, `Pendengar`, `Penyergap`) di mode Story maupun Escape ditentukan oleh **Hill Climbing (HC) + Simulated Annealing (SA)** pada lanskap skor diskret 4-arah di atas grid lantai valid (`walkable(cell, True)`). Monster tidak menggunakan A*, BFS, atau Dijkstra sebagai perencana rute tersembunyi.
 
-Noise mengirim posisi sumber, kekuatan dan jenis aksi. Dijkstra merambatkan suara dengan biaya lantai 1 dan pintu tertutup 3,5, berhenti ketika budget habis. Dinding/furnitur padat menghalangi model akustik sederhana ini. Difficulty dan jenis monster mengalikan budget. Playback audio terpisah: mute tidak mengubah pendengaran AI.
+### Lanskap skor dan tetangga legal
 
-Vision menggunakan jarak, arah hadap, senter, gerakan dan line of sight. Monster mengejar bukti terakhir saat pemain menghilang dari pandangan, mencari di sekitarnya lalu kembali patroli. Penyergap mengunci arah ketika wind-up. Tidak ada koordinat pemain tersembunyi yang disuntikkan ke target monster.
+Setiap layout membangun peta dasar 3D statis `base_hill` secara deterministik dari seed (`ensure_hill_map`):
+- **Dinding dan rintangan padat**: tinggi tetap `-1.0` (dan skor evaluasi `-∞` sehingga tidak pernah dipilih sebagai langkah).
+- **Grid lantai valid (termasuk pintu)**: tinggi mulus `B(x, y)` dari kombinasi 4 puncak Gaussian statis yang ambigu, gelombang sinusoidal dua dimensi beramplitudo kecil, kontur koridor/pintu untuk menjaga konektivitas lokal antarruang, serta variasi halus per sesi (`hill_phase`).
+
+Pada setiap keputusan langkah (`_local_search_step`), monster mengevaluasi tetangga 4-arah legal dengan batas iterasi tetap (`LOCAL_SEARCH_BUDGET = 8`) menggunakan fungsi skor:
+
+```text
+score(x, y) = B(x, y)
+            + P_player(x, y)
+            + G_target(x, y)
+            - R_tabu(x, y)
+            + M_heading(x, y)
+```
+
+- `P_player(x, y)`: puncak Gaussian sempit dan curam (`PLAYER_PEAK_AMP = 1.85`, `PLAYER_PEAK_SIGMA = 3.6`, ambang deteksi `SIGNATURE_THRESHOLD = 0.42`) yang berpusat di sekitar pemain **hanya** jika terdeteksi oleh aturan sensor eksplisit per jenis monster (`SENSOR_PROFILES`), postur (`sprint`, `walk`, `crouch`), senter, efek `quiet`, serta oklusi dinding (`line_clear`). Saat pemain di luar jangkauan sensor atau masa tenggang (`grace`), `P_player(x, y) = 0` sehingga tidak ada kebocoran koordinat global.
+- `G_target(x, y)`: tarikan bukit bukti terakhir (suara/jejak terakhir) atau target lantai eksplorasi (`explore_target`), dengan penalti pintu tertutup ringan (`0.05`).
+- `R_tabu(x, y)`: depresi jejak langkah Gaussian lokal (`visit_heat`), memori pintu antarruang (`zone_heat`), dan penalti balik arah langsung (`visited_cells`) yang meredam osilasi bolak-balik.
+- `M_heading(x, y)`: bias momentum arah hadap (`0.004 * dot(step, facing)`).
+
+### Siklus deteksi, pengejaran, jadwal temperatur, dan pemulihan macet
+
+1. **Deteksi & Pengejaran (Hill Climbing)**:
+   Saat `sees_player` atau `neighborhood_signature >= SIGNATURE_THRESHOLD`, monster membatalkan target eksplorasi acak (`explore_target = None`), mengunci bukit puncak pemain, mendinginkan temperatur (`T <- max(TEMP_MIN, T * COOLING_RATE)` dengan `COOLING_RATE = 0.88`, `TEMP_MIN = 0.08`), dan mendaki gradien tercuram (`hill_climb`).
+2. **Kehilangan Jejak & Deteksi Macet (Local Optimum / Plateau / Osilasi)**:
+   Ketika pemain menjauh hingga puncak `P_player` turun di bawah `SIGNATURE_THRESHOLD`, monster beralih ke `search` menuju bukti terakhir. Saat mencapai puncak bukti yang telah menghilang (`delta_best < -PLATEAU_EPS`), mendaki area datar (`|delta_best| <= PLATEAU_EPS`, `PLATEAU_EPS = 0.012`), atau mengarah kembali ke sel sebelumnya (`oscillation`), penghitung `stall_steps` bertambah dan temperatur dipanaskan ulang (`T <- min(TEMP_MAX, max(T * REHEAT_RATE, TEMP_REHEAT))` dengan `TEMP_REHEAT = 0.82`, `REHEAT_RATE = 1.65`, `TEMP_MAX = 1.0`).
+3. **Eksplorasi SA & Target Lantai Acak**:
+   Pada kondisi macet atau temperatur tinggi, kandidat tetangga non-balik-arah diuji secara probabilistik: langkah menurun (`delta < 0`) diterima dengan peluang Metropolis `exp(delta / T)` (`sa_downhill`). Jika `stall_steps >= STALL_LIMIT` (`4`) atau monster tiba di puncak lokal saat patroli/pencarian, monster melakukan restart lokal (`restart_random_floor`): memilih sel lantai valid secara acak berbobot (`_random_floor_target`) sebagai `explore_target`. Selama menuju `explore_target`, monster terus memindai `neighborhood_signature`; begitu puncak pemain kembali melampaui `SIGNATURE_THRESHOLD`, `explore_target` langsung dibatalkan dan pengejaran dilanjutkan.
+4. **Batas Local Search vs Perencana Global**:
+   Karena HC+SA hanya mengevaluasi gradien lokal tanpa peta rute global, penghalang dinding multi-ruang pada struktur pohon rentang (misalnya pada `seed 3` di mana ruang `11` dan ruang exit `5` dipisahkan dinding horizontal lima ruang yang hanya terhubung melalui memutar ke sisi barat) tidak dapat ditembus secara langsung seperti A*. Pada kasus tersebut, mekanisme reheat SA dan `restart_random_floor` memastikan monster tidak membeku atau berosilasi permanen, melainkan berpindah mengeksplorasi ruang lantai valid lainnya. Jejak keputusan disimpan secara deterministik pada `monster.trace` dan dapat diamati secara langsung melalui peta gelombang 3D (`V`) maupun overlay debug (`F3`).
+
+![Tampilan Split-Screen 3D Wave Map](screenshots/wavemap-view.png)
+
+## Jalur bantu, noise dan persepsi
+
+- **A* (`Layout.path`)**: memakai grid empat arah dan heuristik Manhattan (lantai berbiaya 1, pintu tertutup berbiaya 2). Dipakai **khusus** untuk petunjuk langkah HUD (`guidance.py`), pergerakan pendamping Nara (`story.py`), serta bot penguji otomatis (`tools/` dan `tests/`), **bukan** untuk monster.
+- **BFS (`Layout.reachable`)**: memvalidasi keterjangkauan sasaran, sekring, panel, dan exit saat pembangkitan map. Validator tidak memodelkan puzzle cerita; progresi diuji oleh campaign driver terpisah.
+- **Dijkstra (`Layout.sound_field`)**: merambatkan suara dari sumber `emit_noise` dengan biaya lantai 1 dan pintu tertutup 3,5 hingga budget habis. Dinding/furnitur padat menghalangi model akustik ini. Difficulty dan jenis monster mengalikan budget. Playback audio terpisah: mute tidak mengubah pendengaran AI.
+
+Collision lingkaran terhadap AABB dengan substep memakai geometri acuan tunggal `Layout.obstacle_rect` (`circle_hits_cell`): ketika pintu/akses gedung terbuka (`is_open_portal`), sisi kusen dinding pengapit direces sebesar `DOOR_JAMB_RECESS = 9` unit (memperlebar bukaan fisik dari `40` menjadi `58` unit selaras kusen visual `architecture.py`, sehingga jalur pusat pemain `r = 11` meningkat dari `18` menjadi `36` unit dan monster `r = 12` dari `16` menjadi `34` unit) disertai corner-slide mulus saat berbelok; sedangkan pintu tertutup mempertahankan AABB `40×40` penuh tanpa celah. Jangkauan prompt interaksi `E` pada pintu dan akses gedung (`DOOR_INTERACT_RANGE = 86`) dievaluasi dua arah melalui `Layout.can_interact_door` terhadap muka ambang (`±0.55 TILE`) dan sel pendekatan di sisi pemain agar tidak terhalang sudut kusen saat didekati miring.
+
+Pintu tertutup dibuka monster saat langkah HC+SA berikutnya menuju pintu tersebut (`toggle_door`). Langkah lokal baru juga diperiksa ketika monster telah tiba di pusat sel, sehingga pintu tetap dapat dibuka tanpa lookahead rute A*. Perpindahan lantai Story (`followers`) tetap mempertahankan aturan tanpa teleportasi. Penyergap mengunci arah ketika wind-up. Tidak ada koordinat pemain tersembunyi yang disuntikkan ke target monster.
 
 ## Kamera, cahaya dan UI
 
