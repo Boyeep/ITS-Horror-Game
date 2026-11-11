@@ -10,7 +10,8 @@ from collections import deque
 from dataclasses import dataclass
 
 from .config import (COLS, ROWS, ROOM_W, ROOM_H, TILE, ROOM_COUNT, ROOM_NAMES, ROOM_KINDS,
-                     OUTDOOR_KINDS, SPAWN_ROOM, PANEL_ROOM, EXIT_ROOM)
+                     OUTDOOR_KINDS, SPAWN_ROOM, PANEL_ROOM, EXIT_ROOM,
+                     DOOR_JAMB_RECESS, DOOR_INTERACT_RANGE)
 
 Cell = tuple[int, int]
 Edge = tuple[int, int]
@@ -262,6 +263,75 @@ class Layout:
             return False
         door = self.doors.get(cell)
         return doors_open or door is None or door.opened
+
+    def is_open_portal(self, cell, vertical=None):
+        door = self.doors.get(cell)
+        if door is not None:
+            return door.opened and (vertical is None or door.vertical == vertical)
+        if cell in getattr(self, "informatika_entrances", ()):
+            x, y = cell
+            is_vert = (0 <= y - 1 < self.height and self.grid[y - 1][x] == 1) and (0 <= y + 1 < self.height and self.grid[y + 1][x] == 1)
+            return vertical is None or is_vert == vertical
+        return False
+
+    def obstacle_rect(self, cell):
+        x, y = cell
+        x0, y0, x1, y1 = x * TILE, y * TILE, (x + 1) * TILE, (y + 1) * TILE
+        if not (0 <= x < self.width and 0 <= y < self.height) or self.grid[y][x] != 1 or cell in self.doors:
+            return (x0, y0, x1, y1)
+        recess = DOOR_JAMB_RECESS
+        if self.is_open_portal((x + 1, y), False):
+            x1 -= recess
+        if self.is_open_portal((x - 1, y), False):
+            x0 += recess
+        if self.is_open_portal((x, y + 1), True):
+            y1 -= recess
+        if self.is_open_portal((x, y - 1), True):
+            y0 += recess
+        return (x0, y0, x1, y1)
+
+    def circle_hits_cell(self, position, radius, cell):
+        x0, y0, x1, y1 = self.obstacle_rect(cell)
+        nearest_x = max(x0, min(position[0], x1))
+        nearest_y = max(y0, min(position[1], y1))
+        return (position[0] - nearest_x) ** 2 + (position[1] - nearest_y) ** 2 < radius * radius
+
+    def can_interact_door(self, player_pos, cell, limit=DOOR_INTERACT_RANGE):
+        center = self.center(cell)
+        distance = math.dist(player_pos, center)
+        if distance >= limit:
+            return False
+        if self.tile(player_pos) == cell:
+            return True
+        door = self.doors.get(cell)
+        x, y = cell
+        if door is not None:
+            vertical = door.vertical
+        else:
+            vertical = (0 <= y - 1 < self.height and self.grid[y - 1][x] == 1) and (0 <= y + 1 < self.height and self.grid[y + 1][x] == 1)
+        if vertical:
+            sides = (-1, 1) if abs(player_pos[0] - center[0]) < 6 else (-1 if player_pos[0] < center[0] else 1,)
+            for side in sides:
+                approach = (x + side, y)
+                if not self.walkable(approach, True):
+                    continue
+                face = (center[0] + side * (TILE * .55), center[1])
+                if self.line_clear(player_pos, face) or self.line_clear(player_pos, self.center(approach)):
+                    return True
+        else:
+            sides = (-1, 1) if abs(player_pos[1] - center[1]) < 6 else (-1 if player_pos[1] < center[1] else 1,)
+            for side in sides:
+                approach = (x, y + side)
+                if not self.walkable(approach, True):
+                    continue
+                face = (center[0], center[1] + side * (TILE * .55))
+                if self.line_clear(player_pos, face) or self.line_clear(player_pos, self.center(approach)):
+                    return True
+        if distance > 0:
+            endpoint = (player_pos[0] + (center[0] - player_pos[0]) * max(0., (distance - 22.) / distance),
+                        player_pos[1] + (center[1] - player_pos[1]) * max(0., (distance - 22.) / distance))
+            return self.line_clear(player_pos, endpoint)
+        return True
 
     def blocks_sight(self, cell):
         # Desks block movement, not eye-level sight. Walls and shut doors occlude.
