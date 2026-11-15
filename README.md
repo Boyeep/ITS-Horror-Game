@@ -6,7 +6,9 @@ Game horor top-down 2D berlatar interpretasi fiksi kampus ITS. Arga menerima pes
 
 ## Mainkan
 
-**Windows x64:** ekstrak `dist/SetelahJamMalam-Windows-x64.zip`, lalu buka `SetelahJamMalam.exe`. Paket portable berjalan offline tanpa Python. Dari folder proyek, `Jalankan.bat` memilih executable jika tersedia, lalu menggunakan source sebagai fallback.
+**Windows x64:** ekstrak `dist/SetelahJamMalam-Windows-x64.zip`, lalu buka `SetelahJamMalam.exe`. Paket portable berjalan offline tanpa Python. Dari folder proyek, `Jalankan.bat` menjalankan executable jika tersedia, lalu menggunakan source sebagai fallback.
+
+**Linux/macOS:** jalankan `./Jalankan.sh` untuk menyiapkan environment Python dan memainkan game dari source. `Build.sh` hanya mendukung Windows karena pipeline rilis menghasilkan executable `.exe`.
 
 - **Cerita:** tiga bab, 25 tahap, lima cutscene, kampus terbuka serta interior bertingkat. Tiga slot manual dan autosave menyimpan perjalanan.
 - **Escape:** 30 area dengan seed acak dan optimasi Simulated Annealing. Temukan dua sekring, aktifkan panel, lalu lewati pintu keluar.
@@ -52,6 +54,8 @@ Untuk pengembangan dan build:
 .\.venv\Scripts\python.exe tools/audit_assets.py
 .\Build.bat
 ```
+
+Di Windows dengan Git Bash, `./Build.sh` juga dapat digunakan.
 
 `horror/version.py` menjadi sumber nomor rilis **0.1**, termasuk metadata Windows **0.1.0.0**. Format save tetap **7**, dengan pembaca save versi 1 sampai 7. Data pengguna berada di `%APPDATA%/ITS-Horror-Game/`; perapian source/build tidak menghapus progres.
 

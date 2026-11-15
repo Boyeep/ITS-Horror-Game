@@ -33,4 +33,4 @@ Dunia memakai viewport dekat dan cahaya raycast, sedangkan teks penting, karakte
 
 Versi produk 0.1 berada di `version.py`; schema save 7 tidak mengikuti nomor produk. `StoryState` memulihkan data lama melalui migrasi yang ada, kemudian menghitung ulang cache navigasi. Profil achievement terpisah dari save perjalanan.
 
-Path aset dihitung relatif terhadap paket lewat `resources.py`, sehingga source dan executable PyInstaller membaca struktur yang sama. `Build.bat` menjalankan `tools/build_release.py`; metadata Windows dihasilkan dari versi produk. `tools/package_release.py` menambahkan panduan, kredit dan lisensi ke ZIP portable.
+Path aset dihitung relatif terhadap paket lewat `resources.py`, sehingga source dan executable PyInstaller membaca struktur yang sama. `Build.bat` menjalankan `tools/build_release.py`; metadata Windows dihasilkan dari versi produk. `Build.sh` menyediakan entry point Git Bash untuk pipeline Windows tersebut dan menolak build rilis dari Linux/macOS. `Jalankan.sh` menjalankan source pada Linux/macOS, atau `.exe` melalui Wine jika tersedia. `tools/package_release.py` menambahkan panduan, kredit dan lisensi ke ZIP portable.
