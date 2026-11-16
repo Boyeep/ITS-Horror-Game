@@ -25,6 +25,7 @@ class StorySession(StoryState, Session):
         self.journal_open=False;self.journal_page=0;self.keypad=False;self.code="";self.code_error=""
         self.terminals=[];self.sequences={"catalog":[],"generator":[]};self.story_items=set();self.triggered=set()
         self.pending_encounter=None;self.ending_pending=False;self.save_request=False;self.play_seconds=0.
+        self.library_reveal=None;self.library_pressure=0.
         self.puzzle=None;self.switches=[False,False,False];self.frequency=1084;self.puzzle_error=""
         self.shutdown_progress=0.;self.signal_off=False;self.scene_changed=False;self.transition=0.
         self.followers=[];self.companion=None;self.ambient_timer=8.;self.visited_floors=set()
@@ -98,8 +99,10 @@ class StorySession(StoryState, Session):
 
     def switch_level(self,key,destination):
         old_key=self.level_key
+        heard=self.layout.sound_field(self.player,8) if self.library_pressure>0 else {}
         pursuer=next((m for m in self.monsters if m.state in ("chase","windup","dash","attack") and m.pos.distance_to(self.player)<420
-                      and self.layout.line_clear(m.pos,self.player)),None)
+                      and self.layout.line_clear(m.pos,self.player) or self.library_pressure>0 and m.kind=="Penjaga" and m.memory>0
+                      and heard.get(self.layout.tile(m.pos),99)<=8),None)
         if pursuer:
             self.monsters.remove(pursuer)
             self.followers.append({"kind":pursuer.kind,"level":key,"point":list(destination),"time":2.8})
@@ -168,6 +171,9 @@ class StorySession(StoryState, Session):
         if pulses(body,before,self.dialogue_time):self.sound("voice_"+page.get("speaker","arga"),volume=.7)
     def start_cutscene(self,key):
         if key not in CUTSCENES or key in self.seen_scenes:return False
+        if key=="library":
+            point=self.encounter_position()
+            self.library_reveal=list(point) if point is not None else None
         self.cutscene={"id":key,"time":0.};self.save_request=True
         return True
 
@@ -177,6 +183,14 @@ class StorySession(StoryState, Session):
         if key=="intro":
             if self.level_key=="11:0":self.facing=(Vector2(self.layout.phone_display)-self.player).normalize()
             self.notify(self.objective,5)
+        if key=="library" and self.pending_encounter=="Penjaga":
+            self.pending_encounter=None
+            monster=self.spawn_encounter("Penjaga",position=self.library_reveal,pursuit=True,startle=False)
+            self.library_pressure=14. if monster is not None else 0.
+            if monster is not None:self.encounter_count+=1;self.chases+=1
+            self.encounter_cooldown=max(self.encounter_cooldown,14.)
+            self.visible_monsters.add("Penjaga")
+            self.notify("Cari jalan ke tangga. Catatan tersimpan di J.",5)
         if not self.dialogue:self.after_presentation()
 
     def update_cutscene(self,dt):
@@ -362,12 +376,9 @@ class StorySession(StoryState, Session):
             return True
         return False
 
-    def spawn_encounter(self,kind):
-        existing=next((m for m in self.monsters if m.kind==kind),None);choices=[]
-        # Each named creature is unique across the campus, its floors and stair transfers.
-        for state in self.level_states.values():
-            state["monsters"][:]=[m for m in state["monsters"] if m.kind!=kind or m is existing]
-        self.followers[:]=[f for f in self.followers if f["kind"]!=kind]
+    def encounter_position(self):
+        """Plan a legal reveal without blocking the nearest escape direction."""
+        choices=[]
         exits=[Vector2(p) for _,_,p,_ in self.stair_options()]
         if self.level_key=="campus":
             room=self.campus.room_at(self.player)
@@ -385,17 +396,30 @@ class StorySession(StoryState, Session):
                     if delta.normalize().dot(exit_direction)>.2:score-=300
                     choices.append((score,x,y))
         if choices:
-            _,x,y=max(choices);pos=Vector2(self.layout.center((x,y)));self.facing=(pos-self.player).normalize()
-        else:
-            candidates=[Vector2(p) for p in self.layout.monster_spawns]
-            pos=max(candidates,key=lambda p:p.distance_to(self.player))
-            if pos.distance_to(self.player)<150:return
+            _,x,y=max(choices);return Vector2(self.layout.center((x,y)))
+        candidates=[Vector2(p) for p in self.layout.monster_spawns if self.can_stand(Vector2(p),12)]
+        pos=max(candidates,key=lambda p:p.distance_to(self.player),default=None)
+        return pos if pos is not None and pos.distance_to(self.player)>=150 else None
+
+    def spawn_encounter(self,kind,*,position=None,pursuit=False,startle=True):
+        existing=next((m for m in self.monsters if m.kind==kind),None)
+        pos=Vector2(position) if position is not None else self.encounter_position()
+        if pos is None:return None
+        # Each named creature is unique across floors and delayed stair transfers.
+        for state in self.level_states.values():
+            state["monsters"][:]=[m for m in state["monsters"] if m.kind!=kind or m is existing]
+        self.followers[:]=[f for f in self.followers if f["kind"]!=kind]
+        delta=pos-self.player
+        if delta.length_squared() and self.layout.line_clear(self.player,pos):self.facing=delta.normalize()
         monster=existing or Monster(kind,pos,Vector2(1,0))
         monster.pos=pos;monster.target=None;monster.path=[];monster.state="patrol";monster.wait=2.2
+        if pursuit:
+            monster.state="chase";monster.target=self.player.copy();monster.memory=14.;monster.wait=2.2
         delta=self.player-pos
         if delta.length_squared():monster.facing=delta.normalize()
         if not existing:self.monsters.append(monster)
-        if self.player_can_see(monster):self.startle(monster,force=True)
+        if startle and self.player_can_see(monster):self.startle(monster,force=True)
+        return monster
 
     def wrap_ending(self):
         if self.status=="won" and not self.ending_pending:
@@ -410,6 +434,10 @@ class StorySession(StoryState, Session):
         if self.cutscene:self.update_cutscene(dt);return
         if self.dialogue:self.update_dialogue(dt);return
         if self.modal or self.ending_pending:return
+        self.library_pressure=max(0.,self.library_pressure-min(.05,max(0,dt)))
+        if self.library_pressure>0:
+            for monster in self.monsters:
+                if monster.kind=="Penjaga":monster.memory=max(monster.memory,self.library_pressure)
         holding=kwargs.get("holding",args[3] if len(args)>3 else False)
         interaction=self.interaction()
         super().update(dt,*args,**kwargs)
@@ -431,7 +459,8 @@ class StorySession(StoryState, Session):
             follower["time"]-=dt
             if follower["time"]<=0:
                 state=self.state_for(follower["level"]);pos=Vector2(follower["point"])
-                monster=Monster(follower["kind"],pos,Vector2(1,0),state="search",target=pos.copy(),memory=6,wait=.7)
+                memory=max(6.,self.library_pressure) if follower["kind"]=="Penjaga" else 6.
+                monster=Monster(follower["kind"],pos,Vector2(1,0),state="search",target=pos.copy(),memory=memory,wait=.7)
                 if follower["level"]==self.level_key:self.monsters.append(monster)
                 else:state["monsters"].append(monster)
                 self.followers.remove(follower)
