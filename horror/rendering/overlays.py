@@ -2,7 +2,7 @@
 import math
 import pygame
 from ..config import AMBER, COLS, HEIGHT, MUTED, PAPER, RED, ROOM_COUNT, ROOM_NAMES, TEAL, TILE
-from ..guidance import story_targets, interaction_point
+from ..guidance import story_targets, interaction_point, RouteGuide, place_label, arrow_position
 
 
 class OverlayRenderer:
@@ -17,48 +17,48 @@ class OverlayRenderer:
         return session.layout.line_clear(session.player,end)
 
     def guidance(self,session):
-        targets=story_targets(session)
-        if not targets:return None
-        goal=min(targets,key=lambda t:t.point.distance_squared_to(session.player))
-        key=(id(session),session.level_key,session.stage,session.layout.revision,session.layout.tile(session.player),
-             goal.key,tuple(goal.point),goal.label)
-        if self.route_cache is None or self.route_cache[0]!=key:
-            path=session.layout.path(session.layout.tile(session.player),session.layout.tile(goal.point))
-            self.route_cache=(key,path)
-        path=self.route_cache[1];point=goal.point;hint=goal.label;kind=goal.key
-        if not self.marker_visible(session,point):
-            for cell in path:
-                candidate=pygame.Vector2(session.layout.center(cell))
-                if not self.marker_visible(session,candidate):break
-                point=candidate
-                door=session.layout.doors.get(cell)
-                if door and not door.opened:
-                    kind="door";hint="Buka pintu";break
-                kind="route";hint="Ikuti koridor · "+goal.label
-        return goal,point,hint,kind
+        if not hasattr(self,"route_guide"):self.route_guide=RouteGuide()
+        return self.route_guide.info(session)
 
     def action_marker(self,screen,point,label,available=False,progress=None,avoid=None):
         p=self.marker_position(point)
-        if not (22<p.x<self.width-22 and 170<p.y<HEIGHT-92):return False
+        left=22+round(getattr(self,"wave_shift",0.)*2)
+        bounds=pygame.Rect(left,174,self.width-left-22,HEIGHT-306)
+        if not bounds.collidepoint(p):return False
         color=AMBER if available else (209,202,159)
-        self.draw.circle(screen,color,p,13,1)
-        for dx,dy in ((-18,-18),(18,-18),(-18,18),(18,18)):
-            self.draw.line(screen,color,p+(dx,dy),p+(dx-(6 if dx>0 else -6),dy),2)
-        self.draw.line(screen,color,p+(0,-16),p+(0,-28))
-        text=label.replace("E  ","").replace("Tahan E  ","")
+        text=label.removeprefix("Tahan E  ").removeprefix("E  ")
         if available:text=("Tahan E · " if label.startswith("Tahan E") else "E · ")+text
-        width=min(self.width-44,self.font(16).size(text)[0]+28)
-        x=max(22,min(self.width-width-22,p.x-width/2));y=p.y-65
-        if avoid is not None and pygame.Rect(x,y,width,31).colliderect(avoid):
-            y=avoid.top-40 if avoid.top>205 else min(HEIGHT-130,avoid.bottom+12)
-        self.panel(screen,(x,y,width,31),(10,22,27),(97,108,87),3)
-        self.centered_text(screen,text,(x,y,width,31),16,PAPER)
-        if progress is not None:self.draw.rect(screen,TEAL,(x,y+30,width*max(0,min(1,progress)),3))
+        width=min(bounds.width,self.font(16).size(text)[0]+28)
+        original=text
+        while text and self.font(16).size(text+('…' if text!=original else '') )[0]>width-24:text=text[:-1]
+        if text!=original:text+='…'
+        occupied=list(getattr(self,"marker_boxes",()))+list(getattr(self,"guidance_avoid",()))
+        if avoid is not None:occupied.append(avoid)
+        rect=place_label(p,(width,31),bounds,occupied)
+        if rect is None:return False
+        if not hasattr(self,"marker_boxes"):self.marker_boxes=[]
+        self.marker_boxes.append(rect)
+        icon=pygame.Rect(round(p.x-18),round(p.y-28),36,46)
+        if avoid is None or not icon.colliderect(avoid):
+            self.draw.circle(screen,color,p,13,1)
+            for dx,dy in ((-18,-18),(18,-18),(-18,18),(18,18)):
+                self.draw.line(screen,color,p+(dx,dy),p+(dx-(6 if dx>0 else -6),dy),2)
+            self.draw.line(screen,color,p+(0,-16),p+(0,-28))
+        self.panel(screen,rect,(10,22,27),(97,108,87),3)
+        self.centered_text(screen,text,rect,16,PAPER)
+        if progress is not None:self.draw.rect(screen,TEAL,(rect.x,rect.bottom-1,width*max(0,min(1,progress)),3))
         return True
 
     def draw_guidance(self,screen,session):
         info=self.guidance(session)
-        if info is None:return False
+        self.marker_boxes=[]
+        if info is None:
+            width=min(428,self.width-56)
+            self.panel(screen,(28,24,width,120),(10,21,26),(48,66,67),4)
+            self.text(screen,"TUJUAN",(44,35),11,AMBER)
+            self.wrapped(screen,session.objective,(44,55),width-32,18,PAPER)
+            self.text(screen,"Cari akses yang dapat dilalui.",(44,115),14,MUTED)
+            return False
         goal,point,hint,kind=info
         interaction=session.interaction()
         group=story_targets(session) if session.stage in (10,18) and len(session.quest_objects())>1 else []
@@ -74,18 +74,24 @@ class OverlayRenderer:
                 detail=[]
         if group:detail=self.wrap_lines("Urutan ada pada catatan.",width-32,14)
         height=45+len(title)*24+len(detail)*19
-        self.panel(screen,(gx,24,width,height),(10,21,26),(48,66,67),4)
-        self.text(screen,"TUJUAN",(gx+16,35),11,AMBER)
-        for i,line in enumerate(title):self.text(screen,line,(gx+16,55+i*24),18,PAPER)
-        for i,line in enumerate(detail):self.text(screen,line,(gx+16,60+len(title)*24+i*19),14,MUTED)
-        shown=False;focus=None
         player=self.marker_position(session.player)
         avoid=pygame.Rect(round(player.x-48),round(player.y-120),96,132)
+        header=pygame.Rect(gx,24,width,height)
+        if header.colliderect(avoid):
+            header.right=self.width-28
+            if header.colliderect(avoid):header.y=HEIGHT-280
+        gx=header.x;top=header.y
+        self.panel(screen,header,(10,21,26),(48,66,67),4)
+        self.text(screen,"TUJUAN",(gx+16,top+11),11,AMBER)
+        for i,line in enumerate(title):self.text(screen,line,(gx+16,top+31+i*24),18,PAPER)
+        for i,line in enumerate(detail):self.text(screen,line,(gx+16,top+36+len(title)*24+i*19),14,MUTED)
+        shown=False;focus=None
+        self.guidance_avoid=[header]
         if interaction:
             focus=interaction_point(session,interaction)
             progress=session.shutdown_progress/5 if interaction[0]=="shutdown" else session.panel_progress/3 if interaction[0]=="panel" else None
             if focus is not None:shown=self.action_marker(screen,focus,interaction[2],True,progress,avoid)
-        direct=self.marker_visible(session,goal.point)
+        direct=point.distance_squared_to(goal.point)<1 and kind==goal.key
         p=self.marker_position(goal.display)
         if group:
             for member in group:
@@ -93,15 +99,30 @@ class OverlayRenderer:
                     self.action_marker(screen,member.display,member.label,avoid=avoid)
         elif direct and (focus is None or focus.distance_to(goal.display)>55):
             self.action_marker(screen,goal.display,"Ponsel Nara" if goal.key=="phone" else goal.label,avoid=avoid)
-        if not group and (not direct or not (30<p.x<self.width-30 and 170<p.y<HEIGHT-100)) and not (shown and focus is not None and focus.distance_to(point)<60):
-            p=self.marker_position(point);centre=pygame.Vector2(self.width/2,HEIGHT/2)
-            direction=p-centre
-            if direction.length_squared():
-                direction.normalize_ip();normal=pygame.Vector2(-direction.y,direction.x)
-                p.x=max(38,min(self.width-38,p.x));p.y=max(190,min(HEIGHT-150,p.y))
-                self.draw.circle(screen,(12,27,32),p,16)
-                self.draw.polygon(screen,AMBER,[p+direction*10,p-direction*6+normal*6,p-direction*6-normal*6])
+        if (not direct or not (30<p.x<self.width-30 and 170<p.y<HEIGHT-100)) and not (shown and focus is not None and focus.distance_to(point)<60):
+            left=38+round(getattr(self,"wave_shift",0.)*2)
+            top=max(190,header.bottom+20) if header.top<170 else 190
+            safe=pygame.Rect(left,top,self.width-left-38,HEIGHT-150-top)
+            arrow=arrow_position(player,self.marker_position(point),safe)
+            if arrow:
+                p,direction=arrow;normal=pygame.Vector2(-direction.y,direction.x)
+                occupied=[avoid,header,*self.marker_boxes]
+                if any(pygame.Rect(p.x-16,p.y-16,32,32).colliderect(box) for box in occupied):
+                    rect=place_label(p,(32,32),safe,occupied);p=pygame.Vector2(rect.center) if rect else None
+                if p is not None:
+                    self.draw.circle(screen,(12,27,32),p,16)
+                    self.draw.polygon(screen,AMBER,[p+direction*10,p-direction*6+normal*6,p-direction*6-normal*6])
         return shown
+
+    def draw_map_step(self,screen,session,project):
+        info=self.guidance(session)
+        if info is None:return
+        point=info[1];cell=session.layout.tile(point);points=[project(session.player)]
+        for step in self.route_guide.current_path[:8]:
+            points.append(project(session.layout.center(step)))
+            if step==cell:break
+        if len(points)>1:self.draw.lines(screen,TEAL,False,points,2)
+        self.draw.circle(screen,TEAL,project(point),9,2)
 
     def hud(self, screen, session):
         room = session.location if session.mode_key=="story" else session.layout.room_at(session.player)
@@ -188,14 +209,15 @@ class OverlayRenderer:
             for name,pos in layout.labels:
                 self.text(screen,name,p(pos),9 if name!="COURTYARD" else 12,MUTED)
         for direction,_,pos,_ in session.stair_options():
-            point=p(pos);self.draw.circle(screen,AMBER,point,8,1)
-            self.text(screen,"Turun" if direction=="down" else "Naik",(point.x+13,point.y-7),12,AMBER)
+            point=p(pos);sign=1 if direction=="down" else -1
+            self.draw.polygon(screen,AMBER,[point+(0,sign*6),point+(-5,-sign*4),point+(5,-sign*4)])
         for _,_,pos,_ in session.building_options():
             self.draw.circle(screen,TEAL,p(pos),7,2)
         for _,pos,_ in session.quest_objects():self.draw.circle(screen,AMBER,p(pos),7,2)
+        self.draw_map_step(screen,session,p)
         self.draw.circle(screen,TEAL,p(session.player),5)
         self.text(screen,session.objective,(self.width/2,676),17,AMBER,align="center")
-        self.text(screen,"Tangga: ganti lantai. Pintu bertanda KELUAR: kembali ke kampus.",(self.width/2,716),14,MUTED,align="center")
+        self.text(screen,"Segitiga: naik/turun. Hijau: langkah berikut. Akses KELUAR: kampus.",(self.width/2,716),14,MUTED,align="center")
 
     def draw_campus_map(self,screen,session):
         screen.fill((5,13,18))
@@ -240,6 +262,7 @@ class OverlayRenderer:
             self.draw.line(screen,(51,72,71),p,rect.midright if rect.right<p.x else rect.midleft,1)
             self.text(screen,name,rect.topleft,14,AMBER if n in goals else PAPER if n in session.visited else MUTED)
         player=point(session.player/ TILE)
+        self.draw_map_step(screen,session,lambda pos:point(pygame.Vector2(pos)/TILE))
         self.draw.circle(screen,TEAL,player,5)
         self.draw.line(screen,TEAL,player,player+session.facing*12,2)
         self.text(screen,session.objective,(self.width/2,748),16,AMBER,align="center")
