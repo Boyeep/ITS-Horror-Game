@@ -12,6 +12,7 @@ from .rendering.overlays import OverlayRenderer
 from .art import Art
 from .architecture import STAIR_SIZE
 from .pixels import ScaledDraw
+from .tension import light_dip, tension_level
 from .backdrop import SCENES, NAMES
 from .backdrop import CampusAtmosphere,cover_image
 
@@ -43,11 +44,32 @@ class Renderer(WorldRenderer, OverlayRenderer):
         self.menu_scaled={}
         self.campus_atmosphere=CampusAtmosphere()
         self.route_cache=None
-        self.grain = pygame.Surface((self.width, HEIGHT), pygame.SRCALPHA)
-        rng = random.Random(17)
-        for _ in range(1700):
-            x, y = rng.randrange(self.width), rng.randrange(HEIGHT)
-            self.grain.set_at((x, y), (150, 175, 160, rng.randrange(2, 5)))
+        self.grain_frames = self.make_grain((self.width, HEIGHT))
+        self.grain = self.grain_frames[0]
+        self.vignette = self.make_vignette((self.width, HEIGHT))
+
+    @staticmethod
+    def make_vignette(size):
+        """Soft dark screen edge, built small and scaled up once; strength is set per frame."""
+        columns, rows = 48, 30
+        small = pygame.Surface((columns, rows), pygame.SRCALPHA)
+        for y in range(rows):
+            for x in range(columns):
+                distance = math.hypot((x + .5) / columns * 2 - 1, (y + .5) / rows * 2 - 1) / 1.2
+                edge = max(0., min(1., (distance - .45) / .55))
+                small.set_at((x, y), (0, 0, 0, int(255 * edge * edge)))
+        return pygame.transform.smoothscale(small, size)
+
+    @staticmethod
+    def make_grain(size):
+        """Four film-grain frames; cycling them keeps the noise alive instead of a fixed speckle."""
+        frames = []
+        for seed in (17, 29, 41, 53):
+            frame, rng = pygame.Surface(size, pygame.SRCALPHA), random.Random(seed)
+            for _ in range(6000):
+                frame.set_at((rng.randrange(size[0]), rng.randrange(size[1])), (150, 175, 160, rng.randrange(6, 16)))
+            frames.append(frame)
+        return frames
 
     def resize(self, width):
         self.width = width
@@ -96,9 +118,8 @@ class Renderer(WorldRenderer, OverlayRenderer):
         self.ui_target=surface;self.ui_layers={surface}
         self.ui_scale=(surface.get_width()/self.width,surface.get_height()/HEIGHT)
         if self.grain.get_size()!=surface.get_size():
-            self.grain=pygame.Surface(surface.get_size(),pygame.SRCALPHA)
-            rng=random.Random(17)
-            for _ in range(1700):self.grain.set_at((rng.randrange(surface.get_width()),rng.randrange(surface.get_height())),(150,175,160,rng.randrange(2,5)))
+            self.grain_frames=self.make_grain(surface.get_size());self.grain=self.grain_frames[0]
+            self.vignette=self.make_vignette(surface.get_size())
 
     def ui_image(self,surface,image,pos,anchor="topleft"):
         rect=image.get_rect();setattr(rect,anchor,self.draw.point(surface,pos));surface.blit(image,rect);return rect
@@ -295,7 +316,12 @@ class Renderer(WorldRenderer, OverlayRenderer):
             if invulnerable and int(time*12)%2:image.set_alpha(150)
             self.lit_image(target,image,rect,light)
 
-    def lighting(self, screen, session, brightness):
+    @staticmethod
+    def flicker(session):
+        """0..1 dip of the torch beam; only under tension, soft, and at most about 3 dips a second."""
+        return light_dip(session.elapsed, tension_level(session))
+
+    def lighting(self, screen, session, brightness, reduced_motion=False):
         if getattr(session,"cinematic_light",0)>=150:
             self.lightmap.fill((211,208,186))
             screen.blit(self.lightmap,(0,0),special_flags=pygame.BLEND_RGB_MULT)
@@ -303,6 +329,10 @@ class Renderer(WorldRenderer, OverlayRenderer):
         origin = self.world_to_screen(session.player)
         self.lightmap.fill((0, 0, 0))
         self.lightmap.blit(self.static_light, -self.camera)
+        dip = 0. if reduced_motion else self.flicker(session)
+        if dip:
+            level = int(255 * (1 - .3 * dip))
+            self.lightmap.fill((level, level, level), special_flags=pygame.BLEND_RGB_MULT)
         glows=[item for item in session.placed if item.kind=="glow" and item.pos.distance_to(session.player)<600]
         for item in glows:
             glow=self.chemical_glow
@@ -336,6 +366,9 @@ class Renderer(WorldRenderer, OverlayRenderer):
             self.draw.polygon(self.torch_mask,(255,255,255),points)
             self.torch_layer.blit(self.torch_mask,(0,0),special_flags=pygame.BLEND_RGB_MULT)
             self.torch_layer.blit(self.occlusion,(0,0),special_flags=pygame.BLEND_RGB_MULT)
+            if dip:
+                level = int(255 * (1 - .5 * dip))
+                self.torch_layer.fill((level, level, level), special_flags=pygame.BLEND_RGB_MULT)
             self.lightmap.blit(self.torch_layer,(0,0),special_flags=pygame.BLEND_RGB_MAX)
         outside = session.layout.is_outdoor(session.player) if hasattr(session.layout,"is_outdoor") else session.layout.room_at(session.player) in session.layout.outdoors
         base = int((30 if outside else 17) + brightness * 16 + (5 if session.power else 0))
@@ -435,7 +468,7 @@ class Renderer(WorldRenderer, OverlayRenderer):
             if session.player_can_see(monster):
                 self.draw_monster(screen, monster, session.elapsed)
         self.draw_player(screen, session)
-        self.lighting(screen, session, settings["brightness"])
+        self.lighting(screen, session, settings["brightness"], settings.get("reduced_motion", False))
         if debug or wave_slide > .001:
             for monster in session.monsters:
                 if not session.player_can_see(monster):
@@ -470,7 +503,13 @@ class Renderer(WorldRenderer, OverlayRenderer):
                 alpha=int(145*strength*pulse*(1-inset/100)**1.5)
                 self.draw.rect(shade,(72,8,12,alpha),(inset,inset,self.width-inset*2,HEIGHT-inset*2),5)
             screen.blit(shade,(0,0))
-        screen.blit(self.grain, (0, 0))
+        dark = tension_level(session)
+        if dark > .15:
+            self.vignette.set_alpha(int(105 * min(1., (dark - .15) / .6)))
+            screen.blit(self.vignette, (0, 0))
+        frame = self.grain if reduced else self.grain_frames[int(session.elapsed * 10) % len(self.grain_frames)]
+        frame.set_alpha(125 if reduced else int(125 + 130 * tension_level(session)))
+        screen.blit(frame, (0, 0))
         if session.threat > .2:
             self.draw.rect(screen, tuple(int(c * session.threat) for c in (135, 48, 42)), (0, 0, self.width, HEIGHT), 3)
         if session.hit_flash > 0 or session.health <= 30:

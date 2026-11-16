@@ -1,0 +1,45 @@
+{
+  "commit": "a2a9bcc00598d0a44dd172a4c5ec855fcdfdf26f",
+  "driver": "SDL dummy",
+  "size": [
+    1280,
+    800
+  ],
+  "frames": 120,
+  "captures": [
+    "campus-calm.png",
+    "campus-tense.png",
+    "campus-reduced.png",
+    "library-calm.png",
+    "library-tense.png",
+    "library-reduced.png",
+    "informatika-calm.png",
+    "informatika-tense.png",
+    "informatika-reduced.png",
+    "escape-calm.png",
+    "escape-tense.png",
+    "escape-reduced.png"
+  ],
+  "timings": [
+    {
+      "scene": "campus",
+      "mean_draw_ms": 11.678,
+      "scope": "draw only; no AI/audio or frame cap"
+    },
+    {
+      "scene": "library",
+      "mean_draw_ms": 19.324,
+      "scope": "draw only; no AI/audio or frame cap"
+    },
+    {
+      "scene": "informatika",
+      "mean_draw_ms": 15.321,
+      "scope": "draw only; no AI/audio or frame cap"
+    },
+    {
+      "scene": "escape",
+      "mean_draw_ms": 15.805,
+      "scope": "draw only; no AI/audio or frame cap"
+    }
+  ]
+}
