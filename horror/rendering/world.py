@@ -2,8 +2,8 @@
 import random
 import pygame
 from ..config import INK, ROOM_H, ROOM_KINDS, ROOM_W, TILE
-from ..world import Furniture
 from ..architecture import top_window_columns
+from ..world import Furniture
 
 
 class WorldRenderer:
