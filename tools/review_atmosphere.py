@@ -50,7 +50,7 @@ def main():
                         level = "22:1" if scene == "library" else "11:1"
                         layout = s.get_layout(level)
                         s.switch_level(level, layout.quest_point(0))
-                        s.stage = 2 if scene == "library" else 6
+                        s.stage = 1 if scene == "library" else 8
                 s = a.session
                 s.monsters = []
                 s.transition = s.message_time = s.encounter_timer = s.hit_flash = 0.

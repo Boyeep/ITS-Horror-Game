@@ -11,6 +11,7 @@
 | Aset, importer dan audit | [Aset](ASSETS.md) |
 | Foto, logo dan batas adaptasi kampus | [Acuan ITS](ITS_REFERENCES.md) |
 | Hasil tes dan batas verifikasi | [QA](QA.md) |
+| Review aset/atmosfer v0.2, #15–#16 | [Review atmosfer](ATMOSPHERE_REVIEW.md) |
 
 [README utama](../README.md), [changelog](../CHANGELOG.md), [pengembangan](../CONTRIBUTING.md), dan [kredit](../THIRD_PARTY_NOTICES.md).
 
