@@ -14,7 +14,7 @@ def main():
     dist = ROOT / "dist"
     exe = dist / "SetelahJamMalam.exe"
     if not exe.is_file():
-        raise SystemExit("Build the executable first using Build.bat.")
+        raise SystemExit("Build the Windows executable first using Build.bat or Build.sh on Windows.")
     licenses = dist / "licenses"
     licenses.mkdir(parents=True, exist_ok=True)
     sources = {
