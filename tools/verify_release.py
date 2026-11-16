@@ -41,6 +41,7 @@ def main():
         assert f"Versi {VERSION}" in package.read("BACA_DULU.txt").decode("utf-8")
         assert len([n for n in package.namelist() if n.startswith("licenses/")]) == 6
         assert "docs/PLAYER_GUIDE.md" in package.namelist()
+        assert (ROOT / "docs/RELEASE_NOTES.md").read_bytes() == package.read("docs/RELEASE_NOTES.md")
 
     with pefile.PE(str(exe)) as pe:
         fixed = pe.VS_FIXEDFILEINFO[0]

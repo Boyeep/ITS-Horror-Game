@@ -75,7 +75,7 @@ HUD memisahkan tujuan akhir dari tindakan berikutnya. `guidance.py` mencari lang
 
 ## Persistensi
 
-Save schema 7 menyimpan progres, kondisi pemain, level, pintu, item, puzzle, monster, pendamping dan presentasi aktif. Write atomik serta backup menjaga save terakhir yang valid. Restore menerima schema versi 1 sampai 7 dan memigrasikan interior Informatika lama. Versi produk 0.1 terpisah dari schema tersebut.
+Save schema 7 menyimpan progres, kondisi pemain, level, pintu, item, puzzle, monster, pendamping dan presentasi aktif. Write atomik serta backup menjaga save terakhir yang valid. Restore menerima schema versi 1 sampai 7 dan memigrasikan interior Informatika lama. Versi produk 0.2 terpisah dari schema tersebut.
 
 ## Bacaan konsep
 

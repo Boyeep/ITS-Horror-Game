@@ -1,8 +1,19 @@
-# Setelah Jam Malam v0.1
+# Setelah Jam Malam v0.2
 
 Game horor top-down 2D berlatar interpretasi fiksi kampus ITS. Arga menerima pesan dari ponsel Nara yang tertinggal. Jelajahi kampus, baca bukti, selesaikan puzzle, dan cari jalan pulang bersama Nara.
 
 ![Menu Setelah Jam Malam](docs/screenshots/menu-rektorat.png)
+
+Kandidat v0.2 disiapkan pada branch `v0.2` untuk integrasi ke `beta`. [Catatan v0.2](docs/RELEASE_NOTES.md) memuat perubahan, kompatibilitas, dan batas pengujian; [presentasi v0.2](docs/presentations/ETS_KKA_Kelompok_2_ITS_Horror_v0.2.pptx) tersedia sebagai PowerPoint yang dapat diedit.
+
+## Baru di v0.2
+
+- Monster memakai Hill Climbing + Simulated Annealing dengan sensor berbasis bukti, profil Easy/Normal/Hard, dan cue sebelum serangan. A* tetap dipakai untuk petunjuk, pendamping, dan bot penguji.
+- Bukaan pintu dan interaksi E diperbaiki; tangga berpasangan, courtyard, dan atap Informatika lebih konsisten.
+- Pertemuan perpustakaan mempunyai antisipasi, reveal, jeda reaksi, dan fase kejar. Adegan kematian Story/Escape dan kemenangan Escape tampil sebelum hasil.
+- Atmosfer menambah variasi permukaan, rekaman radio/buku, detak, napas, grain dan pencahayaan dengan prioritas cue serta pengaturan reduced motion.
+- Waypoint memilih rute terjangkau; HUD, prompt pintu/tangga, dan peta M memakai langkah berikut yang sama. Wave Map 3D melalui V memperlihatkan local search monster.
+- Launcher shell mendukung source Linux/macOS dan Git Bash. Minimap masih prototipe evaluasi terpisah, belum diaktifkan pada game utama.
 
 ## Mainkan
 
@@ -59,11 +70,12 @@ Untuk pengembangan dan build:
 
 Di Windows dengan Git Bash, `./Build.sh` juga dapat digunakan.
 
-`horror/version.py` menjadi sumber nomor rilis **0.1**, termasuk metadata Windows **0.1.0.0**. Format save tetap **7**, dengan pembaca save versi 1 sampai 7. Data pengguna berada di `%APPDATA%/ITS-Horror-Game/`; perapian source/build tidak menghapus progres.
+`horror/version.py` menjadi sumber nomor rilis **0.2**, termasuk metadata Windows **0.2.0.0**. Format save tetap **7**, dengan pembaca save versi 1 sampai 7. Data pengguna berada di `%APPDATA%/ITS-Horror-Game/`; pembaruan game tidak menghapus progres. Ekstrak paket v0.2 ke folder baru dan pertahankan folder data pengguna; panduan lengkap ada pada [catatan pembaruan](docs/RELEASE_NOTES.md).
 
 ## Dokumentasi
 
 - [Indeks dokumentasi](docs/README.md) · [Perubahan rilis](CHANGELOG.md)
+- [Catatan v0.2 dan upgrade](docs/RELEASE_NOTES.md) · [Panduan presentasi](docs/PRESENTATION.md)
 - [Struktur kode](docs/ARCHITECTURE.md) · [Panduan pengembangan](CONTRIBUTING.md)
 - [Desain permainan](docs/GAME_PLAN.md) · [Algoritma](docs/ALGORITHMS.md)
 - [Cerita dan save](docs/STORY_MODE.md) · [Tas dan pencapaian](docs/INVENTORY.md)

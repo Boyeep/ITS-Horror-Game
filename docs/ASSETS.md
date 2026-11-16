@@ -20,9 +20,9 @@ Karakter, monster, pintu, stairs, ikon, kertas/buku dan detail dunia digambar da
 
 Audit bersifat read-only terhadap aset. Ia melacak pembacaan gambar/audio saat membangun semua jenis layout, seluruh lantai atas, variasi lantai/furnitur, foto menu/logo dan seluruh bank audio; kemudian memeriksa hash manifest. Aset media yang tersisa tetapi tidak digunakan dilaporkan pada [assets-audit.json](assets-audit.json). Audit tidak menghapus file otomatis.
 
-Perapian rilis menghapus **83 berkas / 277.468 byte** yang telah tergantikan. Nama, hash dan alasan penghapusan ada pada [asset-cleanup.json](asset-cleanup.json). Ada **69 berkas media aktif** setelah cleanup. Lisensi dan manifest tetap disimpan; screenshot dokumentasi bukan aset runtime.
+Perapian v0.1 menghapus **83 berkas / 277.468 byte** yang telah tergantikan. Nama, hash dan alasan penghapusan ada pada laporan historis [asset-cleanup.json](asset-cleanup.json). Baseline saat itu memiliki **69 berkas media aktif**. Lisensi dan manifest tetap disimpan; screenshot dokumentasi bukan aset runtime.
 
-Pada branch v0.2 untuk #15–#16, empat rekaman radio/buku menambah **42.274 byte** sehingga audit mencatat **73 media aktif**. Cue radio/buku menggantikan alias foley kain; rekaman kain tetap dipakai oleh pickup/heal. Audit memeriksa bahwa setiap media Kenney/foley/story audio ada dalam manifest, setiap hash cocok, dan kredit story audio memiliki author, page serta license. Detail visual baru bersifat prosedural dan tidak menambah berkas runtime.
+Pada v0.2 untuk #15–#16, empat rekaman radio/buku menambah **42.274 byte** sehingga audit mencatat **73 media aktif** dan paket memuat **83 berkas aset** termasuk manifest/kredit. Cue radio/buku menggantikan alias foley kain; rekaman kain tetap dipakai oleh pickup/heal. Audit memeriksa bahwa setiap media Kenney/foley/story audio ada dalam manifest, setiap hash cocok, dan kredit story audio memiliki author, page serta license. Detail visual baru bersifat prosedural dan tidak menambah berkas runtime.
 
 ## Import ulang
 

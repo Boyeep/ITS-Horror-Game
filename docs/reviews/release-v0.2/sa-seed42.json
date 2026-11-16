@@ -1,0 +1,2535 @@
+{
+  "seed": 42,
+  "iterations": 420,
+  "first_zero": 20,
+  "accepted": 161,
+  "worse_accepted": 4,
+  "records": [
+    {
+      "iteration": 0,
+      "current": 13.599999999999998,
+      "best": 13.599999999999998,
+      "temperature": 2.5
+    },
+    {
+      "iteration": 1,
+      "current": 13.599999999999998,
+      "best": 13.599999999999998,
+      "temperature": 2.5
+    },
+    {
+      "iteration": 2,
+      "current": 13.599999999999998,
+      "best": 13.599999999999998,
+      "temperature": 2.4625
+    },
+    {
+      "iteration": 3,
+      "current": 13.599999999999998,
+      "best": 13.599999999999998,
+      "temperature": 2.4255625
+    },
+    {
+      "iteration": 4,
+      "current": 10.799999999999999,
+      "best": 10.799999999999999,
+      "temperature": 2.3891790625
+    },
+    {
+      "iteration": 5,
+      "current": 1.2,
+      "best": 1.2,
+      "temperature": 2.3533413765624998
+    },
+    {
+      "iteration": 6,
+      "current": 1.2,
+      "best": 1.2,
+      "temperature": 2.3180412559140624
+    },
+    {
+      "iteration": 7,
+      "current": 1.2,
+      "best": 1.2,
+      "temperature": 2.2832706370753515
+    },
+    {
+      "iteration": 8,
+      "current": 1.2,
+      "best": 1.2,
+      "temperature": 2.2490215775192213
+    },
+    {
+      "iteration": 9,
+      "current": 1.2,
+      "best": 1.2,
+      "temperature": 2.215286253856433
+    },
+    {
+      "iteration": 10,
+      "current": 1.2,
+      "best": 1.2,
+      "temperature": 2.1820569600485866
+    },
+    {
+      "iteration": 11,
+      "current": 1.2,
+      "best": 1.2,
+      "temperature": 2.149326105647858
+    },
+    {
+      "iteration": 12,
+      "current": 1.2,
+      "best": 1.2,
+      "temperature": 2.11708621406314
+    },
+    {
+      "iteration": 13,
+      "current": 1.2,
+      "best": 1.2,
+      "temperature": 2.085329920852193
+    },
+    {
+      "iteration": 14,
+      "current": 0.6,
+      "best": 0.6,
+      "temperature": 2.05404997203941
+    },
+    {
+      "iteration": 15,
+      "current": 0.6,
+      "best": 0.6,
+      "temperature": 2.0232392224588187
+    },
+    {
+      "iteration": 16,
+      "current": 0.6,
+      "best": 0.6,
+      "temperature": 1.9928906341219363
+    },
+    {
+      "iteration": 17,
+      "current": 0.6,
+      "best": 0.6,
+      "temperature": 1.9629972746101072
+    },
+    {
+      "iteration": 18,
+      "current": 0.6,
+      "best": 0.6,
+      "temperature": 1.9335523154909555
+    },
+    {
+      "iteration": 19,
+      "current": 0.6,
+      "best": 0.6,
+      "temperature": 1.904549030758591
+    },
+    {
+      "iteration": 20,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.875980795297212
+    },
+    {
+      "iteration": 21,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.8478410833677539
+    },
+    {
+      "iteration": 22,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.8201234671172375
+    },
+    {
+      "iteration": 23,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.792821615110479
+    },
+    {
+      "iteration": 24,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.7659292908838218
+    },
+    {
+      "iteration": 25,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.7394403515205645
+    },
+    {
+      "iteration": 26,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.7133487462477561
+    },
+    {
+      "iteration": 27,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.6876485150540397
+    },
+    {
+      "iteration": 28,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.6623337873282291
+    },
+    {
+      "iteration": 29,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.6373987805183057
+    },
+    {
+      "iteration": 30,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.6128377988105311
+    },
+    {
+      "iteration": 31,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 1.5886452318283732
+    },
+    {
+      "iteration": 32,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 1.5648155533509476
+    },
+    {
+      "iteration": 33,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 1.5413433200506834
+    },
+    {
+      "iteration": 34,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 1.5182231702499231
+    },
+    {
+      "iteration": 35,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 1.4954498226961743
+    },
+    {
+      "iteration": 36,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 1.4730180753557316
+    },
+    {
+      "iteration": 37,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 1.4509228042253957
+    },
+    {
+      "iteration": 38,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.4291589621620147
+    },
+    {
+      "iteration": 39,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.4077215777295844
+    },
+    {
+      "iteration": 40,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.3866057540636405
+    },
+    {
+      "iteration": 41,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.3658066677526859
+    },
+    {
+      "iteration": 42,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.3453195677363956
+    },
+    {
+      "iteration": 43,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.3251397742203497
+    },
+    {
+      "iteration": 44,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.3052626776070444
+    },
+    {
+      "iteration": 45,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.2856837374429386
+    },
+    {
+      "iteration": 46,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.2663984813812945
+    },
+    {
+      "iteration": 47,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.2474025041605752
+    },
+    {
+      "iteration": 48,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.2286914665981665
+    },
+    {
+      "iteration": 49,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.210261094599194
+    },
+    {
+      "iteration": 50,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.1921071781802062
+    },
+    {
+      "iteration": 51,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.174225570507503
+    },
+    {
+      "iteration": 52,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.1566121869498904
+    },
+    {
+      "iteration": 53,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.139263004145642
+    },
+    {
+      "iteration": 54,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.1221740590834572
+    },
+    {
+      "iteration": 55,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.1053414481972055
+    },
+    {
+      "iteration": 56,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.0887613264742473
+    },
+    {
+      "iteration": 57,
+      "current": 1.2,
+      "best": 0.0,
+      "temperature": 1.0724299065771337
+    },
+    {
+      "iteration": 58,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.0563434579784767
+    },
+    {
+      "iteration": 59,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.0404983061087996
+    },
+    {
+      "iteration": 60,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.0248908315171676
+    },
+    {
+      "iteration": 61,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 1.0095174690444102
+    },
+    {
+      "iteration": 62,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.9943747070087441
+    },
+    {
+      "iteration": 63,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.9794590864036129
+    },
+    {
+      "iteration": 64,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.9647672001075587
+    },
+    {
+      "iteration": 65,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.9502956921059453
+    },
+    {
+      "iteration": 66,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.9360412567243561
+    },
+    {
+      "iteration": 67,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.9220006378734907
+    },
+    {
+      "iteration": 68,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.9081706283053884
+    },
+    {
+      "iteration": 69,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.8945480688808076
+    },
+    {
+      "iteration": 70,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.8811298478475955
+    },
+    {
+      "iteration": 71,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.8679129001298815
+    },
+    {
+      "iteration": 72,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.8548942066279333
+    },
+    {
+      "iteration": 73,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.8420707935285142
+    },
+    {
+      "iteration": 74,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.8294397316255865
+    },
+    {
+      "iteration": 75,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.8169981356512027
+    },
+    {
+      "iteration": 76,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.8047431636164347
+    },
+    {
+      "iteration": 77,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.7926720161621882
+    },
+    {
+      "iteration": 78,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.7807819359197553
+    },
+    {
+      "iteration": 79,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.769070206880959
+    },
+    {
+      "iteration": 80,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.7575341537777446
+    },
+    {
+      "iteration": 81,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.7461711414710784
+    },
+    {
+      "iteration": 82,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.7349785743490123
+    },
+    {
+      "iteration": 83,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.7239538957337771
+    },
+    {
+      "iteration": 84,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.7130945872977704
+    },
+    {
+      "iteration": 85,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.7023981684883038
+    },
+    {
+      "iteration": 86,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.6918621959609793
+    },
+    {
+      "iteration": 87,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.6814842630215646
+    },
+    {
+      "iteration": 88,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.6712619990762412
+    },
+    {
+      "iteration": 89,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.6611930690900976
+    },
+    {
+      "iteration": 90,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.651275173053746
+    },
+    {
+      "iteration": 91,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.6415060454579399
+    },
+    {
+      "iteration": 92,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.6318834547760708
+    },
+    {
+      "iteration": 93,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.6224052029544297
+    },
+    {
+      "iteration": 94,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.6130691249101132
+    },
+    {
+      "iteration": 95,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.6038730880364616
+    },
+    {
+      "iteration": 96,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.5948149917159147
+    },
+    {
+      "iteration": 97,
+      "current": 0.4,
+      "best": 0.0,
+      "temperature": 0.585892766840176
+    },
+    {
+      "iteration": 98,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.5771043753375733
+    },
+    {
+      "iteration": 99,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.5684478097075097
+    },
+    {
+      "iteration": 100,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.559921092561897
+    },
+    {
+      "iteration": 101,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.5515222761734686
+    },
+    {
+      "iteration": 102,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.5432494420308666
+    },
+    {
+      "iteration": 103,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.5351007004004036
+    },
+    {
+      "iteration": 104,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.5270741898943975
+    },
+    {
+      "iteration": 105,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.5191680770459816
+    },
+    {
+      "iteration": 106,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.5113805558902919
+    },
+    {
+      "iteration": 107,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.5037098475519375
+    },
+    {
+      "iteration": 108,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.49615419983865844
+    },
+    {
+      "iteration": 109,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.4887118868410786
+    },
+    {
+      "iteration": 110,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.4813812085384624
+    },
+    {
+      "iteration": 111,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.47416049041038544
+    },
+    {
+      "iteration": 112,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.4670480830542296
+    },
+    {
+      "iteration": 113,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.4600423618084162
+    },
+    {
+      "iteration": 114,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.4531417263812899
+    },
+    {
+      "iteration": 115,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.44634460048557056
+    },
+    {
+      "iteration": 116,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.439649431478287
+    },
+    {
+      "iteration": 117,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.4330546900061127
+    },
+    {
+      "iteration": 118,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.42655886965602097
+    },
+    {
+      "iteration": 119,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.42016048661118066
+    },
+    {
+      "iteration": 120,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.41385807931201296
+    },
+    {
+      "iteration": 121,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.40765020812233277
+    },
+    {
+      "iteration": 122,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.40153545500049775
+    },
+    {
+      "iteration": 123,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.3955124231754903
+    },
+    {
+      "iteration": 124,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.38957973682785796
+    },
+    {
+      "iteration": 125,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.3837360407754401
+    },
+    {
+      "iteration": 126,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.3779800001638085
+    },
+    {
+      "iteration": 127,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.37231030016135136
+    },
+    {
+      "iteration": 128,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.36672564565893107
+    },
+    {
+      "iteration": 129,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.3612247609740471
+    },
+    {
+      "iteration": 130,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.3558063895594364
+    },
+    {
+      "iteration": 131,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.35046929371604485
+    },
+    {
+      "iteration": 132,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.34521225431030417
+    },
+    {
+      "iteration": 133,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.3400340704956496
+    },
+    {
+      "iteration": 134,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.33493355943821485
+    },
+    {
+      "iteration": 135,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.3299095560466416
+    },
+    {
+      "iteration": 136,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.324960912705942
+    },
+    {
+      "iteration": 137,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.3200864990153529
+    },
+    {
+      "iteration": 138,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.3152852015301226
+    },
+    {
+      "iteration": 139,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.31055592350717076
+    },
+    {
+      "iteration": 140,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.3058975846545632
+    },
+    {
+      "iteration": 141,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.3013091208847447
+    },
+    {
+      "iteration": 142,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.29678948407147354
+    },
+    {
+      "iteration": 143,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.29233764181040145
+    },
+    {
+      "iteration": 144,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.2879525771832454
+    },
+    {
+      "iteration": 145,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.28363328852549674
+    },
+    {
+      "iteration": 146,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.2793787891976143
+    },
+    {
+      "iteration": 147,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.27518810735965005
+    },
+    {
+      "iteration": 148,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.2710602857492553
+    },
+    {
+      "iteration": 149,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.26699438146301646
+    },
+    {
+      "iteration": 150,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.26298946574107124
+    },
+    {
+      "iteration": 151,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.2590446237549552
+    },
+    {
+      "iteration": 152,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.25515895439863084
+    },
+    {
+      "iteration": 153,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.2513315700826514
+    },
+    {
+      "iteration": 154,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.2475615965314116
+    },
+    {
+      "iteration": 155,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.24384817258344044
+    },
+    {
+      "iteration": 156,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.24019044999468883
+    },
+    {
+      "iteration": 157,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.2365875932447685
+    },
+    {
+      "iteration": 158,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.23303877934609696
+    },
+    {
+      "iteration": 159,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.2295431976559055
+    },
+    {
+      "iteration": 160,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.22610004969106692
+    },
+    {
+      "iteration": 161,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.2227085489457009
+    },
+    {
+      "iteration": 162,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.2193679207115154
+    },
+    {
+      "iteration": 163,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.21607740190084265
+    },
+    {
+      "iteration": 164,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.21283624087233002
+    },
+    {
+      "iteration": 165,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.20964369725924506
+    },
+    {
+      "iteration": 166,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.2064990418003564
+    },
+    {
+      "iteration": 167,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.20340155617335104
+    },
+    {
+      "iteration": 168,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.20035053283075077
+    },
+    {
+      "iteration": 169,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.1973452748382895
+    },
+    {
+      "iteration": 170,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.19438509571571516
+    },
+    {
+      "iteration": 171,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.19146931927997943
+    },
+    {
+      "iteration": 172,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.18859727949077973
+    },
+    {
+      "iteration": 173,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.18576832029841803
+    },
+    {
+      "iteration": 174,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.18298179549394175
+    },
+    {
+      "iteration": 175,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.18023706856153263
+    },
+    {
+      "iteration": 176,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.17753351253310964
+    },
+    {
+      "iteration": 177,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.174870509845113
+    },
+    {
+      "iteration": 178,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.17224745219743628
+    },
+    {
+      "iteration": 179,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.16966374041447474
+    },
+    {
+      "iteration": 180,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.1671187843082576
+    },
+    {
+      "iteration": 181,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.16461200254363373
+    },
+    {
+      "iteration": 182,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.16214282250547923
+    },
+    {
+      "iteration": 183,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.15971068016789705
+    },
+    {
+      "iteration": 184,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.15731501996537858
+    },
+    {
+      "iteration": 185,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.1549552946658979
+    },
+    {
+      "iteration": 186,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.15263096524590944
+    },
+    {
+      "iteration": 187,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.1503415007672208
+    },
+    {
+      "iteration": 188,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.1480863782557125
+    },
+    {
+      "iteration": 189,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.1458650825818768
+    },
+    {
+      "iteration": 190,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.14367710634314865
+    },
+    {
+      "iteration": 191,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.14152194974800142
+    },
+    {
+      "iteration": 192,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.1393991205017814
+    },
+    {
+      "iteration": 193,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.13730813369425468
+    },
+    {
+      "iteration": 194,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.13524851168884086
+    },
+    {
+      "iteration": 195,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.13321978401350826
+    },
+    {
+      "iteration": 196,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.13122148725330562
+    },
+    {
+      "iteration": 197,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.12925316494450603
+    },
+    {
+      "iteration": 198,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.12731436747033845
+    },
+    {
+      "iteration": 199,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.12540465195828338
+    },
+    {
+      "iteration": 200,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.12352358217890912
+    },
+    {
+      "iteration": 201,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.12167072844622548
+    },
+    {
+      "iteration": 202,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.1198456675195321
+    },
+    {
+      "iteration": 203,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.11804798250673912
+    },
+    {
+      "iteration": 204,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.11627726276913802
+    },
+    {
+      "iteration": 205,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.11453310382760096
+    },
+    {
+      "iteration": 206,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.11281510727018694
+    },
+    {
+      "iteration": 207,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.11112288066113414
+    },
+    {
+      "iteration": 208,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.10945603745121713
+    },
+    {
+      "iteration": 209,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.10781419688944886
+    },
+    {
+      "iteration": 210,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.10619698393610713
+    },
+    {
+      "iteration": 211,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.10460402917706552
+    },
+    {
+      "iteration": 212,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.10303496873940954
+    },
+    {
+      "iteration": 213,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.10148944420831839
+    },
+    {
+      "iteration": 214,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.09996710254519361
+    },
+    {
+      "iteration": 215,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.09846759600701571
+    },
+    {
+      "iteration": 216,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.09699058206691047
+    },
+    {
+      "iteration": 217,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.0955357233359068
+    },
+    {
+      "iteration": 218,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.0941026874858682
+    },
+    {
+      "iteration": 219,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.09269114717358018
+    },
+    {
+      "iteration": 220,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.09130077996597648
+    },
+    {
+      "iteration": 221,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.08993126826648683
+    },
+    {
+      "iteration": 222,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.08858229924248952
+    },
+    {
+      "iteration": 223,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.08725356475385217
+    },
+    {
+      "iteration": 224,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.08594476128254439
+    },
+    {
+      "iteration": 225,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.08465558986330622
+    },
+    {
+      "iteration": 226,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.08338575601535662
+    },
+    {
+      "iteration": 227,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.08213496967512628
+    },
+    {
+      "iteration": 228,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.08090294512999938
+    },
+    {
+      "iteration": 229,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.07968940095304938
+    },
+    {
+      "iteration": 230,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.07849405993875364
+    },
+    {
+      "iteration": 231,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.07731664903967234
+    },
+    {
+      "iteration": 232,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.07615689930407725
+    },
+    {
+      "iteration": 233,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.0750145458145161
+    },
+    {
+      "iteration": 234,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.07388932762729836
+    },
+    {
+      "iteration": 235,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.07278098771288888
+    },
+    {
+      "iteration": 236,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.07168927289719554
+    },
+    {
+      "iteration": 237,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.07061393380373761
+    },
+    {
+      "iteration": 238,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.06955472479668154
+    },
+    {
+      "iteration": 239,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.06851140392473132
+    },
+    {
+      "iteration": 240,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.06748373286586035
+    },
+    {
+      "iteration": 241,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.06647147687287244
+    },
+    {
+      "iteration": 242,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.06547440471977936
+    },
+    {
+      "iteration": 243,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.06449228864898267
+    },
+    {
+      "iteration": 244,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.06352490431924793
+    },
+    {
+      "iteration": 245,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.0625720307544592
+    },
+    {
+      "iteration": 246,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.061633450293142315
+    },
+    {
+      "iteration": 247,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.06070894853874518
+    },
+    {
+      "iteration": 248,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.059798314310664
+    },
+    {
+      "iteration": 249,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.05890133959600404
+    },
+    {
+      "iteration": 250,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.05801781950206398
+    },
+    {
+      "iteration": 251,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.05714755220953302
+    },
+    {
+      "iteration": 252,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.05629033892639002
+    },
+    {
+      "iteration": 253,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.05544598384249417
+    },
+    {
+      "iteration": 254,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.054614294084856754
+    },
+    {
+      "iteration": 255,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.0537950796735839
+    },
+    {
+      "iteration": 256,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.05298815347848014
+    },
+    {
+      "iteration": 257,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.05219333117630294
+    },
+    {
+      "iteration": 258,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.051410431208658396
+    },
+    {
+      "iteration": 259,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.05063927474052852
+    },
+    {
+      "iteration": 260,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.04987968561942059
+    },
+    {
+      "iteration": 261,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.04913149033512928
+    },
+    {
+      "iteration": 262,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.04839451798010234
+    },
+    {
+      "iteration": 263,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.0476686002104008
+    },
+    {
+      "iteration": 264,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.04695357120724478
+    },
+    {
+      "iteration": 265,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.04624926763913611
+    },
+    {
+      "iteration": 266,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.04555552862454906
+    },
+    {
+      "iteration": 267,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.044872195695180826
+    },
+    {
+      "iteration": 268,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.04419911275975311
+    },
+    {
+      "iteration": 269,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.043536126068356815
+    },
+    {
+      "iteration": 270,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.042883084177331464
+    },
+    {
+      "iteration": 271,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.042239837914671494
+    },
+    {
+      "iteration": 272,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.04160624034595142
+    },
+    {
+      "iteration": 273,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.04098214674076215
+    },
+    {
+      "iteration": 274,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.04036741453965072
+    },
+    {
+      "iteration": 275,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.03976190332155596
+    },
+    {
+      "iteration": 276,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.039165474771732614
+    },
+    {
+      "iteration": 277,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.03857799265015662
+    },
+    {
+      "iteration": 278,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.03799932276040427
+    },
+    {
+      "iteration": 279,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.03742933291899821
+    },
+    {
+      "iteration": 280,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.03686789292521323
+    },
+    {
+      "iteration": 281,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.036314874531335035
+    },
+    {
+      "iteration": 282,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.03577015141336501
+    },
+    {
+      "iteration": 283,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.035233599142164534
+    },
+    {
+      "iteration": 284,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.03470509515503207
+    },
+    {
+      "iteration": 285,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.034184518727706587
+    },
+    {
+      "iteration": 286,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.033671750946790986
+    },
+    {
+      "iteration": 287,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.033166674682589124
+    },
+    {
+      "iteration": 288,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.03266917456235029
+    },
+    {
+      "iteration": 289,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.032179136943915033
+    },
+    {
+      "iteration": 290,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.031696449889756305
+    },
+    {
+      "iteration": 291,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.03122100314140996
+    },
+    {
+      "iteration": 292,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.03075268809428881
+    },
+    {
+      "iteration": 293,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.030291397772874477
+    },
+    {
+      "iteration": 294,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.02983702680628136
+    },
+    {
+      "iteration": 295,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.02938947140418714
+    },
+    {
+      "iteration": 296,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.02894862933312433
+    },
+    {
+      "iteration": 297,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.028514399893127464
+    },
+    {
+      "iteration": 298,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.02808668389473055
+    },
+    {
+      "iteration": 299,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.027665383636309594
+    },
+    {
+      "iteration": 300,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.02725040288176495
+    },
+    {
+      "iteration": 301,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.026841646838538475
+    },
+    {
+      "iteration": 302,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.0264390221359604
+    },
+    {
+      "iteration": 303,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.02604243680392099
+    },
+    {
+      "iteration": 304,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025651800251862176
+    },
+    {
+      "iteration": 305,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025267023248084244
+    },
+    {
+      "iteration": 306,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 307,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 308,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 309,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 310,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 311,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 312,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 313,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 314,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 315,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 316,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 317,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 318,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 319,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 320,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 321,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 322,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 323,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 324,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 325,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 326,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 327,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 328,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 329,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 330,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 331,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 332,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 333,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 334,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 335,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 336,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 337,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 338,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 339,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 340,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 341,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 342,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 343,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 344,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 345,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 346,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 347,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 348,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 349,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 350,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 351,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 352,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 353,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 354,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 355,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 356,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 357,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 358,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 359,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 360,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 361,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 362,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 363,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 364,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 365,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 366,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 367,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 368,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 369,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 370,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 371,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 372,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 373,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 374,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 375,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 376,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 377,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 378,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 379,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 380,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 381,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 382,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 383,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 384,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 385,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 386,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 387,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 388,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 389,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 390,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 391,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 392,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 393,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 394,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 395,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 396,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 397,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 398,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 399,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 400,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 401,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 402,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 403,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 404,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 405,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 406,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 407,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 408,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 409,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 410,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 411,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 412,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 413,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 414,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 415,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 416,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 417,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 418,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 419,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    },
+    {
+      "iteration": 420,
+      "current": 0.0,
+      "best": 0.0,
+      "temperature": 0.025
+    }
+  ]
+}

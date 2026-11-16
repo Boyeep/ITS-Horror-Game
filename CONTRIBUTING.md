@@ -33,3 +33,11 @@ Tes memakai temporary directory untuk data pengguna. Saat mencoba source secara 
 `Build.bat` memasang dependency build, mengaudit aset, menghasilkan manifest DPI/metadata versi, membuat executable, lalu mengemas ZIP portable beserta panduan dan lisensi. Hasil ada di `dist/`, berkas antara di `build/`; keduanya diabaikan Git. `tools/windows.manifest` adalah template, bukan manifest siap pakai untuk PyInstaller langsung.
 
 Kode utama belum memiliki lisensi publik yang ditetapkan. Jangan menganggap lisensi CC0 aset memberikan izin yang sama terhadap seluruh source atau media ITS.
+
+## Menyiapkan versi produk
+
+Integrasi fitur v0.2 berada pada branch `v0.2`; PR promosi menargetkan `beta`. Gunakan commit `type(scope): ringkasan`. Ubah `horror/version.py`, README, changelog, catatan rilis, dan identitas presentasi bersama-sama. Save schema tidak perlu dinaikkan hanya karena versi produk berubah.
+
+Jalankan unit test dan simpan output ke `build/unit-test.log`; ulangi validasi map, audit, campaign, serta capture yang terkait. Bangun ulang executable setelah mengubah versi, jalankan smoke native/frozen, lalu `tools/verify_release.py` untuk mencocokkan Windows metadata, aset, ZIP, dan tautan dokumentasi. Laporan lama di `docs/reviews/` dipertahankan sebagai riwayat; angka QA aktif harus merujuk eksekusi terbaru.
+
+Sertakan PowerPoint yang dapat diedit pada `docs/presentations/` dan perbarui [panduan presentasi](docs/PRESENTATION.md). Jangan commit `.venv`, build, dist, cache, atau data save pribadi. Pembuatan PR tidak otomatis membuat tag, menerbitkan release, atau menyatakan playtest manusia selesai.

@@ -1,4 +1,4 @@
-# Setelah Jam Malam
+# Setelah Jam Malam v0.2
 
 ## Mulai
 
@@ -7,6 +7,10 @@ Ekstrak seluruh ZIP, lalu buka `SetelahJamMalam.exe`. Game berjalan offline tanp
 Cerita dimulai dengan prolog. Arga sedang menyelesaikan proyek; Nara meninggalkan ponselnya sebelum menuju perpustakaan. Setelah listrik padam, ponsel itu menerima pesan dari pemiliknya sendiri. Ikuti tujuan di kiri atas, periksa objek bertanda, dan gunakan catatan untuk memecahkan puzzle. Save tersedia sepanjang perjalanan.
 
 Mode Escape adalah sesi terpisah: cari dua sekring, tahan E pada panel, lalu berjalan melewati pintu keluar. Tiga monster menggunakan pandangan, pendengaran dan pola serangan berbeda. Berjalan pelan, pintu dan pengalih suara membantu memutus pengejaran.
+
+Di v0.2, ikuti **tindakan berikutnya** pada HUD dan penanda yang sama di peta M. Penanda mengarah ke pintu atau tangga yang dapat dijangkau sebelum tujuan akhir; ia tidak memberikan jawaban puzzle. Penjaga/Pendengar memberi cue sebelum serangan dan Penyergap mengunci arah saat bersiap. Pada Normal/Hard, gunakan sprint singkat serta belokan untuk memutus ancaman; berjalan biasa saja tidak selalu cukup. Easy disarankan untuk percobaan pertama.
+
+Pertemuan perpustakaan mempunyai jeda sebelum fase kejar. Saat mati atau berhasil keluar pada Escape, adegan hasil tampil sebelum layar hasil; gameplay dibekukan selama adegan itu. Enter melewati adegan dan Esc membuka jeda. Ending Story memakai adegan cerita yang sudah ada.
 
 ## Kontrol
 
@@ -43,7 +47,9 @@ Tiga slot manual terpisah dari autosave. Muat mengembalikan progres, lokasi/lant
 
 Data berada di `%APPDATA%/ITS-Horror-Game/`: `settings.json`, `achievements.json`, dan folder `saves/`. Berkas `.bak` menyimpan cadangan save valid sebelumnya. Jangan menghapus folder ini saat memperbarui game; salin folder tersebut bila ingin membuat backup sendiri.
 
-Volume efek dan musik terpisah. Volume efek juga mengatur blip percakapan. Pengaturan menyediakan brightness dan pengurangan efek gerak. Jika gagal berjalan, detail error tersimpan di `%TEMP%/ITS-Horror-Game-error.log`.
+Volume efek dan musik terpisah. Volume efek juga mengatur blip percakapan, detak dan napas. Cue atmosfer opsional berhenti saat jeda atau membuka dialog/tas/puzzle; suara penting mendapat prioritas. Pengaturan menyediakan brightness dan pengurangan efek gerak untuk menahan grain dan mematikan kedip cahaya. Jika gagal berjalan, detail error tersimpan di `%TEMP%/ITS-Horror-Game-error.log`.
+
+Versi produk 0.2 tetap memakai save schema 7 dan pembaca schema 1–7. Ekstrak pembaruan ke folder baru dan pertahankan data pengguna; jangan menghapus progres saat mengganti executable. Minimap belum diaktifkan pada game utama; navigasi yang tersedia adalah HUD, peta M, dan Wave Map V.
 
 ## Tentang latar
 

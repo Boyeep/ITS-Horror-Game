@@ -15,6 +15,9 @@ View dipisahkan sebagai mixin dengan antarmuka metode yang tetap. `MenuViews`, `
 | Ilustrasi | `art.py`, `characters.py`, `architecture.py`, `pixels.py` | Sprite prosedural, ikon, pintu, stairs, drawing/DPI |
 | Atmosfer dan pembacaan | `backdrop.py`, `reader.py`, `narrative.py`, `cinematics.py` | Foto bertema, bukti, dialog, shot/timeline |
 | Simulasi bersama | `simulation.py` | Gerak, stamina/HP, monster (HC+SA), interaksi, noise |
+| Parameter ancaman | `balance.py` | Profil difficulty, sensor, tekanan dan waktu serangan |
+| Hasil terminal | `outcomes.py` | Timeline kematian Story/Escape dan kemenangan Escape pada frame beku |
+| Atmosfer | `tension.py`, `decor.py` | Model tension read-only dan rencana dekor prosedural |
 | Map dan navigasi | `world.py`, `campus.py`, `floors.py`, `ground_floor.py`, `informatika.py` | Generator, lanskap bukit 3D, collision, A*, geografi, interior, migrasi posisi |
 | Cerita | `story.py`, `story_data.py`, `story_state.py` | Progresi, konten, transisi, snapshot/restore |
 | Tujuan | `guidance.py` | Target dan rute tindakan tanpa membocorkan jawaban puzzle |
@@ -31,6 +34,6 @@ Dunia memakai viewport dekat dan cahaya raycast, sedangkan teks penting, karakte
 
 ## Persistensi dan rilis
 
-Versi produk 0.1 berada di `version.py`; schema save 7 tidak mengikuti nomor produk. `StoryState` memulihkan data lama melalui migrasi yang ada, kemudian menghitung ulang cache navigasi. Profil achievement terpisah dari save perjalanan.
+Versi produk 0.2 berada di `version.py`; schema save 7 tidak mengikuti nomor produk. `StoryState` memulihkan data lama melalui migrasi yang ada, kemudian menghitung ulang cache navigasi. Profil achievement terpisah dari save perjalanan.
 
 Path aset dihitung relatif terhadap paket lewat `resources.py`, sehingga source dan executable PyInstaller membaca struktur yang sama. `Build.bat` menjalankan `tools/build_release.py`; metadata Windows dihasilkan dari versi produk. `Build.sh` menyediakan entry point Git Bash untuk pipeline Windows tersebut dan menolak build rilis dari Linux/macOS. `Jalankan.sh` menjalankan source pada Linux/macOS, atau `.exe` melalui Wine jika tersedia. `tools/package_release.py` menambahkan panduan, kredit dan lisensi ke ZIP portable.
