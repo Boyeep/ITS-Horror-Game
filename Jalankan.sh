@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT_DIR"
+
+fail() {
+    local status=$?
+    echo >&2
+    echo "Game belum dapat dijalankan. Periksa pesan di atas dan README.md." >&2
+    if [[ -t 0 ]]; then
+        read -r -p "Tekan Enter untuk menutup... " _ || true
+    fi
+    exit "${status:-1}"
+}
+trap fail ERR
+
+EXE="dist/SetelahJamMalam.exe"
+case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*)
+        PYTHON=".venv/Scripts/python.exe"
+        BOOTSTRAP="python"
+        WINDOWS=true
+        ;;
+    *)
+        PYTHON=".venv/bin/python"
+        BOOTSTRAP="python3"
+        WINDOWS=false
+        ;;
+esac
+
+if [[ -f "$EXE" ]]; then
+    if [[ "$WINDOWS" == true ]]; then
+        "$EXE" "$@"
+        exit 0
+    elif command -v wine >/dev/null 2>&1; then
+        wine "$EXE" "$@"
+        exit 0
+    else
+        echo "Executable Windows ditemukan, tetapi Wine tidak tersedia; mencoba menjalankan source." >&2
+    fi
+fi
+
+if [[ ! -x "$PYTHON" ]]; then
+    "$BOOTSTRAP" -m venv .venv
+fi
+
+if ! "$PYTHON" -c 'import pygame' >/dev/null 2>&1; then
+    "$PYTHON" -m pip install -r requirements.txt
+fi
+"$PYTHON" main.py "$@"
+
+trap - ERR

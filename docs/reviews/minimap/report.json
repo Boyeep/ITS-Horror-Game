@@ -1,0 +1,44 @@
+[
+  {
+    "case": "campus",
+    "known_cells": 34,
+    "layout_cells": 10384,
+    "mean_overlay_ms": 0.137,
+    "read_only": true,
+    "panel": [
+      1056,
+      484,
+      200,
+      196
+    ],
+    "scope": "one orientation at spawn; overlay only, no human playtest"
+  },
+  {
+    "case": "interior",
+    "known_cells": 47,
+    "layout_cells": 768,
+    "mean_overlay_ms": 0.162,
+    "read_only": true,
+    "panel": [
+      1056,
+      484,
+      200,
+      196
+    ],
+    "scope": "one orientation at spawn; overlay only, no human playtest"
+  },
+  {
+    "case": "escape",
+    "known_cells": 39,
+    "layout_cells": 3082,
+    "mean_overlay_ms": 0.095,
+    "read_only": true,
+    "panel": [
+      1056,
+      484,
+      200,
+      196
+    ],
+    "scope": "one orientation at spawn; overlay only, no human playtest"
+  }
+]

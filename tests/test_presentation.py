@@ -5,6 +5,7 @@ os.environ.setdefault("SDL_AUDIODRIVER","dummy")
 import json
 import tempfile
 import unittest
+from unittest.mock import patch
 import pygame
 from horror.app import App
 from horror.story import StorySession, NOTES
@@ -18,6 +19,22 @@ class PresentationTests(unittest.TestCase):
         self.folder=tempfile.TemporaryDirectory();self.a=App(self.folder.name,audio=False)
     def tearDown(self):
         pygame.quit();self.folder.cleanup()
+
+    def test_reduced_motion_disables_atmosphere_light_flicker(self):
+        a=self.a;a.start(42);a.draw();s=a.session;r=a.renderer
+        s.threat=1.;s.elapsed=.4
+        with patch.object(r,"flicker",return_value=1.) as flicker:
+            r.lighting(r.scene,s,.6,reduced_motion=True)
+            flicker.assert_not_called()
+            r.lighting(r.scene,s,.6,reduced_motion=False)
+            flicker.assert_called_once_with(s)
+
+    def test_resize_keeps_grain_and_vignette_at_native_resolution(self):
+        a=self.a;a.start(42)
+        for size in ((960,700),(1920,1200)):
+            a.window=pygame.display.set_mode(size);a.resize_canvas();a.draw()
+            self.assertEqual(a.renderer.vignette.get_size(),size)
+            self.assertTrue(all(frame.get_size()==size for frame in a.renderer.grain_frames))
 
     def test_button_ink_center_at_native_and_windows_125_percent_resolution(self):
         a=self.a

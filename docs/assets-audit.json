@@ -1,7 +1,7 @@
 {
-  "version": "0.1",
+  "version": "0.2",
   "coverage": "all layout types, procedural floor/furniture variants, menu photos/crest, every audio bank",
-  "loaded_count": 69,
+  "loaded_count": 73,
   "loaded": [
     "assets/audio/cloth1.ogg",
     "assets/audio/cloth3.ogg",
@@ -55,6 +55,7 @@
     "assets/kenney/tile_97.png",
     "assets/kenney/tile_98.png",
     "assets/kenney/tile_99.png",
+    "assets/story_audio/book_1.ogg",
     "assets/story_audio/chase.wav",
     "assets/story_audio/crickets.mp3",
     "assets/story_audio/exploration.ogg",
@@ -71,6 +72,9 @@
     "assets/story_audio/monster_listener_3.ogg",
     "assets/story_audio/monster_listener_4.ogg",
     "assets/story_audio/nightshift.mp3",
+    "assets/story_audio/radio_1.ogg",
+    "assets/story_audio/radio_2.ogg",
+    "assets/story_audio/radio_3.ogg",
     "assets/story_audio/stinger.wav"
   ],
   "unused": []

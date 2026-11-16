@@ -7,12 +7,13 @@ from .simulation import Monster
 from .backdrop import cover_image
 from .speech import visible_count
 
-CUTSCENES={"intro":50.,"library":5.5,"reunion":6.,"shutdown":5.,"ending":8.5}
+CUTSCENES={"intro":50.,"library":12.,"reunion":6.,"shutdown":5.,"ending":8.5}
 STAGE_SCENES={2:"library",16:"reunion",21:"shutdown"}
 CUES={"intro":((23.5,"step_concrete",.25),(24.3,"step_concrete",.25),(25.1,"step_concrete",.25),
                 (26.2,"door_open",.55),(27.9,"door_close",.4),(32.,"panel",.55),
                 (35.6,"phone_vibrate",.7),(37.,"phone_vibrate",.5)),
-      "library":((2.3,"monster_guard",.22),),"reunion":((1.,"step_concrete",.25),),
+      "library":((1.5,"door_close",.3),(4.,"heavy",.35),(5.2,"stinger",.55),(7.8,"monster_guard",.45)),
+      "reunion":((1.,"step_concrete",.25),),
       "shutdown":((.3,"power",.35),(2.,"panel",.35)),"ending":((1.,"door_open",.55),(3.,"step_asphalt",.3),(3.6,"step_asphalt",.25))}
 
 # Time, speaker and text are shared by previews and the live opening.
@@ -64,9 +65,13 @@ class CinematicRenderer:
             else:v.companion=None
             pan.update(55 if t<28 else 18,5)
         elif kind=="library":
-            v.facing.update(1,0);v.flashlight=True;pan.update(50*ease(t/5.5),-12)
-            if t>2.2:
-                v.monsters=[Monster("Penjaga",v.player+pygame.Vector2(165,0),pygame.Vector2(-1,0))]
+            point=getattr(session,"library_reveal",None)
+            pos=pygame.Vector2(point) if point is not None else v.player+pygame.Vector2(165,0)
+            delta=pos-v.player;direction=delta.normalize() if delta.length_squared() else pygame.Vector2(1,0)
+            v.facing=direction;v.flashlight=True
+            pan=direction*55*ease((t-2)/4)*(1-ease((t-9)/3))
+            if t>=4.5:
+                v.monsters=[Monster("Penjaga",pos,-direction)]
         elif kind=="reunion":
             v.stage=24;v.facing.update(1,0)
             v.player=session.player+pygame.Vector2(-30*(1-ease(t/3)),18)
@@ -90,6 +95,8 @@ class CinematicRenderer:
         if kind=="intro" and 32<=t<34:
             self.shade(s,(3,8,12),195*(1-ease((t-32)/2)))
         if kind=="shutdown":self.shade(s,(2,7,13),90*ease((t-1)/3))
+        if kind=="library" and 3.2<t<4.2 and not settings.get("reduced_motion",False):
+            self.shade(s,(3,8,12),95*math.sin((t-3.2)*math.pi))
         if kind=="ending":self.shade(s,(182,181,150),80*ease((t-2)/6))
 
     def phone(self,s,t,reduced=False):
@@ -159,4 +166,5 @@ class CinematicRenderer:
                 r.text(s,clock+" · LAB PROYEK",(55,84),20,PAPER)
             self.intro_caption(s,t)
         caption={"reunion":"Nara.","shutdown":"Sinyal terputus.","ending":"23.48"}.get(kind)
+        if kind=="library" and 8.5<t<duration-.4:caption="Tangga masih terbuka. Jangan berhenti."
         if caption and 1.4<t<duration-.7:r.text(s,caption,(r.width/2,HEIGHT-110),24,PAPER,align="center")

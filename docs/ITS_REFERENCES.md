@@ -1,4 +1,4 @@
-# Acuan ITS untuk rilis 0.1
+# Acuan ITS untuk rilis 0.2
 
 Menu menggunakan tiga foto gedung asli dengan skala proporsional, palet horor, kontur, pencahayaan dan kabut saat runtime. Foto sumber tetap utuh. Menu memakai palet malam; exterior pembuka memakai senja. Gambar berganti setiap sembilan detik dan memenuhi viewport dengan crop proporsional tanpa meregangkan bangunan.
 

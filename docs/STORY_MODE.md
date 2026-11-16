@@ -20,7 +20,11 @@ E pada flight tangga memindahkan lantai; state tiap level dipertahankan. Perpind
 
 Autosave terpisah dari tiga slot manual. Save schema **7** memuat HP/stamina, posisi/floor, barang, pintu, puzzle, dialog, timer cutscene, pendamping, monster serta state setiap layer. `dialogue_time` opsional mempertahankan progres huruf. Schema versi **1 sampai 7** tetap diterima; posisi interior dasar lama dimigrasikan dan prolog lama yang belum selesai dapat dimulai kembali dengan timeline baru. Prolog yang selesai tidak diulang.
 
-Data ditulis atomik ke `%APPDATA%/ITS-Horror-Game/saves/`; `.bak` menyimpan salinan valid sebelumnya. Import `story.json` lama tidak menghapus aslinya. Muat menjaga kondisi save; retry setelah kalah memulihkan HP/stamina dan memberi jeda aman. Profil pencapaian terpisah dari slot perjalanan. Versi produk 0.1 tidak mengganti nomor schema.
+Data ditulis atomik ke `%APPDATA%/ITS-Horror-Game/saves/`; `.bak` menyimpan salinan valid sebelumnya. Import `story.json` lama tidak menghapus aslinya. Muat menjaga kondisi save; retry setelah kalah memulihkan HP/stamina dan memberi jeda aman. Profil pencapaian terpisah dari slot perjalanan. Versi produk 0.2 tidak mengganti nomor schema.
+
+v0.2 memperpanjang encounter perpustakaan menjadi 12 detik dan memakai posisi reveal yang sama dengan spawn gameplay. Setelah handoff ada 2,2 detik reaksi sebelum pengejaran; memori ancaman tetap dibatasi sensor. Save menyimpan state tambahan secara opsional agar schema 7 lama tetap dapat dibaca. [Rancangan dan regresi](LIBRARY_ENCOUNTER.md).
+
+Kematian Story memakai presentasi frame beku sebelum hasil; checkpoint hidup tetap dipertahankan. Kematian dan kemenangan Escape memakai jalur hasil yang sama. Ending Story tetap memakai cutscene ending, tanpa adegan hasil tambahan. [Cinematic hasil](RESULT_CINEMATICS.md).
 
 ## Audio dan ancaman
 

@@ -1,0 +1,30 @@
+[
+  {
+    "case": "story-lost",
+    "mode": "result",
+    "status": "lost",
+    "frozen": true,
+    "extra_scene": true
+  },
+  {
+    "case": "escape-lost",
+    "mode": "result",
+    "status": "lost",
+    "frozen": true,
+    "extra_scene": true
+  },
+  {
+    "case": "escape-won",
+    "mode": "result",
+    "status": "won",
+    "frozen": true,
+    "extra_scene": true
+  },
+  {
+    "case": "story-won",
+    "mode": "result",
+    "status": "won",
+    "frozen": true,
+    "extra_scene": false
+  }
+]

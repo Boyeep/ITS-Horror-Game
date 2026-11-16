@@ -14,7 +14,7 @@ def main():
     dist = ROOT / "dist"
     exe = dist / "SetelahJamMalam.exe"
     if not exe.is_file():
-        raise SystemExit("Build the executable first using Build.bat.")
+        raise SystemExit("Build the Windows executable first using Build.bat or Build.sh on Windows.")
     licenses = dist / "licenses"
     licenses.mkdir(parents=True, exist_ok=True)
     sources = {
@@ -29,7 +29,7 @@ def main():
         shutil.copyfile(source, licenses / name)
     docs = dist / "docs"
     docs.mkdir(parents=True, exist_ok=True)
-    for name in ("ITS_REFERENCES.md", "PLAYER_GUIDE.md"):
+    for name in ("ITS_REFERENCES.md", "PLAYER_GUIDE.md", "RELEASE_NOTES.md"):
         shutil.copyfile(ROOT / "docs" / name, docs / name)
     shutil.copyfile(ROOT / "THIRD_PARTY_NOTICES.md", dist / "THIRD_PARTY_NOTICES.md")
     shutil.copyfile(ROOT / "CHANGELOG.md", dist / "CHANGELOG.md")
@@ -38,7 +38,7 @@ def main():
     readme.write_text(f"SETELAH JAM MALAM | Versi {VERSION} / Windows x64\n\n" + guide, encoding="utf-8")
     archive = dist / "SetelahJamMalam-Windows-x64.zip"
     files = [exe, readme, dist / "THIRD_PARTY_NOTICES.md", dist / "CHANGELOG.md",
-             docs / "ITS_REFERENCES.md", docs / "PLAYER_GUIDE.md",
+             docs / "ITS_REFERENCES.md", docs / "PLAYER_GUIDE.md", docs / "RELEASE_NOTES.md",
              *(licenses / name for name in sources)]
     with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as package:
         for path in files:

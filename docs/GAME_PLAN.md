@@ -1,4 +1,4 @@
-# Desain permainan 0.1
+# Desain permainan 0.2
 
 ## Tujuan
 
@@ -12,7 +12,7 @@ Membangun horor top-down dengan eksplorasi, puzzle dan pengejaran yang bisa dipa
 
 ## Ancaman dan pilihan pemain
 
-Penjaga memakai pandangan dan patroli, Pendengar mengandalkan suara, Penyergap melakukan wind-up/dash dengan arah terkunci. Ketiganya menggunakan bukti sensor dan jalur yang valid. Berlari, pintu, kaca, botol dan alarm menimbulkan noise. Difficulty mengubah sensitivitas serta ancaman, termasuk pendengaran yang lebih kuat pada Hard.
+Penjaga memakai pandangan dan patroli, Pendengar mengandalkan suara, Penyergap melakukan wind-up/dash dengan arah terkunci. Ketiganya menggunakan bukti sensor dan navigasi lokal Hill Climbing + Simulated Annealing di atas grid lantai valid. Berlari, pintu, kaca, botol dan alarm menimbulkan noise. Difficulty mengubah sensitivitas serta ancaman, termasuk pendengaran yang lebih kuat pada Hard.
 
 HP, jeda kebal setelah serangan, stamina, perlengkapan dan tempat berlindung memberi kesempatan pulih. Senter membantu melihat sekaligus memengaruhi visibilitas. Supply terbatas dan tas 12 ruang membuat pemilihan bekal berarti; barang penting tidak bisa terbuang.
 
@@ -23,6 +23,8 @@ Kamera dekat mengikuti Arga. Tujuan tetap terlihat, sementara prompt tindakan mu
 Menu memakai tiga foto gedung asli dengan palet malam, cahaya dan kabut; opening dimulai pada senja sebelum berpindah ke malam melalui kejadian cerita. Musik, foley material, suara monster dan perubahan layar menyampaikan intensitas.
 
 ## Batas dan evaluasi
+
+v0.2 menambah cue serangan dan profil tekanan, encounter perpustakaan yang bertahap, cinematic hasil, waypoint terjangkau, serta atmosfer yang mengikuti tension. [Catatan v0.2](RELEASE_NOTES.md) merangkum implementasi dan bukti tiap tiket. Minimap hanya prototipe evaluasi terpisah; keputusan saat ini menunda integrasi produksi sampai ada playtest pemain.
 
 Map bukan replika terukur kampus; skala serta interior diadaptasi. Tidak ada multiplayer atau director adaptif global. Save memulihkan state permainan, tetapi cache A* dan RNG runtime dihitung ulang. Bot menguji keterjangkauan ending; ia tidak mengukur ketakutan, durasi atau win-rate pemain baru.
 

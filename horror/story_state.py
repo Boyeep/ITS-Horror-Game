@@ -36,6 +36,7 @@ class StoryState:
                 "items":sorted(self.story_items),"journal":self.journal,"triggered":sorted(self.triggered),
                 "visited":sorted(self.visited),"visited_floors":sorted(self.visited_floors),"seconds":self.play_seconds,"elapsed":self.elapsed,
                 "dialogue":self.dialogue,"dialogue_time":self.dialogue_time,"pending_encounter":self.pending_encounter,"ending_pending":self.ending_pending,
+                "library_reveal":self.library_reveal,"library_pressure":self.library_pressure,
                 "followers":self.followers,"companion":self.companion,"completed":self.status=="won"}
 
     def restore(self,data):
@@ -111,6 +112,14 @@ class StoryState:
         if self.facing.length_squared():self.facing.normalize_ip()
         else:self.facing.update(1,0)
         self.pending_encounter=data.get("pending_encounter");self.followers=list(data.get("followers",[]));self.companion=data.get("companion")
+        pressure=data.get("library_pressure",0.)
+        self.library_pressure=max(0.,min(14.,pressure)) if type(pressure) in (int,float) and math.isfinite(pressure) else 0.
+        self.library_reveal=None
+        point=data.get("library_reveal")
+        if isinstance(point,(list,tuple)) and len(point)==2 and all(type(v) in (int,float) and math.isfinite(v) for v in point):
+            if self.can_stand(Vector2(point),12):self.library_reveal=list(point)
+        if self.cutscene and self.cutscene["id"]=="library" and self.library_reveal is None:
+            point=self.encounter_position();self.library_reveal=list(point) if point is not None else None
         if "backpack" in data:self.backpack.restore(data["backpack"])
         raw_effects=data.get("effects",{})
         for key,limit in (("energy",9),("quiet",20)):

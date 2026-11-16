@@ -45,7 +45,7 @@ class MenuViews:
         r, s = self.renderer, self.screen
         r.text(s, "Story: ikuti tujuan dan penanda emas. Escape: 2 sekring / panel / gerbang.", (left + 40, 225), 18, PAPER)
         controls = [("WASD", "Gerak"), ("Shift / Ctrl", "Lari / pelan"), ("E / tahan E", "Interaksi / panel"),
-                    ("Mouse / Q", "Arah / lempar botol"), ("F / M", "Senter / denah"), ("Esc / F11", "Jeda / layar penuh")]
+                    ("Mouse / Q", "Arah / lempar botol"), ("F / M / V", "Senter / denah / 3D"), ("Esc / F11", "Jeda / layar penuh")]
         column = (width - 80) / 3
         for i, (key, label) in enumerate(controls):
             x, y = left + 40 + i % 3 * column, 288 + i // 3 * 72
@@ -82,16 +82,19 @@ class MenuViews:
 
     def draw_pause(self):
         r, s = self.renderer, self.screen
-        r.draw_session(s, self.session, self.settings)
+        if self.outcome is not None:self.outcome.draw(s,r,self.settings["reduced_motion"])
+        else:r.draw_session(s, self.session, self.settings)
         shade = pygame.Surface(s.get_size(), pygame.SRCALPHA)
         shade.fill((3, 8, 12, 218))
         s.blit(shade, (0, 0))
         x = self.width / 2 - 120
         r.text(s, "Jeda", (self.width / 2, 175), 36, PAPER, align="center")
         actions=[("Lanjut","resume")]
-        if getattr(self.session,"cutscene",None):actions.append(("Lewati adegan","cutscene_skip"))
-        if not getattr(self.session,"modal",False):actions.append(("Backpack","backpack"))
-        if self.session.mode_key=="story":actions += [("Simpan permainan","save_menu"),("Muat permainan","load_menu")]
+        if self.outcome is not None or getattr(self.session,"cutscene",None):actions.append(("Lewati adegan","cutscene_skip"))
+        if self.session.status=="playing" and not getattr(self.session,"modal",False):actions.append(("Backpack","backpack"))
+        if self.session.mode_key=="story":
+            if self.session.status=="playing":actions.append(("Simpan permainan","save_menu"))
+            actions.append(("Muat permainan","load_menu"))
         actions += [("Pencapaian","achievements"),("Cara main","help"),("Pengaturan","settings"),("Menu","menu")]
         for i, (label, action) in enumerate(actions):
             self.button((x, 260 + i * 56, 240, 44), label, action, "primary" if i == 0 else "text")
