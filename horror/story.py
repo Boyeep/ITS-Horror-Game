@@ -255,14 +255,17 @@ class StorySession(StoryState, Session):
                 return ("shutdown" if key=="shutdown" else "story"),key,label
         for action,key,pos,label in self.building_options():
             if self.layout.can_interact_door(self.player,self.layout.tile(pos),DOOR_INTERACT_RANGE):return action,key,label
-        for direction,building,pos,label in self.stair_options():
+        from .guidance import story_targets
+        required_stairs={tuple(goal.point) for goal in story_targets(self) if goal.key=="stairs"}
+        options=sorted(self.stair_options(),key=lambda row:(tuple(row[2]) not in required_stairs,self.player.distance_squared_to(row[2])))
+        for direction,building,pos,label in options:
             if self.player.distance_to(pos)<58 and self.layout.line_clear(self.player,pos):
                 nearby=super().interaction()
                 if nearby and nearby[0]=="door":
                     door=self.layout.doors[nearby[1]]
                     distance=self.player.distance_to(self.layout.center(nearby[1]))
                     if not door.opened and distance<self.player.distance_to(pos):return nearby
-                if nearby and nearby[0] in ("fuse","medkit","bottle","loot"):
+                if tuple(pos) not in required_stairs and nearby and nearby[0] in ("fuse","medkit","bottle","loot"):
                     positions={"fuse":self.fuses,"medkit":self.medkits,"bottle":self.pickups,"loot":[p.pos for p in self.loot]}[nearby[0]]
                     if self.player.distance_to(positions[nearby[1]])<self.player.distance_to(pos):return nearby
                 return "stairs",(direction,building),label
