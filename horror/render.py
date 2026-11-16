@@ -217,6 +217,8 @@ class Renderer(WorldRenderer, OverlayRenderer):
         self.art.actor(screen, monster.kind, p, monster.facing, time, moving)
         if monster.state == "windup":
             self.draw.line(screen, (146,94,83), p + monster.dash * 28, p + monster.dash * 90, 1)
+        elif monster.state == "attack":
+            self.draw.circle(screen, (207,119,86), p, 26, 2)
 
     def draw_player(self, screen, session):
         self.draw_human(screen,"player",session.player,session.facing,session.elapsed,session.moving,session.invulnerable>0)
