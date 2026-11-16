@@ -15,3 +15,7 @@ monster_ambusher_3.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/
 monster_ambusher_4.ogg - StarNinjas - CC0-1.0 - https://opengameart.org/content/16-monster-growls
 crickets.mp3 - Wolfgang_ / Ted Kerr - CC0-1.0 - https://opengameart.org/content/crickets-ambient-noise-loopable
 nightshift.mp3 - iamoneabe - CC0-1.0 - https://opengameart.org/content/night-shift
+radio_1.ogg - Kresiek The Furry - CC0-1.0 - https://opengameart.org/node/140843
+radio_2.ogg - Kresiek The Furry - CC0-1.0 - https://opengameart.org/node/140843
+radio_3.ogg - Kresiek The Furry - CC0-1.0 - https://opengameart.org/node/140843
+book_1.ogg - yd - CC0-1.0 - https://opengameart.org/node/6486

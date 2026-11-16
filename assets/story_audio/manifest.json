@@ -118,6 +118,34 @@
       "page": "https://opengameart.org/content/night-shift",
       "license": "CC0-1.0",
       "sha256": "74d5627300fdfeb9f52478833e6323e9d8312d69c02f15aed54ce595fdcaa2be"
+    },
+    {
+      "file": "radio_1.ogg",
+      "author": "Kresiek The Furry",
+      "page": "https://opengameart.org/node/140843",
+      "license": "CC0-1.0",
+      "sha256": "bb5049e1596d2e43b14dcf30a7c28704c8e8d7c4a4cd368d75d6d0a5bc8d469f"
+    },
+    {
+      "file": "radio_2.ogg",
+      "author": "Kresiek The Furry",
+      "page": "https://opengameart.org/node/140843",
+      "license": "CC0-1.0",
+      "sha256": "cda039d37a67057ce4ef6d07d294362de366879ffa42e96af0e980f0e8869562"
+    },
+    {
+      "file": "radio_3.ogg",
+      "author": "Kresiek The Furry",
+      "page": "https://opengameart.org/node/140843",
+      "license": "CC0-1.0",
+      "sha256": "765c5ef9822d578df35c0e1e500a45c84af7f37340b8eae547c0e10dfaf1fc12"
+    },
+    {
+      "file": "book_1.ogg",
+      "author": "yd",
+      "page": "https://opengameart.org/node/6486",
+      "license": "CC0-1.0",
+      "sha256": "d76f9ed7080b8b1a050a942f59f07e03ed35867b8cc6b5eac78f6478e3cbc283"
     }
   ]
 }
