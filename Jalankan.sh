@@ -16,26 +16,38 @@ fail() {
 trap fail ERR
 
 EXE="dist/SetelahJamMalam.exe"
+case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*)
+        PYTHON=".venv/Scripts/python.exe"
+        BOOTSTRAP="python"
+        WINDOWS=true
+        ;;
+    *)
+        PYTHON=".venv/bin/python"
+        BOOTSTRAP="python3"
+        WINDOWS=false
+        ;;
+esac
+
 if [[ -f "$EXE" ]]; then
-    if command -v wine >/dev/null 2>&1; then
-        wine "$EXE"
+    if [[ "$WINDOWS" == true ]]; then
+        "$EXE" "$@"
         exit 0
-    elif [[ "$(uname -s)" =~ ^(MINGW|MSYS|CYGWIN) ]]; then
-        "$EXE"
+    elif command -v wine >/dev/null 2>&1; then
+        wine "$EXE" "$@"
         exit 0
     else
         echo "Executable Windows ditemukan, tetapi Wine tidak tersedia; mencoba menjalankan source." >&2
     fi
 fi
 
-if [[ ! -x ".venv/bin/python" ]]; then
-    python3 -m venv .venv
+if [[ ! -x "$PYTHON" ]]; then
+    "$BOOTSTRAP" -m venv .venv
 fi
 
-PYTHON=".venv/bin/python"
 if ! "$PYTHON" -c 'import pygame' >/dev/null 2>&1; then
     "$PYTHON" -m pip install -r requirements.txt
 fi
-"$PYTHON" main.py
+"$PYTHON" main.py "$@"
 
 trap - ERR

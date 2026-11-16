@@ -10,6 +10,8 @@ Game horor top-down 2D berlatar interpretasi fiksi kampus ITS. Arga menerima pes
 
 **Linux/macOS:** jalankan `./Jalankan.sh` untuk menyiapkan environment Python dan memainkan game dari source. `Build.sh` hanya mendukung Windows karena pipeline rilis menghasilkan executable `.exe`.
 
+Pasang Python 3.12 dengan modul `venv` terlebih dahulu (`python3` di Linux/macOS, `python` di Windows/Git Bash). Script meneruskan argumen game, misalnya `./Jalankan.sh --story` atau `./Jalankan.sh --headless --frames 10 --data-dir build/dev-profile`. Di Git Bash, launcher memakai `.venv/Scripts/python.exe`; di Linux/macOS memakai `.venv/bin/python`. Jika `.exe` tersedia, Windows menjalankannya langsung dan Linux/macOS memakai Wine bila terpasang.
+
 - **Cerita:** tiga bab, 25 tahap, lima cutscene, kampus terbuka serta interior bertingkat. Tiga slot manual dan autosave menyimpan perjalanan.
 - **Escape:** 30 area dengan seed acak dan optimasi Simulated Annealing. Temukan dua sekring, aktifkan panel, lalu lewati pintu keluar.
 - Tiga monster dengan sensor berbeda dan navigasi Hill Climbing + Simulated Annealing, noise berdasarkan tindakan/material, HP, stamina, senter, tujuh perlengkapan, tas 12 ruang, dan 15 pencapaian lokal.
