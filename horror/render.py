@@ -10,6 +10,7 @@ from .config import (AMBER, HEIGHT, MUTED, PAPER, RED, TEAL, TILE, WIDTH,
 from .rendering.world import WorldRenderer
 from .rendering.overlays import OverlayRenderer
 from .art import Art
+from .architecture import STAIR_SIZE
 from .pixels import ScaledDraw
 from .backdrop import SCENES, NAMES
 from .backdrop import CampusAtmosphere,cover_image
@@ -248,8 +249,8 @@ class Renderer(WorldRenderer, OverlayRenderer):
             rect=image.get_rect(center=(round(p.x*sx),round(p.y*sy)))
             if target.get_rect().colliderect(rect):self.lit_image(target,image,rect,light)
         for kind,pos,vertical,swing in self.props:
-            w,h=(96,96) if kind=="door" else (88,112)
-            anchor=(48,48) if kind=="door" else (44,56)
+            w,h=(96,96) if kind=="door" else STAIR_SIZE
+            anchor=(48,48) if kind=="door" else (w/2,h/2)
             p=self.world_to_screen(pos)
             rect=pygame.Rect(round((p.x-anchor[0])*sx),round((p.y-anchor[1])*sy),round(w*sx),round(h*sy))
             if not target.get_rect().colliderect(rect):continue

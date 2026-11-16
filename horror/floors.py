@@ -28,7 +28,8 @@ class BuildingLayout(Layout):
             errors=self.validate()
             if errors:raise ValueError(errors)
             return
-        self.down=self.center((5,19));self.up=self.center((26,5)) if floor+1<FLOOR_COUNTS[building] else None
+        # Opposing flights share one stair bay on every generic floor.
+        self.down=self.center((5,19));self.up=self.center((8,19)) if floor+1<FLOOR_COUNTS[building] else None
         self.stairs=[("down",self.down)]+([("up",self.up)] if self.up else [])
         self.zones=[(8,6),(23,6),(8,16),(23,16),(16,12)]
         self.labels=[]
@@ -48,7 +49,7 @@ class BuildingLayout(Layout):
                 for dx,dy in ((-4,-3),(3,-3),(-4,2)):
                     # Stair approaches and all four room centers stay clear.
                     x,y=cx+dx,cy+dy
-                    if abs(x-5)<3 and abs(y-19)<3 or abs(x-26)<3 and abs(y-5)<3:continue
+                    if abs(x-5)<3 and abs(y-19)<3 or self.up and abs(x-8)<3 and abs(y-19)<3:continue
                     self.add_furniture(kinds[i],x,y,2,1)
             names={22:("ARSIP","KATALOG","RUANG BACA","MIKROFILM"),11:("SERVER","LAB MALAM","ARSIP DATA","RUANG ASISTEN"),
                    5:("DISTRIBUSI","KONTROL","PEMANCAR","SERVIS"),15:("RUANG RAPAT","ARSIP INSIDEN","OPERASIONAL","ADMINISTRASI"),
