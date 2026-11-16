@@ -5,9 +5,13 @@ import random
 
 import pygame
 from .resources import asset_path
+from .tension import CueGate, approach, tension_level
 
 
 class Audio:
+    release_cues = True  # set False if a scripted scene supplies its own quiet after a chase
+    RECORDED_CUES = ("radio", "distant", "book", "tape", "valve", "tune", "drink", "deploy")
+
     def __init__(self):
         self.available = pygame.mixer.get_init() is not None
         self.volume = .65
@@ -20,11 +24,15 @@ class Audio:
         self.banks = {}
         self.counters = {}
         self.ambient = None
+        self.tension, self.heart_fast, self.breath_wait = 0., False, 4.
+        self.hush, self.release, self.chase_time, self.relief_due, self.was_indoor, self.watched = 1., 0., 0., 0., None, None
+        self.gate = CueGate()
         if not self.available:
             return
         pygame.mixer.set_num_channels(32)
-        pygame.mixer.set_reserved(6)
+        pygame.mixer.set_reserved(7)
         self.voice_channel=pygame.mixer.Channel(5)
+        self.heart_channel=pygame.mixer.Channel(6)
         self.ambient = pygame.mixer.Channel(0)
         definitions = {
             "power": (1.1, 120, .45, .1),
@@ -36,6 +44,11 @@ class Audio:
         }
         for name, values in definitions.items():
             self.sounds[name] = self.synthesize(name, *values)
+        self.sounds["heart_slow"] = self.heartbeat(66)
+        self.sounds["heart_fast"] = self.heartbeat(112)
+        self.banks["breath_heavy"] = [self.breath(length, seed) for length, seed in ((1.5, 1), (1.75, 2), (1.3, 3))]
+        self.heart_channel.set_volume(0)
+        self.heart_channel.play(self.sounds["heart_slow"], loops=-1)
         for speaker,frequency in (("arga",177),("nara",263)):
             self.banks["voice_"+speaker]=[self.voice_tone(frequency*factor) for factor in (.96,1.,1.04)]
         folder = asset_path("audio")
@@ -78,11 +91,48 @@ class Audio:
         self.banks["drink"]=self.banks["pickup"]
         self.banks["tape"]=self.banks["heal"]
         self.banks["deploy"]=self.banks["panel"]
+        for cue in self.RECORDED_CUES:  # real recordings replace the borrowed foley above once they are bundled
+            files=self.variants(story,cue)
+            if files:self.banks[cue]=[pygame.mixer.Sound(str(path)) for path in files]
         self.banks["alert"] = self.banks["monster_guard"]
         self.banks["growl"] = self.banks["monster_ambusher"]
         self.banks["caught"] = self.banks["monster_listener"]
         stinger = pygame.mixer.Sound(str(story / "stinger.wav"))
         self.sounds["stinger"] = self.trim(stinger, 1.15)
+
+    @staticmethod
+    def heartbeat(bpm):
+        """Soft synthesized lub-dub; one beat per loop, silent at the loop point."""
+        rate, _, channels = pygame.mixer.get_init()
+        total = round(rate * 60 / bpm)
+        samples = array.array("h", [0] * (total * channels))
+        for start, frequency, level in ((0., 52., 1.), (.19, 44., .7)):
+            first = round(rate * start)
+            for i in range(min(total - first, round(rate * .22))):
+                t = i / rate
+                value = math.sin(math.tau * frequency * t) * math.exp(-t * 19) * min(1., t / .006) * level
+                for channel in range(channels):
+                    index = (first + i) * channels + channel
+                    samples[index] = max(-32767, min(32767, samples[index] + int(value * 15000)))
+        return pygame.mixer.Sound(buffer=samples.tobytes())
+
+    @staticmethod
+    def breath(duration, seed):
+        """Soft low-passed noise that swells and fades, like a held breath let go."""
+        rate, _, channels = pygame.mixer.get_init()
+        rng, low, samples = random.Random(seed), 0., array.array("h")
+        total = round(rate * duration)
+        for i in range(total):
+            progress = i / total
+            low += (rng.uniform(-1, 1) - low) * .12
+            sample = int(low * math.sin(math.pi * progress) ** 2 * (1 - .35 * progress) * 18000)
+            samples.extend([sample] * channels)
+        return pygame.mixer.Sound(buffer=samples.tobytes())
+
+    @staticmethod
+    def variants(folder, cue):
+        """Bundled recordings named <cue>_<n>.ogg/.wav/.mp3 (see tools/add_story_audio.py)."""
+        return sorted((p for p in folder.glob(cue + "_*") if p.suffix.lower() in (".ogg", ".wav", ".mp3")), key=lambda p: p.name)
 
     @staticmethod
     def voice_tone(frequency):
@@ -126,12 +176,61 @@ class Audio:
             indoor=not outdoor
             night=getattr(session,"act",0)>0 and (indoor or getattr(session,"act",0)==2)
         self.night_mix+=(float(night)-self.night_mix)*min(1.,dt*.9)
+        duck *= self.atmosphere(dt, session if playing else None, duck, indoor)
         self.outdoor_mix+=(float(playing and not indoor)-self.outdoor_mix)*min(1.,dt*2)
         self.music_channels[0].set_volume(music_volume * .65 * duck * (1 - self.chase_mix)*(1-self.night_mix))
         self.music_channels[1].set_volume(music_volume * .25 * duck * self.chase_mix)
         self.night_channel.set_volume(music_volume*.2*duck*(1-self.chase_mix)*self.night_mix)
         self.outdoor_channel.set_volume(self.volume*.16*duck*self.outdoor_mix*(.3 if self.chase_mix>.5 else 1))
         self.room_channel.set_volume(self.volume*.2*duck*(1-self.outdoor_mix) if playing else 0)
+
+    def atmosphere(self, dt, session, duck, indoor=False):
+        """Heartbeat, breathing and the quiet after a scare; returns a factor (<1) that hushes ambience."""
+        if session is not self.watched:
+            self.watched = session
+            self.chase_time, self.release, self.relief_due, self.was_indoor = 0., 0., 0., None
+        self.tension = approach(self.tension, tension_level(session) if session else 0., dt)
+        self.gate.tick(dt)
+        quiet = session is None or getattr(session, "modal", False)
+        fast = self.tension > (.55 if self.heart_fast else .72)
+        if fast != self.heart_fast:
+            self.heart_fast = fast
+            self.heart_channel.play(self.sounds["heart_fast" if fast else "heart_slow"], loops=-1)
+        pulse = min(1., max(0., (self.tension - .28) / .5))
+        self.heart_channel.set_volume(0 if quiet else self.volume * pulse * .6 * duck)
+        if not quiet and self.release_cues:
+            self.quiet_moments(dt, session, indoor)
+        self.release = max(0., self.release - dt)
+        self.hush = approach(self.hush, .45 if self.release > 0 else 1., dt, rise=.8, fall=4.)
+        if quiet or self.tension <= .5 or getattr(session, "cutscene", None):
+            self.breath_wait = max(self.breath_wait, 2.5)
+            return self.hush
+        self.breath_wait -= dt
+        if self.breath_wait <= 0:
+            if self.gate.allow("breath", 4.):
+                self.play("breath_heavy", gain=.3 + .5 * self.tension)
+            self.breath_wait = 7 - 3.5 * self.tension + self.rng.random() * 2
+        return self.hush
+
+    def quiet_moments(self, dt, session, indoor):
+        """Cues read from what the player just did: a chase that ended, or stepping indoors."""
+        if getattr(session, "chase_active", False):
+            self.chase_time += dt
+            self.relief_due = 0.
+        else:
+            if self.chase_time >= 3.:
+                self.relief_due = 3.  # wait up to 3s for a free moment instead of stacking on another cue
+            self.chase_time = 0.
+            if self.relief_due > 0:
+                self.relief_due -= dt
+                if getattr(session, "encounter_timer", 0.) <= 0 and getattr(session, "health", 1) > 0 and self.gate.allow("relief", 20.):
+                    self.relief_due, self.release = 0., 3.2
+                    self.breath_wait = max(self.breath_wait, 5.)
+                    self.play("breath_heavy", gain=.6)
+        if self.was_indoor is False and indoor and self.tension < .3 and self.gate.allow("enter", 45.):
+            self.release = max(self.release, 1.6)
+            self.play("distant", gain=.3)
+        self.was_indoor = indoor
 
     @staticmethod
     def pitched(sound, factor):
