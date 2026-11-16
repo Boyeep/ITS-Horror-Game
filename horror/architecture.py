@@ -6,6 +6,18 @@ from .characters import InkDrawing
 
 DOOR_SIZE=96
 DOOR_ANCHOR=(48,48)
+STAIR_SIZE=(60,76)
+
+
+def stair_bounds(point):
+    rect=pygame.Rect((0,0),STAIR_SIZE);rect.center=point;return rect
+
+
+def top_window_columns(layout):
+    """Window bays belong to occupied wall spans, never across an open courtyard."""
+    skip=set(getattr(layout,"void_cells",()))|set(getattr(layout,"outdoor_cells",()))
+    return [x for x in range(3,layout.width-3,5)
+            if all(layout.grid[0][xx]==1 and (xx,1) not in skip for xx in range(x,x+3))]
 
 
 def door_geometry(vertical,swing):

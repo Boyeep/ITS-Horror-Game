@@ -2,10 +2,27 @@
 import random
 import pygame
 from ..config import INK, ROOM_H, ROOM_KINDS, ROOM_W, TILE
+from ..architecture import top_window_columns
 from ..world import Furniture
 
 
 class WorldRenderer:
+    def exterior_roof_cell(self,rect,cell,solid):
+        """Continuous exterior roof with edge trim; gaps use the collision footprint."""
+        self.draw.rect(self.world,(60,79,87),rect)
+        x,y=cell
+        if y%3==0:self.draw.line(self.world,(69,88,95),rect.topleft,rect.topright)
+        if x%5==0 and y%4==2 and all((x+dx,y+dy) in solid for dx,dy in ((-1,0),(1,0),(0,-1),(0,1))):
+            self.draw.rect(self.world,(36,51,58),(rect.x+4,rect.y+7,31,22))
+            for offset in (11,16,21):self.draw.line(self.world,(98,120,123),(rect.x+8,rect.y+offset),(rect.right-8,rect.y+offset),2)
+        if (x,y-1) not in solid:self.draw.line(self.world,(143,155,147),rect.topleft,rect.topright,3)
+        if (x-1,y) not in solid:self.draw.line(self.world,(101,122,123),rect.topleft,rect.bottomleft,3)
+        if (x+1,y) not in solid:self.draw.line(self.world,(35,49,57),rect.topright,rect.bottomright,4)
+        if (x,y+1) not in solid:
+            self.draw.line(self.world,(28,42,48),rect.bottomleft,rect.bottomright,5)
+            self.draw.rect(self.world,(76,113,123),(rect.x+5,rect.bottom-14,30,8))
+            self.draw.line(self.world,(160,180,168),(rect.x+20,rect.bottom-14),(rect.x+20,rect.bottom-6))
+
     def build_world(self, layout):
         self.seed = layout.seed
         self.last_room = None
@@ -72,6 +89,7 @@ class WorldRenderer:
                     self.art.place(self.world, 263, (px, py, 11, 15), angle=rng.randrange(-18, 19))
 
     def build_campus_world(self, layout):
+        exterior={cell for cell in getattr(layout,"informatika_cells",()) if layout.grid[cell[1]][cell[0]]==1}
         grass = pygame.Surface((TILE,TILE)).convert()
         grass.fill((54,69,50))
         rng=random.Random(1960)
@@ -86,6 +104,9 @@ class WorldRenderer:
                     self.draw.rect(self.world,(37,65,65),rect)
                     self.draw.line(self.world,(47,77,75),(rect.x+8,rect.y+16),(rect.x+29,rect.y+16))
                 elif value==1:
+                    if (x,y) in exterior:
+                        self.exterior_roof_cell(rect,(x,y),exterior)
+                        continue
                     self.draw.rect(self.world,(90,100,93),rect)
                     self.draw.rect(self.world,(62,72,66),rect.inflate(-2,-2),1)
                     self.draw.line(self.world,(144,143,125),rect.topleft,rect.topright,2)
@@ -166,7 +187,7 @@ class WorldRenderer:
                     self.world.blit(self.art.image(96+(x+y)%4 if wood else 12,(TILE,TILE),tint=tint),rect)
         for item in layout.furniture:self.art.furniture(self.world,item)
         if hasattr(layout,"lab_bounds"):self.project_lab(layout)
-        for x in range(3,layout.width-3,5):
+        for x in top_window_columns(layout):
             if not layout.rooftop:
                 self.draw.rect(self.world,(37,63,74),(x*TILE+5,3,85,22))
                 self.draw.line(self.world,(134,145,130),(x*TILE+45,3),(x*TILE+45,25),2)
