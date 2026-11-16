@@ -99,6 +99,14 @@ class Audio:
     def stop_voice(self):
         if self.available:self.voice_channel.stop()
 
+    def stop_effects(self):
+        """End one-shot cues on terminal skip/pause; preserve persistent ambience loops."""
+        if not self.available:return
+        for index in range(5,pygame.mixer.get_num_channels()):
+            channel=pygame.mixer.Channel(index)
+            if index==6 and hasattr(self,"heart_channel"):channel.set_volume(0)
+            else:channel.stop()
+
     @staticmethod
     def trim(sound, seconds):
         rate, _, channels = pygame.mixer.get_init()

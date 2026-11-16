@@ -690,6 +690,8 @@ class AppTests(unittest.TestCase):
         self.app.session.status = "won"
         self.app.update(.01, {})
         self.app.draw()
+        self.assertEqual(self.app.mode, "outcome")
+        self.app.finish_outcome()
         self.assertEqual(self.app.mode, "result")
         self.assertEqual(self.app.settings["wins"], 1)
         self.app.action("retry")

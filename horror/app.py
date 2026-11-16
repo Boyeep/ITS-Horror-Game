@@ -20,6 +20,7 @@ from .inventory import ITEMS
 from .achievements import AchievementProfile, ACHIEVEMENTS
 from .pixels import enable_native_dpi
 from .cinematics import CinematicRenderer
+from .outcomes import OutcomePresentation
 
 
 DEFAULT_SETTINGS = {"volume": .65, "brightness": .6, "reduced_motion": False,
@@ -69,6 +70,7 @@ class App(MenuViews, StoryViews, InventoryViews):
             self.audio.set_volume(self.settings["volume"])
         self.mode, self.previous_mode = "menu", "menu"
         self.session = None
+        self.outcome=None;self.result_session=None;self.result_input_lock=False
         self.buttons = []
         self.focus, self.seed_focused, self.seed_text = 0, False, ""
         self.running = True
@@ -132,6 +134,7 @@ class App(MenuViews, StoryViews, InventoryViews):
             return False
 
     def start_story(self, resume=False,data=None,recover=False):
+        self.outcome=None;self.result_session=None;self.result_input_lock=False
         self.set_mode("loading");self.draw();self.present()
         data=data if data is not None else self.story_checkpoint if resume else None
         difficulty=data["difficulty"] if data else self.settings["difficulty"]
@@ -172,12 +175,15 @@ class App(MenuViews, StoryViews, InventoryViews):
             self.renderer.update_camera(self.session, snap=True)
 
     def set_mode(self, mode):
+        if mode=="playing" and self.outcome is not None:mode="outcome"
         if self.audio and mode!="playing":self.audio.stop_voice()
+        if self.audio and self.outcome is not None and mode in ("pause","menu","result"):self.audio.stop_effects()
         self.mode, self.focus = mode, 0
         self.seed_focused = False
         self.mouse_active = False
 
     def start(self, seed=None):
+        self.outcome=None;self.result_session=None;self.result_input_lock=False
         self.set_mode("loading")
         self.draw()
         self.present()
@@ -252,8 +258,11 @@ class App(MenuViews, StoryViews, InventoryViews):
         elif action=="dialogue_next":self.advance_dialogue()
         elif action=="cutscene_skip":
             if self.audio:self.audio.stop_voice()
-            self.session.finish_cutscene()
-            if self.mode=="pause":self.set_mode("playing")
+            if self.outcome is not None:self.finish_outcome()
+            else:
+                self.session.finish_cutscene()
+                if self.mode=="pause":self.set_mode("playing")
+        elif action=="outcome_skip":self.finish_outcome()
         elif action=="journal_next":self.session.journal_page+=1
         elif action=="journal_prev":self.session.journal_page-=1
         elif action.startswith("difficulty:"):
@@ -311,7 +320,7 @@ class App(MenuViews, StoryViews, InventoryViews):
                 self.running = False
             elif event.type in (pygame.WINDOWSIZECHANGED, pygame.VIDEORESIZE):
                 self.resize_canvas()
-            elif event.type == pygame.WINDOWFOCUSLOST and self.mode == "playing":
+            elif event.type == pygame.WINDOWFOCUSLOST and self.mode in ("playing","outcome"):
                 self.set_mode("pause")
             elif event.type == pygame.MOUSEMOTION:
                 self.mouse = self.to_canvas(event.pos)
@@ -323,12 +332,22 @@ class App(MenuViews, StoryViews, InventoryViews):
                         if button.rect.collidepoint(self.mouse):
                             self.focus = i
                             self.action(button.action)
+                            if self.result_session is self.session and self.mode=="result":return
                             break
+            elif event.type==pygame.KEYUP and event.key in (pygame.K_RETURN,pygame.K_SPACE):
+                self.result_input_lock=False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_F11:
                     self.toggle_fullscreen()
                     continue
-                if event.key==pygame.K_F5 and self.session and self.session.mode_key=="story" and self.mode in ("playing","pause"):
+                if self.mode=="outcome":
+                    if event.key==pygame.K_ESCAPE:self.set_mode("pause")
+                    elif event.key in (pygame.K_RETURN,pygame.K_SPACE) and not getattr(event,"repeat",False):
+                        self.finish_outcome(block_input=True);return
+                    continue
+                if self.mode=="result" and event.key in (pygame.K_RETURN,pygame.K_SPACE) and (self.result_input_lock or getattr(event,"repeat",False)):
+                    continue
+                if event.key==pygame.K_F5 and self.session and self.session.status=="playing" and self.session.mode_key=="story" and self.mode in ("playing","pause"):
                     self.action("save_menu");continue
                 if event.key==pygame.K_F9 and self.mode in ("playing","pause","menu"):
                     self.action("load_menu");continue
@@ -404,6 +423,9 @@ class App(MenuViews, StoryViews, InventoryViews):
         self.profile_timer+=dt
         if self.profile_timer>10:self.achievements.save();self.profile_timer=0
         if self.audio:self.audio.update_context(dt,self.session,self.mode,self.settings["music_volume"])
+        if self.mode=="outcome":
+            if self.outcome.update(dt):self.finish_outcome()
+            return
         if self.mode=="backpack":
             self.session.item_cooldown=max(0,self.session.item_cooldown-dt)
             self.session.throw_cooldown=max(0,self.session.throw_cooldown-dt)
@@ -435,15 +457,34 @@ class App(MenuViews, StoryViews, InventoryViews):
         else:
             self.session.audio_events.clear()
         if self.session.status != "playing":
-            if self.session.status == "won":
-                if self.session.mode_key=="story":self.save_story()
-                else:
-                    self.settings["wins"] += 1
-                    best = self.settings["best_seconds"]
-                    if best is None or self.session.elapsed < best:
-                        self.settings["best_seconds"] = self.session.elapsed
-                self.save_settings()
-            self.set_mode("result")
+            self.begin_result()
+
+    def begin_result(self):
+        if self.result_session is self.session:
+            self.set_mode("outcome" if self.outcome else "result");return
+        self.result_session=self.session
+        won=self.session.status=="won";story=self.session.mode_key=="story"
+        if won:
+            if story:self.save_story()
+            else:
+                self.settings["wins"]+=1
+                best=self.settings["best_seconds"]
+                if best is None or self.session.elapsed<best:self.settings["best_seconds"]=self.session.elapsed
+            self.save_settings()
+        if won and story:
+            # StorySession already completed its authored ending before status became won.
+            self.set_mode("result");return
+        self.renderer.bind_ui(self.screen)
+        self.renderer.draw_session(self.screen,self.session,self.settings,cinematic=True)
+        self.outcome=OutcomePresentation(self.screen,won,story)
+        self.map_open=self.wave_open=False;self.wave_slide=0.
+        self.set_mode("outcome")
+
+    def finish_outcome(self,block_input=False):
+        if self.outcome is None:return
+        if self.audio:self.audio.stop_effects()
+        self.outcome=None;self.result_input_lock=block_input
+        self.set_mode("result")
 
     def observe_achievements(self):
         if not self.session:return
@@ -553,6 +594,9 @@ class App(MenuViews, StoryViews, InventoryViews):
                 self.renderer.draw.line(self.screen, (160, 184, 171), (x + 5, y), (x + 9, y))
         elif self.mode == "pause":
             self.draw_pause()
+        elif self.mode=="outcome":
+            self.outcome.draw(self.screen,self.renderer,self.settings["reduced_motion"])
+            self.button((self.width-240,HEIGHT-53,215,35),"Lewati adegan","outcome_skip","text")
         elif self.mode == "help":
             self.draw_help()
         elif self.mode == "settings":
