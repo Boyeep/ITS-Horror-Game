@@ -29,6 +29,10 @@ Seluruh rekaman berikut dirilis **CC0 1.0** pada halaman sumber. Salinan berkas,
 | Unsolved Investigation | isaiah658 | https://opengameart.org/content/unsolved-investigation | Musik eksplorasi, volume dan crossfade runtime |
 | Chase - Diamond Dust | NBJDLukasAbsolute | https://opengameart.org/content/chase-diamond-dust | `chase2.wav` sebagai loop; `chase2_end.wav` dipotong 1,15 detik dan diberi fade untuk stinger |
 | 16 Monster Growls | StarNinjas | https://opengameart.org/content/16-monster-growls | `monster.2.ogg`, `monster.6.ogg`, `monster.12.ogg` untuk tiga makhluk; gain spasial runtime |
+| Klip radio (`radio_1.ogg`–`radio_3.ogg`) | Kresiek The Furry | https://opengameart.org/node/140843 | Tiga variasi cue radio; gain spasial dan pemilihan tanpa pengulangan langsung |
+| Foley buku (`book_1.ogg`) | yd | https://opengameart.org/node/6486 | Menggantikan foley kain untuk interaksi buku |
+
+Metadata sumber, lisensi CC0-1.0, dan hash empat rekaman tambahan tersebut tercatat pada manifest/kredit audio. Detak jantung dan napas atmosfer disintesis dari kode proyek; variasi tanah, noda lantai, poster, papan, ventilasi, jam, APAR, grain dan vignette juga dibuat dari kode tanpa aset eksternal tambahan.
 
 ### Referensi geografi
 

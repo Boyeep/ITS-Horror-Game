@@ -11,6 +11,22 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 
+def audit_manifest(folder):
+    """Check both directions: every manifest hash and every bundled media file."""
+    manifest = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
+    recorded = set()
+    for entry in manifest["files"]:
+        path = folder / entry["file"]
+        if hashlib.sha256(path.read_bytes()).hexdigest() != entry["sha256"]:
+            raise AssertionError(f"Asset hash mismatch: {path}")
+        if folder.name == "story_audio" and not all(entry.get(key) for key in ("author", "page", "license")):
+            raise AssertionError(f"Missing story audio credit: {path}")
+        recorded.add(path.resolve())
+    media = {p.resolve() for p in folder.rglob("*") if p.suffix.lower() in (".png", ".jpg", ".ogg", ".wav", ".mp3")}
+    if media - recorded:
+        raise AssertionError(f"Media missing from manifest: {sorted(str(p) for p in media - recorded)}")
+
+
 def audit():
     os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
     os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
@@ -66,11 +82,7 @@ def audit():
         raise AssertionError(f"Tile catalog differs from runtime: {tile_ids ^ set(TILE_IDS)}")
     # Match every imported file to its original recorded hash, including preserved licenses.
     for folder in ("kenney", "audio", "story_audio"):
-        manifest = json.loads((assets / folder / "manifest.json").read_text(encoding="utf-8"))
-        for entry in manifest["files"]:
-            path = assets / folder / entry["file"]
-            if hashlib.sha256(path.read_bytes()).hexdigest() != entry["sha256"]:
-                raise AssertionError(f"Asset hash mismatch: {path}")
+        audit_manifest(assets / folder)
     branding = json.loads((assets / "branding/source.json").read_text(encoding="utf-8"))
     if hashlib.sha256((assets / "branding/its-crest.png").read_bytes()).hexdigest() != branding["sha256"]:
         raise AssertionError("ITS crest differs from its recorded source")

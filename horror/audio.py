@@ -11,6 +11,8 @@ from .tension import CueGate, approach, tension_level
 class Audio:
     release_cues = True  # set False if a scripted scene supplies its own quiet after a chase
     RECORDED_CUES = ("radio", "distant", "book", "tape", "valve", "tune", "drink", "deploy")
+    ATMOSPHERE_BLOCKERS = {"stinger", "alert", "growl", "caught", "hurt", "power", "win", "radio", "phone_vibrate",
+                           "monster_guard", "monster_listener", "monster_ambusher"}
 
     def __init__(self):
         self.available = pygame.mixer.get_init() is not None
@@ -27,12 +29,14 @@ class Audio:
         self.tension, self.heart_fast, self.breath_wait = 0., False, 4.
         self.hush, self.release, self.chase_time, self.relief_due, self.was_indoor, self.watched = 1., 0., 0., 0., None, None
         self.gate = CueGate()
+        self.atmosphere_gain = 0.
         if not self.available:
             return
         pygame.mixer.set_num_channels(32)
-        pygame.mixer.set_reserved(7)
+        pygame.mixer.set_reserved(8)
         self.voice_channel=pygame.mixer.Channel(5)
         self.heart_channel=pygame.mixer.Channel(6)
+        self.atmosphere_channel=pygame.mixer.Channel(7)
         self.ambient = pygame.mixer.Channel(0)
         definitions = {
             "power": (1.1, 120, .45, .1),
@@ -189,30 +193,38 @@ class Audio:
         if session is not self.watched:
             self.watched = session
             self.chase_time, self.release, self.relief_due, self.was_indoor = 0., 0., 0., None
+            self.tension, self.hush, self.breath_wait = 0., 1., 4.
+            self.atmosphere_channel.stop()
         self.tension = approach(self.tension, tension_level(session) if session else 0., dt)
         self.gate.tick(dt)
-        quiet = session is None or getattr(session, "modal", False)
+        quiet = (session is None or getattr(session, "modal", False) or getattr(session, "cutscene", None)
+                 or getattr(session, "status", "playing") != "playing" or self.volume <= 0)
+        if quiet:
+            self.atmosphere_channel.stop()
+        else:
+            self.atmosphere_channel.set_volume(self.volume * self.atmosphere_gain * duck)
         fast = self.tension > (.55 if self.heart_fast else .72)
         if fast != self.heart_fast:
             self.heart_fast = fast
             self.heart_channel.play(self.sounds["heart_fast" if fast else "heart_slow"], loops=-1)
         pulse = min(1., max(0., (self.tension - .28) / .5))
         self.heart_channel.set_volume(0 if quiet else self.volume * pulse * .6 * duck)
+        free = not quiet and not self.voice_channel.get_busy() and not self.atmosphere_channel.get_busy()
         if not quiet and self.release_cues:
-            self.quiet_moments(dt, session, indoor)
+            self.quiet_moments(dt, session, indoor, free)
         self.release = max(0., self.release - dt)
         self.hush = approach(self.hush, .45 if self.release > 0 else 1., dt, rise=.8, fall=4.)
-        if quiet or self.tension <= .5 or getattr(session, "cutscene", None):
+        if not free or self.tension <= .5:
             self.breath_wait = max(self.breath_wait, 2.5)
             return self.hush
         self.breath_wait -= dt
         if self.breath_wait <= 0:
             if self.gate.allow("breath", 4.):
-                self.play("breath_heavy", gain=.3 + .5 * self.tension)
+                self.play_atmosphere("breath_heavy", gain=.3 + .5 * self.tension)
             self.breath_wait = 7 - 3.5 * self.tension + self.rng.random() * 2
         return self.hush
 
-    def quiet_moments(self, dt, session, indoor):
+    def quiet_moments(self, dt, session, indoor, ready=True):
         """Cues read from what the player just did: a chase that ended, or stepping indoors."""
         if getattr(session, "chase_active", False):
             self.chase_time += dt
@@ -223,14 +235,19 @@ class Audio:
             self.chase_time = 0.
             if self.relief_due > 0:
                 self.relief_due -= dt
-                if getattr(session, "encounter_timer", 0.) <= 0 and getattr(session, "health", 1) > 0 and self.gate.allow("relief", 20.):
+                if ready and getattr(session, "encounter_timer", 0.) <= 0 and getattr(session, "health", 1) > 0 and self.gate.allow("relief", 20.):
                     self.relief_due, self.release = 0., 3.2
                     self.breath_wait = max(self.breath_wait, 5.)
-                    self.play("breath_heavy", gain=.6)
-        if self.was_indoor is False and indoor and self.tension < .3 and self.gate.allow("enter", 45.):
+                    self.play_atmosphere("breath_heavy", gain=.6)
+        if ready and self.was_indoor is False and indoor and self.tension < .3 and self.gate.allow("enter", 45.):
             self.release = max(self.release, 1.6)
-            self.play("distant", gain=.3)
+            self.play_atmosphere("distant", gain=.3)
         self.was_indoor = indoor
+
+    def play_atmosphere(self, name, gain):
+        """A reserved channel keeps optional atmosphere separate from gameplay/voice cues."""
+        self.atmosphere_gain = gain
+        self.play(name, gain=gain, channel=self.atmosphere_channel)
 
     @staticmethod
     def pitched(sound, factor):
@@ -268,12 +285,15 @@ class Audio:
 
     def set_volume(self, volume):
         self.volume = volume
-        if self.available and volume<=0:self.stop_voice()
+        if self.available and volume<=0:
+            self.stop_voice()
+            self.heart_channel.set_volume(0)
+            self.atmosphere_channel.stop()
 
-    def play(self, name, position=None, listener=None, facing=None, gain=1):
+    def play(self, name, position=None, listener=None, facing=None, gain=1, *, channel=None):
         if not self.available or (name not in self.sounds and name not in self.banks):
             return
-        channel = self.voice_channel if name.startswith("voice_") else pygame.mixer.find_channel()
+        channel = channel if channel is not None else self.voice_channel if name.startswith("voice_") else pygame.mixer.find_channel()
         if channel is None:
             return
         volume, pan = self.volume * gain, 0.
@@ -290,6 +310,9 @@ class Audio:
             sound=self.banks[name][index];self.counters[name]=self.counters.get(name,0)+1
         else:
             sound = self.sounds[name]
+        if name in self.ATMOSPHERE_BLOCKERS:
+            self.atmosphere_channel.stop()
+            self.gate.defer(max(self.gate.gap, sound.get_length()))
         channel.play(sound)
         if name.startswith("voice_"):channel.set_volume(volume)
         else:channel.set_volume(volume * (1 - max(0, pan)), volume * (1 + min(0, pan)))

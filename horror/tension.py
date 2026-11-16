@@ -41,6 +41,10 @@ class CueGate:
     def tick(self, dt):
         self.clock += dt
 
+    def defer(self, duration):
+        """Leave space for a gameplay/scene cue without consuming its own cooldown."""
+        self.quiet_until = max(self.quiet_until, self.clock + duration)
+
     def allow(self, name, cooldown):
         """True when the cue may play now; records it so the next one waits."""
         if self.clock < self.quiet_until or self.clock < self.after.get(name, 0.):

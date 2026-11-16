@@ -6,7 +6,7 @@ Game membaca aset lokal di `assets/`; tidak ada unduhan saat bermain. `horror/re
 | --- | --- | --- |
 | `assets/kenney/` | 23 tile lantai/furnitur, manifest dan lisensi | Top-down Shooter, Kenney, CC0 |
 | `assets/audio/` | 25 klip langkah, pintu dan foley, manifest dan lisensi | Kenney Impact Sounds / RPG Audio, CC0 |
-| `assets/story_audio/` | 17 rekaman musik, ambience, stinger dan monster | Kreator CC0 pada kredit |
+| `assets/story_audio/` | 21 rekaman musik, ambience, stinger, monster, radio dan buku | Kreator CC0 pada kredit |
 | `assets/campus/photos/` | Tiga foto gedung dan manifest sumber | Publikasi ITS |
 | `assets/branding/` | Lambang ITS dan sumber | Panduan identitas visual ITS |
 
@@ -22,8 +22,12 @@ Audit bersifat read-only terhadap aset. Ia melacak pembacaan gambar/audio saat m
 
 Perapian rilis menghapus **83 berkas / 277.468 byte** yang telah tergantikan. Nama, hash dan alasan penghapusan ada pada [asset-cleanup.json](asset-cleanup.json). Ada **69 berkas media aktif** setelah cleanup. Lisensi dan manifest tetap disimpan; screenshot dokumentasi bukan aset runtime.
 
+Pada branch v0.2 untuk #15–#16, empat rekaman radio/buku menambah **42.274 byte** sehingga audit mencatat **73 media aktif**. Cue radio/buku menggantikan alias foley kain; rekaman kain tetap dipakai oleh pickup/heal. Audit memeriksa bahwa setiap media Kenney/foley/story audio ada dalam manifest, setiap hash cocok, dan kredit story audio memiliki author, page serta license. Detail visual baru bersifat prosedural dan tidak menambah berkas runtime.
+
 ## Import ulang
 
 `tools/import_game_assets.py` mengunduh ZIP resmi Kenney jika cache belum tersedia, lalu menyalin tile pada `horror/asset_catalog.py`. `tools/import_audio.py` membaca arsip `build/audio-source/impact.zip` dan `rpg.zip` yang harus sudah tersedia, lalu menyalin daftar klip terkurasi. Keduanya menulis sumber dan SHA-256. Jalankan importer dari root proyek, lalu audit kembali.
 
 Musik dan media ITS sudah dibundel beserta sumber/hash; tidak ada importer otomatis untuk mengunduh ulang keduanya. Simpan metadata sumber ketika mengganti berkas. Jangan memasukkan arsip sumber, `.venv`, cache build atau screenshot ke paket runtime.
+
+Untuk menambah rekaman cue CC0 yang sudah diunduh, gunakan `tools/add_story_audio.py SOURCE radio_4.ogg --author NAME --page URL`. Target harus mengikuti daftar cue dan ekstensi pada bantuan tool; tool menyalin berkas, mencatat hash/manifest/kredit, dan menolak penimpaan tanpa `--force`. Perbarui juga kredit pihak ketiga, lalu jalankan audit sebelum build. Runtime membaca varian `.ogg`, `.wav`, atau `.mp3` lokal dan mempertahankan fallback bila suatu cue belum memiliki rekaman.
