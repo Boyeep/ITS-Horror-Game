@@ -9,6 +9,7 @@ from .config import (DIFFICULTIES, TILE, ROOM_COUNT, ROOM_W, ROOM_H,
                      PLAYER_RADIUS, MONSTER_RADIUS, DOOR_INTERACT_RANGE)
 from .world import Layout
 from .inventory import Backpack, ITEMS, Loot, PlacedItem, seed_supplies, new_stats
+from .balance import MONSTER_BALANCE, PRESSURE, SENSOR_PROFILES
 
 # Local search (Hill Climbing + Simulated Annealing) parameters and explicit sensor profiles.
 SIGNATURE_THRESHOLD = .42
@@ -24,13 +25,6 @@ PLATEAU_EPS = .012
 STALL_LIMIT = 4
 LOCAL_SEARCH_BUDGET = 8
 TRACE_LIMIT = 40
-
-SENSOR_PROFILES = {
-    "Penjaga": {"sight_lit": 330., "sight_dark": 235., "hearing": .85, "amp": 1.85, "sigma": 3.6},
-    "Pendengar": {"sight_lit": 43., "sight_dark": 43., "hearing": 1.8, "amp": 2.05, "sigma": 4.2},
-    "Penyergap": {"sight_lit": 330., "sight_dark": 235., "hearing": .85, "amp": 1.92, "sigma": 3.8},
-}
-
 
 @dataclass
 class Monster:
@@ -226,13 +220,15 @@ class Session:
     def take_hit(self, monster):
         if self.status != "playing" or self.invulnerable > 0:
             return False
-        base = {"Penjaga": 28, "Pendengar": 22, "Penyergap": 38 if monster.state == "dash" else 24}[monster.kind]
+        tuning = MONSTER_BALANCE[monster.kind]
+        base = 38 if monster.kind == "Penyergap" and monster.state == "dash" else tuning.damage
         damage = round(base * self.difficulty.damage)
         self.health = max(0, self.health - damage)
         self.invulnerable, self.hit_flash = 1.6, .4
         self.last_attacker = monster.kind
         self.hits_taken += 1
         monster.wait = max(monster.wait, .85)
+        monster.cooldown = max(monster.cooldown, tuning.attack_interval)
         self.stamina = max(self.stamina, 35)
         self.exhausted = False
         away = self.player - monster.pos
@@ -240,7 +236,7 @@ class Session:
             away = -monster.facing if monster.facing.length_squared() else Vector2(-1, 0)
         self.move(self.player, away.normalize() * 65, 11)
         if monster.state == "dash":
-            monster.state, monster.timer, monster.cooldown = "recovery", 2.5, 5
+            monster.state, monster.timer, monster.cooldown = "recovery", tuning.recovery, tuning.dash_cooldown
         if self.health > 0:
             self.sound("hurt")
             self.notify(f"-{damage} HP", 1.3)
@@ -269,19 +265,19 @@ class Session:
         for monster in self.monsters:
             if self.elapsed < self.difficulty.grace:
                 continue
-            multiplier = 1.8 if monster.kind == "Pendengar" else .85
+            multiplier = SENSOR_PROFILES[monster.kind]["hearing"]
             cost = field.get(self.layout.tile(monster.pos), math.inf)
             if cost > radius * self.difficulty.hearing * multiplier:
                 continue
-            if monster.state in ("windup", "dash", "recovery"):
+            if monster.state in ("windup", "dash", "recovery", "attack"):
                 continue
-            if monster.state == "chase" and monster.memory > self.difficulty.search_time - .6:
+            if monster.state == "chase" and monster.memory > self.memory_time(monster) - .6:
                 continue
             monster.target = Vector2(self.layout.nearest_floor(position))
             if label in ("botol pecah","alarm saku") and position.distance_to(self.player)>100 and not self.sees_player(monster):
                 if monster.sound_cause!=label or monster.state!="investigate":self.run_stats["lures_worked"]+=1
             monster.state = "investigate"
-            monster.memory = self.difficulty.search_time
+            monster.memory = self.memory_time(monster)
             monster.repath = 0
             monster.sound_cause = label
             monster.explore_target = None
@@ -449,10 +445,13 @@ class Session:
         used=self.run_stats["items_used"];used["bottle"]=used.get("bottle",0)+1
         self.changed();return True
 
+    def memory_time(self, monster):
+        return self.difficulty.search_time * MONSTER_BALANCE[monster.kind].memory
+
     def sees_player(self, monster):
         distance = monster.pos.distance_to(self.player)
         profile = SENSOR_PROFILES[monster.kind]
-        limit = profile["sight_lit" if self.flashlight else "sight_dark"]
+        limit = profile["sight_lit" if self.flashlight else "sight_dark"] * PRESSURE[self.difficulty_key].vision
         if self.last_mode == "crouch":
             limit *= .82
         if distance > limit or not self.layout.line_clear(monster.pos, self.player):
@@ -704,6 +703,8 @@ class Session:
             monster.repath = 0
 
     def _update_monster(self, monster, dt):
+        tuning = MONSTER_BALANCE[monster.kind]
+        pressure = PRESSURE[self.difficulty_key]
         monster.cooldown = max(0, monster.cooldown - dt)
         monster.wait = max(0, monster.wait - dt)
         monster.memory = max(0, monster.memory - dt)
@@ -714,35 +715,51 @@ class Session:
             monster.vocal_timer = self.rng.uniform(10, 19)
             self.sound("monster_" + {"Penjaga": "guard", "Pendengar": "listener", "Penyergap": "ambusher"}[monster.kind], monster.pos, .55)
         visible = self.sees_player(monster)
+        if monster.state == "attack":
+            # A readable advance beats passive walking; sprinting out still evades it.
+            if visible:
+                delta=self.player-monster.pos
+                if delta.length_squared()>1:
+                    monster.facing=delta.normalize()
+                    speed=tuning.speed*self.difficulty.speed*pressure.pursuit*tuning.melee_follow
+                    self.move(monster.pos,monster.facing*min(delta.length(),speed*dt),MONSTER_RADIUS)
+            monster.timer -= dt
+            if monster.timer <= 0:
+                if monster.pos.distance_to(self.player) < 30 and self.layout.line_clear(monster.pos, self.player):
+                    self.take_hit(monster)
+                monster.cooldown = max(monster.cooldown, tuning.attack_interval)
+                monster.state = "chase" if visible else "search"
+            return
         if monster.state == "windup":
             monster.timer -= dt
             if monster.timer <= 0:
-                monster.state, monster.timer = "dash", .62
+                monster.state, monster.timer = "dash", tuning.dash_duration
             return
         if monster.state == "dash":
             before = monster.pos.copy()
-            self.move(monster.pos, monster.dash * 380 * dt, 12)
+            self.move(monster.pos, monster.dash * tuning.dash_speed * dt, MONSTER_RADIUS)
             monster.timer -= dt
             if monster.timer <= 0 or monster.pos.distance_to(before) < 1:
-                monster.state, monster.timer = "recovery", 2.5
-                monster.cooldown = 5
+                monster.state, monster.timer = "recovery", tuning.recovery
+                monster.cooldown = tuning.dash_cooldown
             return
         if monster.state == "recovery":
             monster.timer -= dt
             if monster.timer <= 0:
-                monster.state, monster.memory = "search", self.difficulty.search_time
+                monster.state, monster.memory = "search", self.memory_time(monster)
             return
         if visible:
             if monster.state != "chase":
                 self.chases += 1
                 self.sound("monster_" + {"Penjaga": "guard", "Pendengar": "listener", "Penyergap": "ambusher"}[monster.kind], monster.pos, .7)
             monster.state = "chase"
-            monster.memory = self.difficulty.search_time
+            monster.memory = self.memory_time(monster)
             monster.target = self.player.copy()
             monster.explore_target = None
             monster.temp = max(TEMP_MIN, min(monster.temp, .14))
             if monster.kind == "Penyergap" and monster.cooldown <= 0 and monster.pos.distance_to(self.player) < 270:
-                monster.state, monster.timer = "windup", 1.0
+                monster.state, monster.timer = "windup", tuning.dash_windup * pressure.reaction
+                self.sound(tuning.cue, monster.pos, .9)
                 delta = self.player - monster.pos
                 monster.dash = delta.normalize() if delta.length_squared() else monster.facing.copy()
                 monster.facing = monster.dash.copy()
@@ -750,14 +767,14 @@ class Session:
             if monster.state == "chase":
                 monster.state = "search"
             lured = (monster.state == "investigate" and monster.sound_cause in ("botol pecah", "alarm saku")
-                     and monster.memory > self.difficulty.search_time - 2.5)
+                     and monster.memory > self.memory_time(monster) - 2.5)
             if not lured and self.neighborhood_signature(monster) >= SIGNATURE_THRESHOLD:
                 monster.explore_target = None
                 monster.target = self.player.copy()
                 monster.temp = max(TEMP_MIN, min(monster.temp, .16))
                 if monster.state == "patrol":
                     monster.state = "search"
-                monster.memory = max(monster.memory, min(self.difficulty.search_time, 3.5))
+                monster.memory = max(monster.memory, min(self.memory_time(monster), 3.5))
         if monster.memory <= 0 and monster.state in ("search", "investigate"):
             monster.state, monster.target, monster.path = "patrol", None, []
             monster.explore_target = None
@@ -790,8 +807,7 @@ class Session:
                 monster.repath = 0
         if monster.wait > 0:
             return
-        speeds = {"Penjaga": 142, "Pendengar": 122, "Penyergap": 118}
-        speed = speeds[monster.kind] * self.difficulty.speed
+        speed = tuning.speed * self.difficulty.speed * pressure.pursuit
         if monster.state == "patrol":
             speed *= .58
         elif monster.state != "chase":
@@ -882,7 +898,7 @@ class Session:
         for monster in self.monsters:
             self._update_monster(monster, dt)
             distance = monster.pos.distance_to(self.player)
-            if monster.state in ("chase", "windup", "dash"):
+            if monster.state in ("chase", "windup", "dash", "attack"):
                 self.chase_active = True
                 self.threat = max(self.threat, max(0, 1 - distance / 550))
             if self.elapsed > 2 and self.player_can_see(monster):
@@ -890,8 +906,14 @@ class Session:
                 if monster.kind not in self.visible_monsters:
                     self.startle(monster)
             if (self.elapsed > self.difficulty.grace and distance < 24
-                    and monster.state not in ("recovery", "windup") and self.layout.line_clear(monster.pos, self.player)):
-                self.take_hit(monster)
+                    and monster.state not in ("recovery", "windup", "attack") and self.layout.line_clear(monster.pos, self.player)):
+                if monster.state == "dash":
+                    self.take_hit(monster)
+                elif monster.cooldown <= 0 and monster.wait <= 0 and self.invulnerable <= 0:
+                    tuning = MONSTER_BALANCE[monster.kind]
+                    monster.state = "attack"
+                    monster.timer = tuning.melee_windup * PRESSURE[self.difficulty_key].reaction
+                    self.sound(tuning.cue, monster.pos, .85)
                 if self.status == "lost":
                     break
         self.visible_monsters = visible_now

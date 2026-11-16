@@ -98,7 +98,7 @@ class StorySession(StoryState, Session):
 
     def switch_level(self,key,destination):
         old_key=self.level_key
-        pursuer=next((m for m in self.monsters if m.state in ("chase","windup","dash") and m.pos.distance_to(self.player)<420
+        pursuer=next((m for m in self.monsters if m.state in ("chase","windup","dash","attack") and m.pos.distance_to(self.player)<420
                       and self.layout.line_clear(m.pos,self.player)),None)
         if pursuer:
             self.monsters.remove(pursuer)

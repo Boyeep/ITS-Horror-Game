@@ -494,6 +494,8 @@ class GameplayTests(unittest.TestCase):
         session.health = 20
         session.monsters[0].pos = session.player.copy()
         session.update(.02)
+        self.assertEqual(session.status, "playing")
+        for _ in range(26):session.update(.02)
         self.assertEqual(session.status, "lost")
         self.assertIn("Penjaga", session.death_reason)
         elapsed = session.elapsed
@@ -506,6 +508,10 @@ class GameplayTests(unittest.TestCase):
         for monster in session.monsters:
             monster.pos = session.player.copy()
         session.update(.02)
+        self.assertEqual(session.health, 100)
+        for _ in range(26):
+            for monster in session.monsters:monster.pos=session.player.copy()
+            session.update(.02)
         self.assertEqual(session.health, 72)
         self.assertEqual(session.status, "playing")
         self.assertEqual(session.hits_taken, 1)
