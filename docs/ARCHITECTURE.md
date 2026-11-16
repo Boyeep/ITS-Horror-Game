@@ -11,11 +11,11 @@ View dipisahkan sebagai mixin dengan antarmuka metode yang tetap. `MenuViews`, `
 | Lifecycle dan input | `horror/app.py` | Mode, event, update, simpan/muat, dispatch tampilan |
 | Tampilan aplikasi | `horror/ui/menus.py`, `story.py`, `inventory.py` | Menu, dialog/puzzle/jurnal, slot, tas, pencapaian |
 | Komposisi renderer | `horror/render.py` | Kamera, cahaya, entity native, komposisi frame |
-| Dunia dan overlay | `horror/rendering/world.py`, `overlays.py` | Cache dunia statis, dekorasi, objective, HUD, peta |
+| Dunia dan overlay | `horror/rendering/world.py`, `overlays.py` | Cache dunia statis, dekorasi, objective, HUD, peta, 3D Wave Map |
 | Ilustrasi | `art.py`, `characters.py`, `architecture.py`, `pixels.py` | Sprite prosedural, ikon, pintu, stairs, drawing/DPI |
 | Atmosfer dan pembacaan | `backdrop.py`, `reader.py`, `narrative.py`, `cinematics.py` | Foto bertema, bukti, dialog, shot/timeline |
-| Simulasi bersama | `simulation.py` | Gerak, stamina/HP, monster, interaksi, noise |
-| Map dan navigasi | `world.py`, `campus.py`, `floors.py`, `ground_floor.py`, `informatika.py` | Generator, collision, A*, geografi, interior, migrasi posisi |
+| Simulasi bersama | `simulation.py` | Gerak, stamina/HP, monster (HC+SA), interaksi, noise |
+| Map dan navigasi | `world.py`, `campus.py`, `floors.py`, `ground_floor.py`, `informatika.py` | Generator, lanskap bukit 3D, collision, A*, geografi, interior, migrasi posisi |
 | Cerita | `story.py`, `story_data.py`, `story_state.py` | Progresi, konten, transisi, snapshot/restore |
 | Tujuan | `guidance.py` | Target dan rute tindakan tanpa membocorkan jawaban puzzle |
 | Barang dan profil | `inventory.py`, `achievements.py` | Kapasitas, supply, alat, pencapaian lokal |

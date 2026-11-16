@@ -2,6 +2,7 @@
 from pygame import Vector2
 
 from .campus import CampusLayout
+from .config import DOOR_INTERACT_RANGE
 from .floors import BuildingLayout
 from .ground_floor import InformatikaGround
 from .simulation import Session, Monster
@@ -239,7 +240,7 @@ class StorySession(StoryState, Session):
             if self.player.distance_to(pos)<68 and self.layout.line_clear(self.player,pos):
                 return ("shutdown" if key=="shutdown" else "story"),key,label
         for action,key,pos,label in self.building_options():
-            if self.player.distance_to(pos)<65 and self.layout.line_clear(self.player,pos):return action,key,label
+            if self.layout.can_interact_door(self.player,self.layout.tile(pos),DOOR_INTERACT_RANGE):return action,key,label
         for direction,building,pos,label in self.stair_options():
             if self.player.distance_to(pos)<58 and self.layout.line_clear(self.player,pos):
                 nearby=super().interaction()

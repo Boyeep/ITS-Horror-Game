@@ -18,6 +18,7 @@ Mode Escape adalah sesi terpisah: cari dua sekring, tahan E pada panel, lalu ber
 | E | Ambil, periksa, buka pintu, bicara, gunakan tangga |
 | Tahan E | Panel atau konsol yang menampilkan progres |
 | F / Q / M | Senter / botol / peta; peta tidak menjeda dunia |
+| V | Tampilan split-screen 3D Wave Map (AI Hill Climbing + Simulated Annealing) |
 | B / Tab | Buka tas; Tab di dalam tas mengganti kategori |
 | Panah + Enter / X di tas | Pilih dan gunakan / letakkan satu barang |
 | 1 / 2 / 3 / 4 | P3K / energi / alarm / lampu kimia |
