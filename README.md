@@ -2,11 +2,23 @@
 
 Game horor top-down 2D berlatar interpretasi fiksi kampus ITS. Arga menerima pesan dari ponsel Nara yang tertinggal. Jelajahi kampus, baca bukti, selesaikan puzzle, dan cari jalan pulang bersama Nara.
 
-![Menu Setelah Jam Malam](docs/screenshots/menu-rektorat.png)
+## Video
+
+### Trailer gameplay · 0:32
+
+https://github.com/user-attachments/assets/afbc5473-9994-4749-ab8a-cd5a05896e42
+
+### Animasi AI monster · 2:21
+
+Visualisasi Hill Climbing dan Simulated Annealing untuk navigasi monster, dengan perbandingan terhadap A*.
+
+https://github.com/user-attachments/assets/c89be26c-f89e-4932-83b8-1462d44056c5
+
+## Baru di v0.2
 
 Kandidat v0.2 disiapkan pada branch `v0.2` untuk integrasi ke `beta`. [Catatan v0.2](docs/RELEASE_NOTES.md) memuat perubahan, kompatibilitas, dan batas pengujian; [presentasi v0.2](docs/presentations/ETS_KKA_Kelompok_2_ITS_Horror_v0.2.pptx) tersedia sebagai PowerPoint yang dapat diedit.
 
-## Baru di v0.2
+![Menu Setelah Jam Malam](docs/screenshots/menu-rektorat.png)
 
 - Monster memakai Hill Climbing + Simulated Annealing dengan sensor berbasis bukti, profil Easy/Normal/Hard, dan cue sebelum serangan. A* tetap dipakai untuk petunjuk, pendamping, dan bot penguji.
 - Bukaan pintu dan interaksi E diperbaiki; tangga berpasangan, courtyard, dan atap Informatika lebih konsisten.
@@ -82,4 +94,16 @@ Di Windows dengan Git Bash, `./Build.sh` juga dapat digunakan.
 - [Aset dan audit](docs/ASSETS.md) · [Acuan ITS](docs/ITS_REFERENCES.md)
 - [Verifikasi rilis](docs/QA.md) · [Kredit pihak ketiga](THIRD_PARTY_NOTICES.md)
 
-Bangunan, skala, interior, dan cerita diadaptasi untuk permainan; proyek ini bukan produk resmi ITS. Foto dan lambang ITS memiliki kredit tersendiri dan bukan bagian dari aset CC0. Lisensi kode utama belum ditetapkan; lisensi masing-masing komponen pihak ketiga tetap berlaku.
+## Lisensi dan kredit aset
+
+| Aset | Lisensi dan kredit |
+| --- | --- |
+| Tile lantai dan furnitur | **CC0 1.0**, Top-down Shooter Pack karya Kenney. [Teks lisensi](assets/kenney/License.txt) |
+| Efek langkah, pintu, dan foley | **CC0 1.0**, Impact Sounds dan RPG Audio karya Kenney. [Lisensi Impact Sounds](assets/audio/impact-License.txt) · [Lisensi RPG Audio](assets/audio/rpg-License.txt) |
+| Musik, ambience, dan suara monster, radio, serta buku | **CC0 1.0**, dari para kreator OpenGameArt. [Kreator, judul, dan tautan sumber setiap rekaman](assets/story_audio/CREDITS.txt) |
+| Foto Rektorat, Tower 2, dan Informatika serta lambang ITS | Media Institut Teknologi Sepuluh Nopember dengan kredit terpisah dari aset CC0. [Publikasi asal dan panduan identitas visual ITS](docs/ITS_REFERENCES.md) |
+| Karakter, monster, antarmuka, dan dekorasi prosedural | Dibuat untuk proyek ini. [Rincian aset](docs/ASSETS.md) |
+
+Trailer menggunakan *Night Shift* karya iamoneabe, *Chase - Diamond Dust* karya NBJDLukasAbsolute, dan klip radio karya Kresiek The Furry. [Kredit audio lengkap](assets/story_audio/CREDITS.txt)
+
+Lisensi kode utama belum ditetapkan. Lisensi masing-masing komponen pihak ketiga tetap berlaku. Bangunan, skala, interior, dan cerita diadaptasi untuk permainan. Proyek ini bukan produk resmi ITS. [Pemberitahuan pihak ketiga](THIRD_PARTY_NOTICES.md)
