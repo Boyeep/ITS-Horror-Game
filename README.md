@@ -6,7 +6,7 @@ Game horor top-down 2D berlatar interpretasi fiksi kampus ITS. Arga menerima pes
 
 ### Trailer gameplay · 0:32
 
-https://github.com/user-attachments/assets/816f17e8-859e-495a-8a0e-7458b6c96cdc
+https://github.com/user-attachments/assets/afbc5473-9994-4749-ab8a-cd5a05896e42
 
 ### Animasi AI monster · 2:21
 
